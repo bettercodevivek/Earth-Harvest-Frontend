@@ -97,14 +97,14 @@ All colors MUST be HSL.
 }
 
 @layer base {
-  * {
+  /* * {
     @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "kern" 1, "liga" 1;
-  }
+  } */
   
   html {
     scroll-behavior: smooth;
