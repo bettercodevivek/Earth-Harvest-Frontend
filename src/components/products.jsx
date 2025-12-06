@@ -8,7 +8,7 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1);
   const [cartCount, setCartCount] = useState(0);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [openFaq, setOpenFaq] = useState(null);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
