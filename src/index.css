@@ -7,6 +7,26 @@ body {
     overflow-x: hidden;
   }
 
+.underline-animate {
+  position: relative;
+}
+
+.underline-animate::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px; /* adjust underline distance */
+  width: 0%;
+  height: 2px; /* underline thickness */
+  background-color: hsl(var(--primary)); /* matches Tailwind primary */
+  transition: width 0.3s ease;
+}
+
+.underline-animate:hover::after {
+  width: 100%;
+}
+
+
 @layer base {
   :root {
     --background: 35 20% 97%;
@@ -102,11 +122,11 @@ body {
 
 @layer base {
   * {
-    @apply border-border;
+    /* @apply border-border; */
   }
 
   body {
-    @apply bg-background text-foreground;
+    /* @apply bg-background text-foreground; */
     font-feature-settings: "kern" 1, "liga" 1;
   }
   

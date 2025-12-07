@@ -7,6 +7,7 @@ import {
   ThumbsUp, ThumbsDown, Camera, Share2, Bell, RotateCcw, BadgeCheck, Sparkles,
   ChevronLeft, ChevronRight
 } from 'lucide-react';
+import Navbar from './Navbar'
 
 const Product = () => {
   const [selectedSize, setSelectedSize] = useState('30');
@@ -208,7 +209,7 @@ Made in our FDA-registered facility in Colorado, each batch is tested for qualit
 
   return (
     <div className="min-h-screen bg-background">
-      {/* <Navbar cartCount={cartCount} /> */}
+      <Navbar cartCount={cartCount} />
       
       {/* Breadcrumb */}
       <div className="bg-secondary/30 border-b border-border py-3 px-4 sm:px-6 lg:px-12">

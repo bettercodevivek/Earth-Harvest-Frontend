@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'fra
 import { Link } from 'react-router-dom';
 import { ShoppingCart, ArrowRight, Check, Award, Leaf, Shield, Users, Globe, Star, Heart, Zap, Truck, Lock, Package, Gift, Minus, Plus, ChevronDown, Sparkles, Clock, ThumbsUp } from 'lucide-react';
 import CountUpStat from './CountUpStat';
+import Navbar from './Navbar'
 
 const Index = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -39,7 +40,7 @@ const Index = () => {
 
   const ingredientImages = [
     {
-      src: "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=800&h=1000&fit=crop",
+      src: "./20251207_1329_Himalayan Dog Chew_remix_01kbvx2nceetg8v2qk7m1eq9vf.png",
       alt: "Premium dog food ingredients"
     },
     {
@@ -224,18 +225,18 @@ const Index = () => {
   const [openFaq, setOpenFaq] = useState(null);
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background">
       {/* Promo Banner */}
-      <div className="bg-primary text-primary-foreground py-2 px-4 text-center text-xs sm:text-sm font-semibold">
+      <div className="bg-[#C8945C] text-white py-2 px-4 text-center text-xs sm:text-sm font-semibold">
         <span className="hidden sm:inline">🎁 LAUNCH SPECIAL: </span>
         25% OFF + FREE SHIPPING • Code: <span className="font-bold">HEALTHYDOG</span>
         <span className="hidden md:inline"> • Ends Sunday</span>
       </div>
 
-      {/* <Navbar cartCount={cartCount} /> */}
+      <Navbar cartCount={cartCount} />
 
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[90vh] flex items-center">
         <div className="absolute inset-0 bg-gradient-to-br from-secondary/50 via-background to-background" />
         
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-20 relative z-10 w-full">
@@ -271,7 +272,7 @@ const Index = () => {
               <div className="flex flex-wrap items-center gap-4">
                 <div className="flex items-center space-x-1">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-accent fill-accent" />
+                    <Star key={i} className="w-5 h-5 text-accent fill-accent text-amber-700 fill-amber-700" />
                   ))}
                 </div>
                 <span className="font-bold text-foreground">{product.rating}</span>
@@ -286,7 +287,7 @@ const Index = () => {
                     <button
                       key={size.weight}
                       onClick={() => setSelectedSize(size.weight)}
-                      className={`px-4 sm:px-6 py-3 rounded-xl font-semibold transition-all text-sm sm:text-base ${
+                      className={`px-4 sm:px-6 py-3 rounded-xl hover:cursor-pointer font-semibold transition-all text-sm sm:text-base ${
                         selectedSize === size.weight
                           ? 'bg-primary text-primary-foreground shadow-premium ring-2 ring-primary ring-offset-2'
                           : 'bg-card text-foreground border border-border hover:border-primary'
@@ -299,7 +300,7 @@ const Index = () => {
               </div>
 
               {/* Price & Add to Cart */}
-              <div className="bg-card border border-border rounded-2xl p-4 sm:p-6 space-y-4">
+              <div className="bg-[#F8F2EC] border border-border rounded-2xl p-4 sm:p-6 space-y-4">
                 <div className="flex flex-wrap items-baseline gap-3">
                   <span className="text-3xl sm:text-4xl font-bold text-foreground">${currentPrice?.price}</span>
                   <span className="text-lg sm:text-xl text-muted-foreground line-through">${currentPrice?.oldPrice}</span>
@@ -328,7 +329,7 @@ const Index = () => {
 
                   <button 
                     onClick={addToCart}
-                    className="flex-1 bg-primary hover:bg-accent text-primary-foreground py-3 sm:py-4 px-6 rounded-xl font-bold text-base sm:text-lg transition-all shadow-premium hover:shadow-elevated hover:scale-[1.02] flex items-center justify-center space-x-2"
+                    className="flex-1 bg-[#C8945C] hover:bg-accent text-primary-foreground py-3 sm:py-4 px-6 rounded-xl font-bold text-base sm:text-lg transition-all shadow-premium hover:shadow-elevated hover:scale-[1.02] flex items-center justify-center space-x-2"
                   >
                     <ShoppingCart className="w-5 h-5" />
                     <span>Add to Cart</span>
@@ -414,7 +415,7 @@ const Index = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
-                className="absolute -bottom-4 -left-4 sm:bottom-8 sm:-left-8 bg-card border border-border rounded-2xl p-4 shadow-elevated"
+                className="absolute bg-[#F8F2EC] -bottom-4 -left-4 sm:bottom-8 sm:-left-8 bg-card border border-border rounded-2xl p-4 shadow-elevated"
               >
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
@@ -432,8 +433,8 @@ const Index = () => {
       </section>
 
       {/* Trust Bar */}
-      <section className="py-6 sm:py-8 bg-foreground">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
+      <section className="py-6 sm:py-8 bg-[#4A3A2A]">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 lg:ml-40">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {guarantees.map((item, idx) => (
               <motion.div
@@ -444,10 +445,10 @@ const Index = () => {
                 transition={{ delay: idx * 0.1 }}
                 className="flex flex-col sm:flex-row items-center text-center sm:text-left space-y-2 sm:space-y-0 sm:space-x-3"
               >
-                <item.icon className="w-8 h-8 text-primary" />
+                <item.icon className="w-8 h-8 text-[#C8945C]" />
                 <div>
-                  <p className="font-bold text-background text-sm">{item.title}</p>
-                  <p className="text-xs text-muted">{item.desc}</p>
+                  <p className="font-bold text-white text-sm">{item.title}</p>
+                  <p className="text-xs text-white">{item.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -483,13 +484,13 @@ const Index = () => {
             viewport={{ once: true }}
             className="text-center mb-12 lg:mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">Why Dogs Love NOURISH</h2>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">Why Dog Parents Love Earth & Harvest</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Science-backed nutrition with ingredients you can actually pronounce
             </p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-6 lg:mx-36">
             {benefits.map((benefit, idx) => (
               <motion.div
                 key={idx}
@@ -500,7 +501,7 @@ const Index = () => {
                 className="bg-card rounded-2xl p-6 lg:p-8 shadow-lg hover:shadow-premium transition-all hover:-translate-y-2 border border-border text-center"
               >
                 <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-5 mx-auto">
-                  <benefit.icon className="w-7 h-7 text-primary" />
+                  <benefit.icon className="w-7 h-7 text-primary text-[#C8945C] fill-[#C8945C]" />
                 </div>
                 <h3 className="text-lg font-bold text-foreground mb-2">{benefit.title}</h3>
                 <p className="text-sm text-muted-foreground">{benefit.description}</p>
@@ -545,7 +546,7 @@ const Index = () => {
 
               <div className="mt-8 flex flex-wrap gap-3">
                 {['AAFCO Certified', 'Non-GMO', 'Human Grade', 'No Fillers'].map((badge) => (
-                  <span key={badge} className="inline-flex items-center space-x-1 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-xs font-semibold">
+                  <span key={badge} className="inline-flex items-center space-x-1 bg-[#C8945C] text-black px-3 py-1.5 rounded-full text-xs font-semibold">
                     <Check className="w-3 h-3" />
                     <span>{badge}</span>
                   </span>
@@ -561,7 +562,7 @@ const Index = () => {
               style={{ y: parallaxY }}
               className="relative"
             >
-              <div className="relative rounded-2xl shadow-elevated overflow-hidden aspect-[4/5]">
+              <div className="relative rounded-2xl shadow-elevated overflow-hidden aspect-square h-3/4">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={currentIngredientImage}
@@ -576,8 +577,8 @@ const Index = () => {
                 </AnimatePresence>
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6 text-background">
-                  <p className="font-bold text-xl">47 Essential Nutrients</p>
-                  <p className="text-sm text-background/80">In every bowl</p>
+                  <p className="font-bold text-white text-xl">47 Essential Nutrients</p>
+                  <p className="text-sm text-white">In every bowl</p>
                 </div>
                 
                 {/* Slideshow Indicators */}
@@ -608,7 +609,7 @@ const Index = () => {
             className="text-center mb-12 lg:mb-16"
           >
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-background mb-4">
-              The NOURISH Transformation
+              The Earth & Harvest Transformation
             </h2>
             <p className="text-lg text-muted max-w-2xl mx-auto">
               Watch your dog transform from the very first week. Here's what to expect on this journey.
@@ -627,10 +628,10 @@ const Index = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.15 }}
-                  className="relative bg-card rounded-2xl p-6 shadow-elevated border border-border text-center group hover:-translate-y-2 transition-all"
+                  className="relative bg-[#F8F2EC] text-black rounded-2xl p-6 border border-border text-center group hover:-translate-y-2 transition-all"
                 >
                   {/* Step Number */}
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-primary rounded-full flex items-center justify-center text-xs font-bold text-primary-foreground shadow-lg">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#C8945C] rounded-full flex items-center justify-center text-xs font-bold text-primary-foreground">
                     {idx + 1}
                   </div>
                   
@@ -638,7 +639,7 @@ const Index = () => {
                     <step.icon className="w-8 h-8 text-primary" />
                   </div>
                   
-                  <span className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold mb-3">
+                  <span className="inline-block bg-[#C8945C] text-primary px-3 py-1 rounded-full text-xs font-bold mb-3">
                     {step.day}
                   </span>
                   
@@ -657,7 +658,7 @@ const Index = () => {
           >
             <Link 
               to="/product"
-              className="inline-flex items-center space-x-2 bg-primary hover:bg-accent text-primary-foreground px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-premium hover:shadow-elevated hover:scale-105"
+              className="inline-flex items-center space-x-2 bg-[#C8945C] hover:bg-accent text-primary-foreground px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-premium hover:shadow-elevated hover:scale-105"
             >
               <span>Start Your Dog's Transformation</span>
               <ArrowRight className="w-5 h-5" />
@@ -681,7 +682,7 @@ const Index = () => {
             <div className="flex items-center justify-center gap-2">
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-6 h-6 text-accent fill-accent" />
+                  <Star key={i} className="w-6 h-6 text-accent fill-accent fill-amber-700 text-amber-700" />
                 ))}
               </div>
               <span className="font-bold text-foreground">4.9/5</span>
@@ -702,7 +703,7 @@ const Index = () => {
               >
                 <div className="flex mb-3">
                   {[...Array(t.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-accent fill-accent" />
+                    <Star key={i} className="w-4 h-4 text-accent fill-accent fill-amber-700 text-amber-700" />
                   ))}
                 </div>
                 <p className="text-sm text-foreground mb-4 leading-relaxed">"{t.text}"</p>
@@ -741,7 +742,7 @@ const Index = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="bg-card border border-border rounded-xl overflow-hidden"
+                className="bg-[#F8F2EC] border border-border rounded-xl overflow-hidden"
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
@@ -787,7 +788,7 @@ const Index = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 to="/product"
-                className="bg-background hover:bg-muted text-foreground px-8 sm:px-12 py-4 rounded-xl font-bold text-lg transition-all shadow-elevated hover:scale-105 inline-flex items-center justify-center space-x-2"
+                className="bg-[#C8945C] hover:bg-muted text-foreground px-8 sm:px-12 py-4 rounded-xl font-bold text-lg transition-all shadow-elevated hover:scale-105 inline-flex items-center justify-center space-x-2"
               >
                 <span>Shop Now - 25% OFF</span>
                 <ArrowRight className="w-5 h-5" />

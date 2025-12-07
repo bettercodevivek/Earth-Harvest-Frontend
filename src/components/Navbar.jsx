@@ -13,7 +13,7 @@ const Navbar = ({ cartCount }) => {
   }, []);
 
   return (
-    <nav className={`sticky top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-background/95 backdrop-blur-xl shadow-premium py-2' : 'bg-background py-3'}`}>
+    <nav className={`sticky top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-[#F8F2EC]  py-2' : 'bg-[#F8F2EC] py-3'}`}>
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
         <div className="flex justify-between items-center">
           
@@ -26,13 +26,33 @@ const Navbar = ({ cartCount }) => {
             />
           </a>
           
-          {/* Desktop Links */}
-          <div className="hidden md:flex items-center space-x-8">
-            <a href="#benefits" className="text-foreground hover:text-primary transition-colors font-medium text-sm">Benefits</a>
-            <a href="#ingredients" className="text-foreground hover:text-primary transition-colors font-medium text-sm">Ingredients</a>
-            <a href="#reviews" className="text-foreground hover:text-primary transition-colors font-medium text-sm">Reviews</a>
-            <a href="#faq" className="text-foreground hover:text-primary transition-colors font-medium text-sm">FAQ</a>
-          </div>
+         <div className="hidden md:flex items-center space-x-8">
+  <a
+    href="#benefits"
+    className="underline-animate text-foreground transition-colors font-medium text-sm"
+  >
+    Benefits
+  </a>
+  <a
+    href="#ingredients"
+    className="underline-animate text-foreground transition-colors font-medium text-sm"
+  >
+    Ingredients
+  </a>
+  <a
+    href="#reviews"
+    className="underline-animate text-foreground transition-colors font-medium text-sm"
+  >
+    Reviews
+  </a>
+  <a
+    href="#faq"
+    className="underline-animate text-foreground transition-colors font-medium text-sm"
+  >
+    FAQ
+  </a>
+</div>
+
 
           {/* Cart + CTA */}
           <div className="flex items-center space-x-3">
@@ -52,7 +72,7 @@ const Navbar = ({ cartCount }) => {
 
             <Link 
               to="/product"
-              className="bg-primary hover:bg-accent text-primary-foreground px-4 sm:px-6 py-2 lg:py-2.5 rounded-lg font-semibold transition-all shadow-premium hover:shadow-elevated hover:scale-105 text-sm"
+              className="bg-[#C8945C] text-black hover:bg-white hover:text-[#C8945C] text-primary-foreground px-4 sm:px-6 py-2 lg:py-2.5 rounded-lg font-semibold transition-all shadow-premium text-sm"
             >
               Buy Now
             </Link>
