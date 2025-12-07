@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, ArrowRight, Play, Check, Award, Leaf, Shield, Users, TrendingUp, Globe, Star, Heart, Zap, Truck, Lock, Package, Gift, Minus, Plus, ChevronDown } from 'lucide-react';
+import { ShoppingCart, ArrowRight, Check, Award, Leaf, Shield, Users, Globe, Star, Heart, Zap, Truck, Lock, Package, Gift, Minus, Plus, ChevronDown, Sparkles, Clock, ThumbsUp } from 'lucide-react';
+import CountUpStat from './CountUpStat';
 
 const Index = () => {
-  const [scrolled, setScrolled] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [currentHeroImage, setCurrentHeroImage] = useState(0);
+  const [currentIngredientImage, setCurrentIngredientImage] = useState(0);
   const [cartCount, setCartCount] = useState(0);
   const [selectedSize, setSelectedSize] = useState('30');
   const [quantity, setQuantity] = useState(1);
@@ -15,11 +16,11 @@ const Index = () => {
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
   
   const heroY = useTransform(smoothProgress, [0, 0.3], [0, 100]);
-  const parallaxY = useTransform(smoothProgress, [0, 1], [0, -150]);
+  const parallaxY = useTransform(smoothProgress, [0, 1], [0, -100]);
 
   const heroImages = [
     {
-      src: "/20251202_0045_Majestic Golden Retriever_simple_compose_01kbdnbbh8fmm8xrwxagafwra8.png",
+      src: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1200&h=1400&fit=crop",
       alt: "Happy Golden Retriever"
     },
     {
@@ -27,12 +28,31 @@ const Index = () => {
       alt: "Healthy Labrador"
     },
     {
-      src: "/20251202_0058_Luxurious Dog Chew Scene_remix_01kbdp3v53er4tx9gv6h3nf06c.png",
+      src: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=1200&h=1400&fit=crop",
       alt: "Energetic German Shepherd"
     },
     {
       src: "https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=1200&h=1400&fit=crop",
       alt: "Active Border Collie"
+    }
+  ];
+
+  const ingredientImages = [
+    {
+      src: "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=800&h=1000&fit=crop",
+      alt: "Premium dog food ingredients"
+    },
+    {
+      src: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=1000&fit=crop",
+      alt: "Fresh salmon and vegetables"
+    },
+    {
+      src: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&h=1000&fit=crop",
+      alt: "Natural organic ingredients"
+    },
+    {
+      src: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=1000&fit=crop",
+      alt: "Healthy superfoods"
     }
   ];
 
@@ -54,12 +74,6 @@ const Index = () => {
   const currentPrice = product.sizes.find(s => s.weight === selectedSize);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
     }, 5000);
@@ -73,15 +87,22 @@ const Index = () => {
     return () => clearInterval(interval);
   }, [heroImages.length]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIngredientImage((prev) => (prev + 1) % ingredientImages.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [ingredientImages.length]);
+
   const addToCart = () => {
     setCartCount(prev => prev + quantity);
   };
 
   const stats = [
-    { value: "2.3M+", label: "Happy Dogs", icon: Heart },
-    { value: "47", label: "Countries", icon: Globe },
-    { value: "99.2%", label: "Satisfaction", icon: Award },
-    { value: "#1", label: "Vet Recommended", icon: Shield }
+    { value: 2300000, label: "Happy Dogs", icon: Heart, suffix: "+" },
+    { value: 47, label: "Countries", icon: Globe },
+    { value: 99, label: "Satisfaction", icon: Award, suffix: "%" },
+    { value: 1, label: "Vet Recommended", icon: Shield, prefix: "#" }
   ];
 
   const testimonials = [
@@ -154,6 +175,33 @@ const Index = () => {
     { icon: Gift, title: "Free Sample", desc: "With every order" }
   ];
 
+  const transformationSteps = [
+    {
+      icon: Clock,
+      day: "Day 1-7",
+      title: "Transition Period",
+      description: "Gradual introduction to NOURISH. Your dog starts accepting the new taste profile."
+    },
+    {
+      icon: Sparkles,
+      day: "Day 7-14",
+      title: "Energy Boost",
+      description: "Notice increased energy levels, better mood, and more enthusiastic meal times."
+    },
+    {
+      icon: Heart,
+      day: "Day 14-30",
+      title: "Visible Changes",
+      description: "Shinier coat, healthier skin, improved digestion, and better overall vitality."
+    },
+    {
+      icon: ThumbsUp,
+      day: "Day 30+",
+      title: "Peak Performance",
+      description: "Your dog is thriving with optimal nutrition. Long-term health benefits compound."
+    }
+  ];
+
   const faqs = [
     {
       q: "Is NOURISH Complete suitable for all dog breeds and ages?",
@@ -176,59 +224,18 @@ const Index = () => {
   const [openFaq, setOpenFaq] = useState(null);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Promo Banner */}
-      <div className="relative bg-[#C8945C] text-primary-foreground py-2 px-4 text-center text-xs sm:text-sm font-semibold">
+      <div className="bg-primary text-primary-foreground py-2 px-4 text-center text-xs sm:text-sm font-semibold">
         <span className="hidden sm:inline">🎁 LAUNCH SPECIAL: </span>
         25% OFF + FREE SHIPPING • Code: <span className="font-bold">HEALTHYDOG</span>
         <span className="hidden md:inline"> • Ends Sunday</span>
       </div>
 
-      {/* Navigation */}
-      <nav className={`sticky top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-[#F8F2EC] py-2' : 'bg-[#F8F2EC] py-3'}`}>
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="flex justify-between items-center">
-            <a href="/" className="flex items-center space-x-3">
-              <img 
-                src="https://i.ibb.co/99XT05ZF/New-Logo-Tinny-transparent.png" 
-                alt="Nourish Logo"
-                className="w-24 sm:w-28 lg:w-32 h-10 sm:h-12 lg:h-14 object-contain"
-              />
-            </a>
-            
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#benefits" className="text-foreground hover:text-primary transition-colors font-medium text-sm">Benefits</a>
-              <a href="#ingredients" className="text-foreground hover:text-primary transition-colors font-medium text-sm">Ingredients</a>
-              <a href="#reviews" className="text-foreground hover:text-primary transition-colors font-medium text-sm">Reviews</a>
-              <a href="#faq" className="text-foreground hover:text-primary transition-colors font-medium text-sm">FAQ</a>
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <button className="relative p-2 text-foreground hover:text-primary transition-colors">
-                <ShoppingCart className="w-5 h-5 lg:w-6 lg:h-6" />
-                {cartCount > 0 && (
-                  <motion.span 
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 bg-accent text-primary-foreground text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
-                  >
-                    {cartCount}
-                  </motion.span>
-                )}
-              </button>
-              <Link 
-                to="/product"
-                className="bg-primary hover:bg-accent text-primary-foreground px-4 sm:px-6 py-2 lg:py-2.5 rounded-lg font-semibold transition-all shadow-premium hover:shadow-elevated hover:scale-105 text-sm"
-              >
-                Buy Now
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      {/* <Navbar cartCount={cartCount} /> */}
 
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center">
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-secondary/50 via-background to-background" />
         
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-20 relative z-10 w-full">
@@ -282,7 +289,7 @@ const Index = () => {
                       className={`px-4 sm:px-6 py-3 rounded-xl font-semibold transition-all text-sm sm:text-base ${
                         selectedSize === size.weight
                           ? 'bg-primary text-primary-foreground shadow-premium ring-2 ring-primary ring-offset-2'
-                          : 'bg-card text-foreground border border-border hover:border-primary hover:cursor-pointer'
+                          : 'bg-card text-foreground border border-border hover:border-primary'
                       }`}
                     >
                       {size.weight} lbs
@@ -306,14 +313,14 @@ const Index = () => {
                   <div className="flex items-center border border-border rounded-xl overflow-hidden">
                     <button 
                       onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                      className="p-3 hover:bg-muted hover:cursor-pointer transition-colors"
+                      className="p-3 hover:bg-muted transition-colors"
                     >
                       <Minus className="w-4 h-4" />
                     </button>
                     <span className="px-4 sm:px-6 font-semibold">{quantity}</span>
                     <button 
                       onClick={() => setQuantity(q => q + 1)}
-                      className="p-3 hover:bg-muted hover:cursor-pointer transition-colors"
+                      className="p-3 hover:bg-muted transition-colors"
                     >
                       <Plus className="w-4 h-4" />
                     </button>
@@ -321,7 +328,7 @@ const Index = () => {
 
                   <button 
                     onClick={addToCart}
-                    className="flex-1 bg-[#C8945C] hover:bg-accent hover:cursor-pointer text-primary-foreground py-3 sm:py-4 px-6 rounded-xl font-bold text-base sm:text-lg transition-all shadow-premium hover:shadow-elevated hover:scale-[1.02] flex items-center justify-center space-x-2"
+                    className="flex-1 bg-primary hover:bg-accent text-primary-foreground py-3 sm:py-4 px-6 rounded-xl font-bold text-base sm:text-lg transition-all shadow-premium hover:shadow-elevated hover:scale-[1.02] flex items-center justify-center space-x-2"
                   >
                     <ShoppingCart className="w-5 h-5" />
                     <span>Add to Cart</span>
@@ -341,7 +348,7 @@ const Index = () => {
               </div>
             </motion.div>
 
-            {/* Right - Image Slideshow */}
+            {/* Right - Image Slideshow with Ken Burns Effect */}
             <motion.div 
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -359,13 +366,33 @@ const Index = () => {
                       key={currentHeroImage}
                       src={heroImages[currentHeroImage].src}
                       alt={heroImages[currentHeroImage].alt}
-                      initial={{ opacity: 0, scale: 1.1 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.7 }}
+                      initial={{ opacity: 0, scale: 1.2 }}
+                      animate={{ 
+                        opacity: 1, 
+                        scale: 1,
+                        transition: { 
+                          opacity: { duration: 0.8, ease: "easeOut" },
+                          scale: { duration: 4, ease: "linear" }
+                        }
+                      }}
+                      exit={{ 
+                        opacity: 0, 
+                        transition: { duration: 0.5 }
+                      }}
                       className="absolute inset-0 w-full h-full object-cover"
                     />
                   </AnimatePresence>
+                  
+                  {/* Progress Bar */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-background/20">
+                    <motion.div 
+                      key={currentHeroImage}
+                      initial={{ width: "0%" }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 4, ease: "linear" }}
+                      className="h-full bg-primary"
+                    />
+                  </div>
                   
                   {/* Slideshow Dots */}
                   <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
@@ -387,10 +414,10 @@ const Index = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
-                className="absolute ml-2 lg:ml-0 bg-[#F8F2EC] -bottom-4 -left-4 sm:bottom-8 sm:-left-8 bg-card border border-border rounded-2xl p-4 shadow-elevated"
+                className="absolute -bottom-4 -left-4 sm:bottom-8 sm:-left-8 bg-card border border-border rounded-2xl p-4 shadow-elevated"
               >
                 <div className="flex items-center space-x-3">
-                  <div className="w-6 h-6 lg:w-12 lg:h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
                     <Users className="w-6 h-6 text-primary" />
                   </div>
                   <div>
@@ -405,9 +432,9 @@ const Index = () => {
       </section>
 
       {/* Trust Bar */}
-      <section className="py-6 bg-[#F8F2EC] sm:py-8 bg-foreground">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 lg:ml-40">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-4">
+      <section className="py-6 sm:py-8 bg-foreground">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {guarantees.map((item, idx) => (
               <motion.div
                 key={idx}
@@ -428,90 +455,21 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Stats */}
+      {/* Stats with Counting Animation */}
       <section className="py-12 sm:py-16 bg-secondary/30">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {stats.map((stat, idx) => (
-              <motion.div 
+              <CountUpStat
                 key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="text-center"
-              >
-                <stat.icon className="w-8 h-8 text-primary mx-auto mb-3" />
-                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-1">{stat.value}</div>
-                <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-        {/* Ingredients */}
-      <section id="ingredients" className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-secondary/30">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-      
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              style={{ y: parallaxY }}
-              className="relative"
-            >
-              <img 
-                src="/20251207_1329_Himalayan Dog Chew_remix_01kbvx2nceetg8v2qk7m1eq9vf.png"
-                alt="Premium ingredients"
-                className="rounded-2xl shadow-elevated w-full"
+                value={stat.value}
+                label={stat.label}
+                icon={stat.icon}
+                prefix={stat.prefix}
+                suffix={stat.suffix}
+                index={idx}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent rounded-2xl" />
-              <div className="absolute bottom-6 left-6 right-6 text-background">
-                <p className="font-bold text-xl">47 Essential Nutrients</p>
-                <p className="text-sm text-background/80">In every bowl</p>
-              </div>
-            </motion.div>
-
-             <motion.div 
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-                Real Food.<br />Real Results.
-              </h2>
-              <p className="text-lg text-muted-foreground mb-8 max-w-lg">
-                Every ingredient is hand-selected for quality and purpose. No fillers, no by-products, no artificial anything.
-              </p>
-
-              <div className="grid grid-cols-2 gap-4">
-                {ingredients.map((ing, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: idx * 0.1 }}
-                    className="bg-card border border-border rounded-xl p-4 hover:shadow-lg transition-all"
-                  >
-                    <span className="text-2xl mb-2 block">{ing.icon}</span>
-                    <h4 className="font-bold text-foreground text-sm">{ing.name}</h4>
-                    <p className="text-xs text-muted-foreground">{ing.benefit}</p>
-                  </motion.div>
-                ))}
-              </div>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                {['AAFCO Certified', 'Non-GMO', 'Human Grade', 'No Fillers'].map((badge) => (
-                  <span key={badge} className="inline-flex items-center space-x-1 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-xs font-semibold">
-                    <Check className="w-3 h-3" />
-                    <span>{badge}</span>
-                  </span>
-                ))}
-              </div>
-            </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -552,35 +510,158 @@ const Index = () => {
         </div>
       </section>
 
-    
+      {/* Ingredients with Slideshow */}
+      <section id="ingredients" className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-secondary/30">
+        <div className="max-w-[1400px] mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div 
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+                Real Food.<br />Real Results.
+              </h2>
+              <p className="text-lg text-muted-foreground mb-8 max-w-lg">
+                Every ingredient is hand-selected for quality and purpose. No fillers, no by-products, no artificial anything.
+              </p>
 
-      {/* Video/Story Section */}
+              <div className="grid grid-cols-2 gap-4">
+                {ingredients.map((ing, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.1 }}
+                    className="bg-card border border-border rounded-xl p-4 hover:shadow-lg transition-all"
+                  >
+                    <span className="text-2xl mb-2 block">{ing.icon}</span>
+                    <h4 className="font-bold text-foreground text-sm">{ing.name}</h4>
+                    <p className="text-xs text-muted-foreground">{ing.benefit}</p>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="mt-8 flex flex-wrap gap-3">
+                {['AAFCO Certified', 'Non-GMO', 'Human Grade', 'No Fillers'].map((badge) => (
+                  <span key={badge} className="inline-flex items-center space-x-1 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-xs font-semibold">
+                    <Check className="w-3 h-3" />
+                    <span>{badge}</span>
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Ingredient Image Slideshow */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              style={{ y: parallaxY }}
+              className="relative"
+            >
+              <div className="relative rounded-2xl shadow-elevated overflow-hidden aspect-[4/5]">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={currentIngredientImage}
+                    src={ingredientImages[currentIngredientImage].src}
+                    alt={ingredientImages[currentIngredientImage].alt}
+                    initial={{ opacity: 0, x: 100 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -100 }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                </AnimatePresence>
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6 text-background">
+                  <p className="font-bold text-xl">47 Essential Nutrients</p>
+                  <p className="text-sm text-background/80">In every bowl</p>
+                </div>
+                
+                {/* Slideshow Indicators */}
+                <div className="absolute top-6 right-6 flex gap-1.5">
+                  {ingredientImages.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentIngredientImage(idx)}
+                      className={`h-1.5 rounded-full transition-all ${
+                        idx === currentIngredientImage ? 'bg-primary w-6' : 'bg-background/50 w-1.5'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Transformation Journey Section (Replaces Video) */}
       <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-foreground">
-        <div className="max-w-[1000px] mx-auto text-center">
+        <div className="max-w-[1200px] mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            className="text-center mb-12 lg:mb-16"
           >
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-background mb-4">
-              See the Transformation
+              The NOURISH Transformation
             </h2>
-            <p className="text-lg text-muted mb-8">
-              Real dogs. Real results. Join the NOURISH family.
+            <p className="text-lg text-muted max-w-2xl mx-auto">
+              Watch your dog transform from the very first week. Here's what to expect on this journey.
             </p>
+          </motion.div>
+          
+          <div className="relative">
+            {/* Connection Line */}
+            <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-primary/30 -translate-y-1/2" />
             
-            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-elevated bg-card">
-              <img 
-                src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&h=675&fit=crop"
-                alt="Happy dogs"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-foreground/40 flex items-center justify-center">
-                <button className="w-16 h-16 sm:w-20 sm:h-20 bg-primary rounded-full flex items-center justify-center shadow-premium hover:scale-110 transition-transform">
-                  <Play className="w-6 h-6 sm:w-8 sm:h-8 text-primary-foreground ml-1" fill="currentColor" />
-                </button>
-              </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4">
+              {transformationSteps.map((step, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.15 }}
+                  className="relative bg-card rounded-2xl p-6 shadow-elevated border border-border text-center group hover:-translate-y-2 transition-all"
+                >
+                  {/* Step Number */}
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-primary rounded-full flex items-center justify-center text-xs font-bold text-primary-foreground shadow-lg">
+                    {idx + 1}
+                  </div>
+                  
+                  <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 mt-2 group-hover:bg-primary/20 transition-colors">
+                    <step.icon className="w-8 h-8 text-primary" />
+                  </div>
+                  
+                  <span className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold mb-3">
+                    {step.day}
+                  </span>
+                  
+                  <h3 className="text-lg font-bold text-foreground mb-2">{step.title}</h3>
+                  <p className="text-sm text-muted-foreground">{step.description}</p>
+                </motion.div>
+              ))}
             </div>
+          </div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <Link 
+              to="/product"
+              className="inline-flex items-center space-x-2 bg-primary hover:bg-accent text-primary-foreground px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-premium hover:shadow-elevated hover:scale-105"
+            >
+              <span>Start Your Dog's Transformation</span>
+              <ArrowRight className="w-5 h-5" />
+            </Link>
           </motion.div>
         </div>
       </section>
@@ -720,71 +801,20 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-foreground text-muted-foreground py-12 sm:py-16 px-4 sm:px-6 lg:px-12 pb-24 lg:pb-16">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            <div className="lg:col-span-2">
-              <img 
-                src="https://i.ibb.co/99XT05ZF/New-Logo-Tinny-transparent.png" 
-                alt="Nourish Logo"
-                className="w-32 h-12 object-contain mb-4"
-              />
-              <p className="text-sm max-w-md mb-6">
-                Premium nutrition for your best friend. Trusted by veterinarians, loved by dogs worldwide.
-              </p>
-              <div className="flex space-x-4">
-                {['Ig', 'Fb', 'Tw', 'Yt'].map((social) => (
-                  <button key={social} className="w-10 h-10 bg-card hover:bg-primary rounded-lg transition-colors flex items-center justify-center text-sm font-bold text-foreground hover:text-primary-foreground">
-                    {social}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h4 className="text-background font-bold mb-4">Quick Links</h4>
-              <ul className="space-y-3 text-sm">
-                <li><a href="#benefits" className="hover:text-primary transition-colors">Benefits</a></li>
-                <li><a href="#ingredients" className="hover:text-primary transition-colors">Ingredients</a></li>
-                <li><a href="#reviews" className="hover:text-primary transition-colors">Reviews</a></li>
-                <li><a href="#faq" className="hover:text-primary transition-colors">FAQ</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-background font-bold mb-4">Support</h4>
-              <ul className="space-y-3 text-sm">
-                <li><a href="#" className="hover:text-primary transition-colors">Contact Us</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Shipping Info</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Returns</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Track Order</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-border pt-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 text-sm">
-            <p>© 2024 NOURISH. All rights reserved.</p>
-            <div className="flex gap-6">
-              <a href="#" className="hover:text-primary transition-colors">Privacy</a>
-              <a href="#" className="hover:text-primary transition-colors">Terms</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      {/* <Footer /> */}
 
       {/* Mobile Bottom CTA */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-background border-t border-border shadow-elevated z-50 p-3">
         <div className="flex items-center gap-3">
           <div className="flex-1">
-            <p className="font-bold text-foreground">${currentPrice?.price}</p>
+            <p className="font-bold text-foreground text-sm">${currentPrice?.price}</p>
             <p className="text-xs text-muted-foreground line-through">${currentPrice?.oldPrice}</p>
           </div>
           <button 
             onClick={addToCart}
-            className="flex-[2] bg-primary text-primary-foreground py-3 rounded-xl font-bold flex items-center justify-center space-x-2"
+            className="flex-[2] bg-primary hover:bg-accent text-primary-foreground py-3 rounded-xl font-bold transition-all flex items-center justify-center space-x-2"
           >
-            <ShoppingCart className="w-5 h-5" />
+            <ShoppingCart className="w-4 h-4" />
             <span>Add to Cart</span>
           </button>
         </div>
