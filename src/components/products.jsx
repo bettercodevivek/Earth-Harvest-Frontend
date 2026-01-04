@@ -5,7 +5,8 @@ import {
   ShoppingCart, Check, Star, Heart, Truck, Lock, Package, Gift, Minus, Plus, 
   Shield, Leaf, Award, ChevronDown, ChevronUp, Zap, Clock, Users, 
   ThumbsUp, ThumbsDown, Camera, Share2, Bell, RotateCcw, BadgeCheck, Sparkles,
-  ChevronLeft, ChevronRight
+  ChevronLeft, ChevronRight,
+  Box
 } from 'lucide-react';
 import Navbar from './Navbar'
 import PremiumCheckout from "./CheckoutModals";
@@ -727,17 +728,17 @@ const Product = () => {
                   whileHover={{ scale: 1.02 }}
                 >
                   <label className="flex items-start gap-3 cursor-pointer">
-                    <input 
+                    {/* <input 
                       type="checkbox" 
                       className="mt-1 w-4 h-4 sm:w-5 sm:h-5 rounded border-[#C8945C] text-[#C8945C] focus:ring-[#C8945C] cursor-pointer" 
-                    />
+                    /> */}
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <Gift className="w-4 h-4 sm:w-5 sm:h-5 text-[#C8945C]" />
-                        <span className="font-bold text-gray-900 text-sm sm:text-base">Subscribe & Save 20%</span>
+                        <Box className="w-4 h-4 sm:w-5 sm:h-5 text-[#C8945C]" />
+                        <span className="font-bold text-gray-900 text-sm sm:text-base">Buy in bulk & Save</span>
                       </div>
                       <p className="text-xs sm:text-sm text-gray-600">
-                        AED {((currentPrice?.price || 0) * 0.8).toFixed(2)} every 30 days. Cancel anytime.
+                      28.5% off when ordering 5 packets or more
                       </p>
                     </div>
                   </label>
@@ -925,7 +926,7 @@ const Product = () => {
               </motion.div>
             )}
 
-            {activeTab === 'feeding' && (
+            {/* {activeTab === 'feeding' && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                 <h3 className="text-2xl font-bold">Daily Feeding Guidelines</h3>
 
@@ -962,7 +963,7 @@ const Product = () => {
                   </p>
                 </div>
               </motion.div>
-            )}
+            )} */}
           </div>
         </div>
       </section>
