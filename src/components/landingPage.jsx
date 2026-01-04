@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, ArrowRight, Check, Award, Leaf, Shield, Users, Globe, Star, Heart, Zap, Truck, Lock, Package, Gift, Minus, Plus, ChevronDown, Sparkles, Clock, ThumbsUp } from 'lucide-react';
+import { 
+  ShoppingCart, ArrowRight, Check, Award, Leaf, Shield, Users, Globe, Star, 
+  Heart, Zap, Truck, Lock, Package, Gift, Minus, Plus, ChevronDown, 
+  Sparkles, Clock, ThumbsUp, Play, TrendingUp, BarChart3, ChevronLeft, ChevronRight
+} from 'lucide-react';
 import CountUpStat from './CountUpStat';
 import Navbar from './Navbar'
 import { useAuth } from '../contexts/AuthContext';
 import { apiFetch } from "../utils/api";
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000/api";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000/api";
 
 const Index = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -14,13 +18,12 @@ const Index = () => {
   const [cartCount, setCartCount] = useState(0);
   const [selectedSize, setSelectedSize] = useState('30');
   const [quantity, setQuantity] = useState(1);
-  const { showLoginModal, setShowLoginModal, login } = useAuth();
+  const { showLoginModal, setShowLoginModal } = useAuth();
+  const [imageDirection, setImageDirection] = useState(1);
   
   const { scrollYProgress } = useScroll();
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-  
-  const heroY = useTransform(smoothProgress, [0, 0.3], [0, 100]);
-  const parallaxY = useTransform(smoothProgress, [0, 1], [0, -100]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
 
   const heroImages = [
     {
@@ -35,13 +38,9 @@ const Index = () => {
       src: "https://res.cloudinary.com/dpc7tj2ze/image/upload/v1765534823/20251202_0045_Majestic_Golden_Retriever_simple_compose_01kbdnbbh8fmm8xrwxagafwra8_zexv3d.png",
       alt: "Energetic German Shepherd"
     },
-    {
-      src: "https://res.cloudinary.com/dpc7tj2ze/image/upload/v1765534822/20251207_1329_Himalayan_Dog_Chew_remix_01kbvx2nceetg8v2qk7m1eq9vf_cb6gqa.png",
-      alt: "Active Border Collie"
-    }
   ];
 
-   const ingredientVideoUrl = "https://res.cloudinary.com/dpc7tj2ze/video/upload/v1765639780/IMG_2946_yrrhj7.mp4";
+  const ingredientVideoUrl = "https://res.cloudinary.com/dpc7tj2ze/video/upload/v1765639780/IMG_2946_yrrhj7.mp4";
 
   const product = {
     name: "Earth & Harvest Complete",
@@ -60,60 +59,54 @@ const Index = () => {
 
   const currentPrice = product.sizes.find(s => s.weight === selectedSize);
 
+  // Auto-advance images with smooth transitions
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
+      setImageDirection(1);
       setCurrentHeroImage((prev) => (prev + 1) % heroImages.length);
-    }, 4000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [heroImages.length]);
 
+  const goToImage = (index, direction) => {
+    setImageDirection(direction);
+    setCurrentHeroImage(index);
+  };
+
   const addToCart = async () => {
-  if (!localStorage.getItem("token")) {
-    setShowLoginModal(true);
-    return;
-  }
-
-  try {
-    await apiFetch(`${API_BASE}/cart/add`, {
-      method: "POST",
-      body: JSON.stringify({
-        productId: "65f9e8c2f4c1a8b345456789",           // use real productId later
-        size: selectedSize,
-        quantity
-      })
-    });
-
-    setCartCount(prev => prev + quantity);
-  } catch (err) {
-    console.error("Add to cart failed:", err);
-  }
-};
-
-
-
-useEffect(() => {
-  const fetchCart = async () => {
+    if (!localStorage.getItem("token")) {
+      setShowLoginModal(true);
+      return;
+    }
     try {
-      const res = await apiFetch(`${API_BASE}/cart`);
-      const count = res.data.items.reduce((s, i) => s + i.quantity, 0);
-      setCartCount(count);
-    } catch (e) {
-      setCartCount(0);
+      await apiFetch(`${API_BASE}/cart/add`, {
+        method: "POST",
+        body: JSON.stringify({
+          productId: "65f9e8c2f4c1a8b345456789",
+          size: selectedSize,
+          quantity
+        })
+      });
+      setCartCount(prev => prev + quantity);
+    } catch (err) {
+      console.error("Add to cart failed:", err);
     }
   };
 
-  if (localStorage.getItem("token")) {
-    fetchCart();
-  }
-}, []);
-
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const res = await apiFetch(`${API_BASE}/cart`);
+        const count = res.data.items.reduce((s, i) => s + i.quantity, 0);
+        setCartCount(count);
+      } catch (e) {
+        setCartCount(0);
+      }
+    };
+    if (localStorage.getItem("token")) {
+      fetchCart();
+    }
+  }, []);
 
   const stats = [
     { value: 1000, label: "Happy Dogs", icon: Heart, suffix: "+" },
@@ -127,39 +120,28 @@ useEffect(() => {
       text: "After 3 weeks on Earth & Harvest Complete, Max's coat is shinier than ever. His energy levels are through the roof, and he actually gets excited for meal time now!",
       author: "Dr. Sarah Mitchell",
       role: "Veterinarian & Golden Retriever Owner",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop",
       rating: 5
     },
     {
       text: "I've recommended Earth & Harvest to over 500 clients this year. The results speak for themselves - healthier coats, better digestion, and more vitality.",
       author: "Marcus Chen",
       role: "Professional Dog Trainer",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop",
       rating: 5
     },
     {
       text: "Switching our entire rescue facility to Earth & Harvest reduced health issues by 40%. It's now the only food we trust for our 200+ dogs.",
       author: "Jennifer Rodriguez",
       role: "Rescue Facility Director",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop",
       rating: 5
     },
-    {
-      text: "My picky eater finally loves his food! Earth & Harvest Complete changed everything. Worth every penny for the peace of mind.",
-      author: "David Thompson",
-      role: "French Bulldog Dad",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop",
-      rating: 5
-    }
   ];
 
- const ingredients = [
-  { name: "Yak Milk", benefit: "Rich in protein & calcium", icon: "🥛" },
-  { name: "Himalayan Pink Salt", benefit: "Natural minerals & electrolytes", icon: "🧂" },
-  { name: "Lime Juice", benefit: "Supports digestion & immunity", icon: "🍋" },
-  { name: "Free Range Cow Milk", benefit: "Calcium & essential nutrients", icon: "🐄" },
-];
-
+  const ingredients = [
+    { name: "Yak Milk", benefit: "Rich in protein & calcium", icon: "🥛" },
+    { name: "Himalayan Pink Salt", benefit: "Natural minerals & electrolytes", icon: "🧂" },
+    { name: "Lime Juice", benefit: "Supports digestion & immunity", icon: "🍋" },
+    { name: "Free Range Cow Milk", benefit: "Calcium & essential nutrients", icon: "🐄" },
+  ];
 
   const benefits = [
     {
@@ -240,183 +222,239 @@ useEffect(() => {
   const [openFaq, setOpenFaq] = useState(null);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Promo Banner */}
-      <div className="bg-[#C8945C] text-white py-2 px-4 text-center text-xs sm:text-sm font-semibold">
-        <span className="hidden sm:inline">🎁 LAUNCH SPECIAL: </span>
-        FREE SHIPPING ON EVERY ORDER ! •
+    <div className="min-h-screen bg-white overflow-x-hidden">
+      {/* Top Announcement Bar */}
+      <div className="bg-gradient-to-r from-[#C8945C] via-[#B8844C] to-[#C8945C] text-white py-3 px-4 text-center text-xs sm:text-sm font-medium relative overflow-hidden">
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+          animate={{ x: ['-100%', '200%'] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+        />
+        <span className="relative z-10">
+          <span className="hidden sm:inline">🎁 LAUNCH SPECIAL: </span>
+          FREE SHIPPING ON EVERY ORDER • NO MINIMUM PURCHASE REQUIRED
+        </span>
       </div>
 
       <Navbar cartCount={cartCount} />
 
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center">
-        <div className="absolute inset-0 bg-gradient-to-br from-secondary/50 via-background to-background" />
-        
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-20 relative z-10 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+      {/* Modern Hero Section with Advanced Animations */}
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-[#FAF7F2] via-white to-[#F8F2EC]">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute top-20 left-10 w-72 h-72 bg-[#C8945C]/10 rounded-full blur-3xl"
+            animate={{
+              x: [0, 100, 0],
+              y: [0, 50, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute bottom-20 right-10 w-96 h-96 bg-[#B8844C]/10 rounded-full blur-3xl"
+            animate={{
+              x: [0, -80, 0],
+              y: [0, -60, 0],
+              scale: [1, 1.3, 1],
+            }}
+            transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 relative z-10 w-full">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             {/* Left Content */}
             <motion.div 
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
               className="space-y-6 lg:space-y-8 order-2 lg:order-1"
             >
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="inline-flex items-center space-x-1 bg-accent/20 text-accent px-3 py-1 rounded-full text-xs font-bold">
-                  <Star className="w-3 h-3 fill-accent" />
+              {/* Badges */}
+              <motion.div 
+                className="flex flex-wrap items-center gap-3"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <span className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm border border-[#C8945C]/20 text-[#C8945C] px-4 py-2 rounded-full text-xs font-bold shadow-sm">
+                  <Star className="w-3.5 h-3.5 fill-[#C8945C]" />
                   <span>BESTSELLER</span>
                 </span>
-                <span className="inline-flex items-center space-x-1 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold">
-                  <Award className="w-3 h-3" />
+                <span className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm border border-[#C8945C]/20 text-[#C8945C] px-4 py-2 rounded-full text-xs font-bold shadow-sm">
+                  <Award className="w-3.5 h-3.5" />
                   <span>#1 VET RECOMMENDED</span>
                 </span>
-              </div>
+              </motion.div>
               
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.1]">
-                {product.tagline.split(' ').slice(0, 3).join(' ')}
-                <span className="block text-primary">{product.tagline.split(' ').slice(3).join(' ')}</span>
-              </h1>
-              
-              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl">
-                {product.description}
-              </p>
-
-              {/* Rating */}
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="flex items-center space-x-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-accent fill-accent text-amber-700 fill-amber-700" />
-                  ))}
-                </div>
-                <span className="font-bold text-foreground">{product.rating}</span>
-                <span className="text-muted-foreground">({product.reviews.toLocaleString()} reviews)</span>
+              <div className="space-y-4">
+                <motion.h1 
+                  className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-gray-900 leading-tight"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  From the Himalayas to Dubai 
+                  <span className="block text-[#C8945C] mt-2">100% natural chews for Dogs</span>
+                </motion.h1>
+                
+                <motion.p 
+                  className="text-lg sm:text-xl lg:text-2xl text-gray-600 leading-relaxed max-w-2xl font-light"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  {product.description}
+                </motion.p>
               </div>
 
-              {/* Size Selection
-              <div className="space-y-3">
-                <p className="font-semibold text-foreground">Select Size:</p>
-                <div className="flex flex-wrap gap-3">
-                  {product.sizes.map((size) => (
-                    <button
-                      key={size.weight}
-                      onClick={() => setSelectedSize(size.weight)}
-                      className={`px-4 sm:px-6 py-3 rounded-xl hover:cursor-pointer font-semibold transition-all text-sm sm:text-base ${
-                        selectedSize === size.weight
-                          ? 'bg-primary text-primary-foreground shadow-premium ring-2 ring-primary ring-offset-2'
-                          : 'bg-card text-foreground border border-border hover:border-primary'
-                      }`}
-                    >
-                      {size.weight} lbs
-                    </button>
-                  ))}
-                </div>
-              </div> */}
-
-              {/* Price & Add to Cart */}
-              <div className="bg-[#F8F2EC] border border-border rounded-2xl p-4 sm:p-6 space-y-4">
-                <div className="flex flex-wrap items-baseline gap-3">
-                  <span className="text-3xl sm:text-4xl font-bold text-foreground">${currentPrice?.price}</span>
-                  <span className="text-lg sm:text-xl text-muted-foreground line-through">${currentPrice?.oldPrice}</span>
-                  <span className="bg-accent text-primary-foreground px-2 py-1 rounded text-xs font-bold">
-                    SAVE {Math.round(((currentPrice?.oldPrice || 0) - (currentPrice?.price || 0)) / (currentPrice?.oldPrice || 1) * 100)}%
-                  </span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-3">
-                  {/* Quantity */}
-                  <div className="flex items-center border border-border rounded-xl">
-                    <button 
-                      onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                      className="p-3 hover:bg-muted transition-colors"
-                    >
-                      <Minus className="w-4 h-4" />
-                    </button>
-                    <span className="px-4 sm:px-6 font-semibold">{quantity}</span>
-                    <button 
-                      onClick={() => setQuantity(q => q + 1)}
-                      className="p-3 hover:bg-muted transition-colors"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
+              {/* Rating & Social Proof */}
+              <motion.div 
+                className="flex flex-wrap items-center gap-4 sm:gap-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 fill-amber-500" />
+                    ))}
                   </div>
-
-                  <button 
-                    onClick={addToCart}
-                    className="flex-1 bg-[#C8945C] hover:bg-accent text-primary-foreground py-3 sm:py-4 px-6 rounded-xl font-bold text-base sm:text-lg transition-all shadow-premium hover:shadow-elevated hover:scale-[1.02] flex items-center justify-center space-x-2"
-                  >
-                    <ShoppingCart className="w-5 h-5" />
-                    <span>Add to Cart</span>
-                  </button>
+                  <div className="ml-2">
+                    <span className="text-xl sm:text-2xl font-bold text-gray-900">{product.rating}</span>
+                    <span className="text-gray-500 text-sm ml-1">/5</span>
+                  </div>
                 </div>
-
-                <div className="flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm text-muted-foreground pt-2">
-                  <span className="flex items-center space-x-1">
-                    <Truck className="w-4 h-4 text-primary" />
-                    <span>Free Shipping</span>
-                  </span>
-                  <span className="flex items-center space-x-1">
-                    <Lock className="w-4 h-4 text-primary" />
-                    <span>90-Day Guarantee</span>
-                  </span>
+                <div className="h-6 w-px bg-gray-300 hidden sm:block" />
+                <div className="hidden sm:block">
+                  <p className="text-sm text-gray-500">Trusted by</p>
+                  <p className="text-base sm:text-lg font-semibold text-gray-900">{product.reviews.toLocaleString()}+ Pet Parents</p>
                 </div>
-              </div>
+              </motion.div>
+
+              {/* CTA Buttons */}
+              <motion.div 
+                className="flex flex-col sm:flex-row gap-4 pt-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+              >
+                <Link
+                  to="/product"
+                  className="group relative inline-flex items-center justify-center px-6 sm:px-8 py-4 bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden"
+                >
+                  <span className="relative z-10 flex items-center gap-2">
+                    Shop Now
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-r from-[#B8844C] to-[#C8945C]"
+                    initial={{ x: '-100%' }}
+                    whileHover={{ x: 0 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </Link>
+                <button className="inline-flex items-center justify-center px-6 sm:px-8 py-4 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:border-[#C8945C] hover:text-[#C8945C] transition-all duration-300">
+                  <Play className="w-5 h-5 mr-2" />
+                  <span className="hidden sm:inline">Watch Video</span>
+                  <span className="sm:hidden">Video</span>
+                </button>
+              </motion.div>
+
+              {/* Trust Indicators */}
+              <motion.div 
+                className="flex flex-wrap items-center gap-4 sm:gap-6 pt-4 text-xs sm:text-sm text-gray-600"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7 }}
+              >
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+                  <span>Free Shipping</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+                  <span>90-Day Guarantee</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+                  <span>Vet Approved</span>
+                </div>
+              </motion.div>
             </motion.div>
 
-            {/* Right - Image Slideshow with Ken Burns Effect */}
+            {/* Right - Hero Image with Advanced Slide Animation */}
             <motion.div 
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative order-2 lg:order-2"
+              className="relative order-1 lg:order-2"
             >
-              <motion.div 
-                style={{ y: heroY }}
-                className="absolute -inset-8 bg-primary/20 rounded-[3rem] blur-3xl"
-              />
-              <div className="relative rounded-2xl lg:rounded-3xl overflow-hidden shadow-elevated">
-                <div className="relative aspect-[4/5] sm:aspect-[3/4]">
-                  <AnimatePresence mode="wait">
-                    <motion.img
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+                <div className="aspect-[4/5] sm:aspect-square relative overflow-hidden">
+                  <AnimatePresence mode="wait" custom={imageDirection}>
+                    <motion.div
                       key={currentHeroImage}
-                      src={heroImages[currentHeroImage].src}
-                      alt={heroImages[currentHeroImage].alt}
-                      initial={{ opacity: 0, scale: 1.2 }}
+                      custom={imageDirection}
+                      initial={{ 
+                        opacity: 0, 
+                        x: imageDirection > 0 ? 300 : -300,
+                        scale: 0.8,
+                        rotateY: imageDirection > 0 ? 45 : -45
+                      }}
                       animate={{ 
                         opacity: 1, 
+                        x: 0,
                         scale: 1,
-                        transition: { 
-                          opacity: { duration: 0.8, ease: "easeOut" },
-                          scale: { duration: 4, ease: "linear" }
-                        }
+                        rotateY: 0
                       }}
                       exit={{ 
                         opacity: 0, 
-                        transition: { duration: 0.5 }
+                        x: imageDirection > 0 ? -300 : 300,
+                        scale: 0.8,
+                        rotateY: imageDirection > 0 ? -45 : 45
                       }}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
+                      transition={{ 
+                        duration: 0.6,
+                        ease: [0.4, 0, 0.2, 1]
+                      }}
+                      className="absolute inset-0"
+                    >
+                      <img
+                        src={heroImages[currentHeroImage].src}
+                        alt={heroImages[currentHeroImage].alt}
+                        className="w-full h-full object-cover"
+                      />
+                    </motion.div>
                   </AnimatePresence>
                   
-                  {/* Progress Bar */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-background/20">
-                    <motion.div 
-                      key={currentHeroImage}
-                      initial={{ width: "0%" }}
-                      animate={{ width: "100%" }}
-                      transition={{ duration: 4, ease: "linear" }}
-                      className="h-full bg-primary"
-                    />
-                  </div>
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
                   
-                  {/* Slideshow Dots */}
+                  {/* Navigation Arrows */}
+                  <button
+                    onClick={() => goToImage((currentHeroImage - 1 + heroImages.length) % heroImages.length, -1)}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all z-10 group"
+                  >
+                    <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 group-hover:text-[#C8945C] transition-colors" />
+                  </button>
+                  <button
+                    onClick={() => goToImage((currentHeroImage + 1) % heroImages.length, 1)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all z-10 group"
+                  >
+                    <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 group-hover:text-[#C8945C] transition-colors" />
+                  </button>
+                  
+                  {/* Image Navigation Dots */}
                   <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
                     {heroImages.map((_, idx) => (
                       <button
                         key={idx}
-                        onClick={() => setCurrentHeroImage(idx)}
+                        onClick={() => goToImage(idx, idx > currentHeroImage ? 1 : -1)}
                         className={`h-2 rounded-full transition-all ${
-                          idx === currentHeroImage ? 'bg-primary w-8' : 'bg-background/60 w-2 hover:bg-background'
+                          idx === currentHeroImage ? 'bg-white w-8 shadow-lg' : 'bg-white/50 w-2 hover:bg-white/75'
                         }`}
                       />
                     ))}
@@ -424,20 +462,20 @@ useEffect(() => {
                 </div>
               </div>
 
-              {/* Floating Badge */}
-              <motion.div 
+              {/* Floating Stats Card */}
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
-                className="absolute bg-[#F8F2EC] -bottom-4 -left-3 lg:-left-4 sm:bottom-8 sm:-left-8 bg-card border border-border rounded-2xl p-4 shadow-elevated"
+                className="absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 bg-white rounded-2xl p-4 sm:p-6 shadow-xl border border-gray-100 hidden sm:block"
               >
-                <div className="flex items-center space-x-3">
-                  <div className="w-4 h-4 lg:w-12 lg:h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                    <Users className="w-6 h-6 text-primary" />
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-[#C8945C] to-[#B8844C] rounded-xl flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
                   <div>
-                    <p className="font-bold text-foreground">1000+ Dogs</p>
-                    <p className="text-sm text-muted-foreground">Fed & Thriving</p>
+                    <p className="text-xl sm:text-2xl font-bold text-gray-900">1,000+</p>
+                    <p className="text-xs sm:text-sm text-gray-600">Happy Dogs</p>
                   </div>
                 </div>
               </motion.div>
@@ -447,9 +485,9 @@ useEffect(() => {
       </section>
 
       {/* Trust Bar */}
-      <section className="py-6 sm:py-8 bg-[#4A3A2A]">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 lg:ml-40">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <section className="py-8 sm:py-10 bg-gray-50 border-y border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {guarantees.map((item, idx) => (
               <motion.div
                 key={idx}
@@ -457,12 +495,14 @@ useEffect(() => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="flex flex-col sm:flex-row items-center text-center sm:text-left space-y-2 sm:space-y-0 sm:space-x-3"
+                className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4 text-center sm:text-left"
               >
-                <item.icon className="w-8 h-8 text-[#C8945C]" />
+                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-[#C8945C] to-[#B8844C] rounded-xl flex items-center justify-center flex-shrink-0">
+                  <item.icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                </div>
                 <div>
-                  <p className="font-bold text-white text-sm">{item.title}</p>
-                  <p className="text-xs text-white">{item.desc}</p>
+                  <p className="font-semibold text-gray-900 text-sm sm:text-base">{item.title}</p>
+                  <p className="text-xs sm:text-sm text-gray-600 mt-1">{item.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -470,10 +510,10 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* Stats with Counting Animation */}
-      <section className="py-12 sm:py-16 bg-secondary/30">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+      {/* Stats Section */}
+      <section className="py-16 sm:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             {stats.map((stat, idx) => (
               <CountUpStat
                 key={idx}
@@ -489,22 +529,24 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* Benefits */}
-      <section id="benefits" className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-background">
-        <div className="max-w-[1400px] mx-auto">
+      {/* Benefits Section - Modern Grid */}
+      <section id="benefits" className="py-16 sm:py-24 bg-gradient-to-b from-white to-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12 lg:mb-16"
+            className="text-center mb-12 sm:mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">Why Dog Parents Love Earth & Harvest</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Science-backed nutrition with ingredients you can actually pronounce
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+              Why Choose Earth & Harvest
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+              Science-backed nutrition with ingredients you can trust
             </p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-6 lg:mx-36">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {benefits.map((benefit, idx) => (
               <motion.div
                 key={idx}
@@ -512,35 +554,38 @@ useEffect(() => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="bg-card rounded-2xl p-6 lg:p-8 shadow-lg hover:shadow-premium transition-all hover:-translate-y-2 border border-border text-center"
+                className="group bg-white rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#C8945C]/20 hover:-translate-y-2"
               >
-                <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-5 mx-auto">
-                  <benefit.icon className="w-7 h-7 text-primary text-[#C8945C] fill-[#C8945C]" />
+                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-[#C8945C]/10 to-[#B8844C]/10 rounded-2xl flex items-center justify-center mb-5 sm:mb-6 mx-auto group-hover:scale-110 transition-transform">
+                  <benefit.icon className="w-7 h-7 sm:w-8 sm:h-8 text-[#C8945C]" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground mb-2">{benefit.title}</h3>
-                <p className="text-sm text-muted-foreground">{benefit.description}</p>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 text-center">{benefit.title}</h3>
+                <p className="text-sm sm:text-base text-gray-600 leading-relaxed text-center">{benefit.description}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-           <section id="ingredients" className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-secondary/30">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+      {/* Ingredients Section - Modern Split */}
+      <section id="ingredients" className="py-16 sm:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <motion.div 
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
+              className="order-2 lg:order-1"
             >
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-                Real Food.<br />Real Results.
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
+                Real Ingredients.<br />
+                <span className="text-[#C8945C]">Real Results.</span>
               </h2>
-              <p className="text-lg text-muted-foreground mb-8 max-w-lg">
+              <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed">
                 Every ingredient is hand-selected for quality and purpose. No fillers, no by-products, no artificial anything.
               </p>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
                 {ingredients.map((ing, idx) => (
                   <motion.div
                     key={idx}
@@ -548,168 +593,131 @@ useEffect(() => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: idx * 0.1 }}
-                    className="bg-card border border-border rounded-xl p-4 hover:shadow-lg transition-all"
+                    className="bg-gray-50 rounded-xl p-4 sm:p-5 border border-gray-100 hover:border-[#C8945C]/30 transition-colors"
                   >
-                    <span className="text-2xl mb-2 block">{ing.icon}</span>
-                    <h4 className="font-bold text-foreground text-sm">{ing.name}</h4>
-                    <p className="text-xs text-muted-foreground">{ing.benefit}</p>
+                    <span className="text-2xl sm:text-3xl mb-2 sm:mb-3 block">{ing.icon}</span>
+                    <h4 className="font-bold text-gray-900 mb-1 text-sm sm:text-base">{ing.name}</h4>
+                    <p className="text-xs sm:text-sm text-gray-600">{ing.benefit}</p>
                   </motion.div>
                 ))}
               </div>
 
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-2 sm:gap-3">
                 {['AAFCO Certified', 'Non-GMO', 'Human Grade', 'No Fillers'].map((badge) => (
-                  <span key={badge} className="inline-flex items-center space-x-1 bg-[#C8945C] text-primary px-3 py-1.5 rounded-full text-xs font-semibold">
-                    <Check className="w-3 h-3" />
+                  <span key={badge} className="inline-flex items-center gap-2 bg-[#C8945C] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold">
+                    <Check className="w-3 h-3 sm:w-4 sm:h-4" />
                     <span>{badge}</span>
                   </span>
                 ))}
               </div>
             </motion.div>
 
-            {/* Ingredient Video */}
-<motion.div
-  initial={{ opacity: 0, x: 50 }}
-  whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: true }}
-  className="relative flex justify-center"
->
-  <div className="relative rounded-2xl shadow-elevated overflow-hidden aspect-[9/16] w-[280px] sm:w-[320px] md:w-[360px]">
-    <video
-      src={ingredientVideoUrl}
-      autoPlay
-      muted
-      loop
-      playsInline
-      className="absolute inset-0 w-full h-full object-cover"
-    />
-  </div>
-
-  {/* <div className="mt-4 text-center">
-    <p className="font-bold text-foreground text-lg">47 Essential Nutrients</p>
-    <p className="text-sm text-muted-foreground">In every bowl</p>
-  </div> */}
-</motion.div>
-
+            {/* Video */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative order-1 lg:order-2"
+            >
+              <div className="relative rounded-2xl shadow-2xl overflow-hidden aspect-[9/16] w-full max-w-sm mx-auto">
+                <video
+                  src={ingredientVideoUrl}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-
-      {/* Transformation Journey Section (Replaces Video) */}
-      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-foreground">
-        <div className="max-w-[1200px] mx-auto">
+      {/* Transformation Journey */}
+      <section className="py-16 sm:py-24 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12 lg:mb-16"
+            className="text-center mb-12 sm:mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-background mb-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
               The Earth & Harvest Transformation
             </h2>
-            <p className="text-lg text-muted max-w-2xl mx-auto">
-              Watch your dog transform from the very first week. Here's what to expect on this journey.
+            <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
+              Watch your dog transform from the very first week
             </p>
           </motion.div>
           
-          <div className="relative">
-            {/* Connection Line */}
-            <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-primary/30 -translate-y-1/2" />
-            
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4">
-              {transformationSteps.map((step, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.15 }}
-                  className="relative bg-[#F8F2EC] text-black rounded-2xl p-6 border border-border text-center group hover:-translate-y-2 transition-all"
-                >
-                  {/* Step Number */}
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#C8945C] rounded-full flex items-center justify-center text-xs font-bold text-primary-foreground">
-                    {idx + 1}
-                  </div>
-                  
-                  <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 mt-2 group-hover:bg-primary/20 transition-colors">
-                    <step.icon className="w-8 h-8 text-primary" />
-                  </div>
-                  
-                  <span className="inline-block bg-[#C8945C] text-primary px-3 py-1 rounded-full text-xs font-bold mb-3">
-                    {step.day}
-                  </span>
-                  
-                  <h3 className="text-lg font-bold text-foreground mb-2">{step.title}</h3>
-                  <p className="text-sm text-muted-foreground">{step.description}</p>
-                </motion.div>
-              ))}
-            </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {transformationSteps.map((step, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.15 }}
+                className="relative bg-white/5 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-white/10 hover:bg-white/10 transition-all"
+              >
+                <div className="absolute -top-3 sm:-top-4 left-6 w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-[#C8945C] to-[#B8844C] rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">
+                  {idx + 1}
+                </div>
+                
+                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-[#C8945C]/20 to-[#B8844C]/20 rounded-xl flex items-center justify-center mb-4 mt-2">
+                  <step.icon className="w-6 h-6 sm:w-7 sm:h-7 text-[#C8945C]" />
+                </div>
+                
+                <span className="inline-block bg-[#C8945C] text-white px-3 py-1 rounded-full text-xs font-bold mb-3">
+                  {step.day}
+                </span>
+                
+                <h3 className="text-base sm:text-lg font-bold mb-2">{step.title}</h3>
+                <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">{step.description}</p>
+              </motion.div>
+            ))}
           </div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mt-12"
-          >
-            <Link 
-              to="/product"
-              className="inline-flex items-center space-x-2 bg-[#C8945C] hover:bg-accent text-primary-foreground px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-premium hover:shadow-elevated hover:scale-105"
-            >
-              <span>Start Your Dog's Transformation</span>
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-          </motion.div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section id="reviews" className="py-16 sm:py-20 lg:py-24 bg-background px-4 sm:px-6 lg:px-12">
-        <div className="max-w-[1400px] mx-auto">
+      {/* Video Testimonials */}
+      <section id="video-testimonials" className="py-16 sm:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-12 sm:mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-              1000+ Happy Pet Parents
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+              Real Stories from Real Pet Parents
             </h2>
-            <div className="flex items-center justify-center gap-2">
-              <div className="flex">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-6 h-6 text-accent fill-accent fill-amber-700 text-amber-700" />
-                ))}
-              </div>
-              <span className="font-bold text-foreground">4.9/5</span>
-              <span className="text-muted-foreground">average rating</span>
-            </div>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+              Watch how Earth & Harvest has transformed the lives of dogs and their families
+            </p>
           </motion.div>
-          
-          {/* Testimonial Cards */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {testimonials.map((t, idx) => (
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {[1, 2, 3].map((idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="bg-card border border-border rounded-2xl p-6 shadow-lg"
+                className="group relative bg-gray-900 rounded-2xl overflow-hidden aspect-video cursor-pointer"
               >
-                <div className="flex mb-3">
-                  {[...Array(t.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-accent fill-accent fill-amber-700 text-amber-700" />
-                  ))}
-                </div>
-                <p className="text-sm text-foreground mb-4 leading-relaxed">"{t.text}"</p>
-                <div className="flex items-center space-x-3">
-                  <img src={t.image} alt={t.author} className="w-10 h-10 rounded-full object-cover" />
-                  <div>
-                    <p className="font-semibold text-foreground text-sm">{t.author}</p>
-                    <p className="text-xs text-muted-foreground">{t.role}</p>
+                <div className="absolute inset-0 bg-gradient-to-br from-[#C8945C]/20 to-[#B8844C]/20" />
+                <div className="absolute inset-0 flex items-center justify-center z-10">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/90 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl">
+                    <Play className="w-8 h-8 sm:w-10 sm:h-10 text-[#C8945C] ml-1" />
                   </div>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-10 bg-gradient-to-t from-black/80 to-transparent">
+                  <p className="text-white font-semibold text-sm sm:text-base">Customer Testimonial {idx}</p>
+                  <p className="text-white/80 text-xs sm:text-sm">Watch their story</p>
                 </div>
               </motion.div>
             ))}
@@ -717,21 +725,84 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section id="faq" className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-secondary/30">
-        <div className="max-w-[800px] mx-auto">
+      {/* Written Testimonials */}
+      <section id="reviews" className="py-16 sm:py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-12 sm:mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-              Questions? We've Got Answers
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+              Trusted by Thousands of Pet Parents
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+              Real reviews from verified customers who've seen the difference
+            </p>
+          </motion.div>
+          
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {testimonials.map((t, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-lg transition-shadow border border-gray-100"
+              >
+                <div className="flex mb-4">
+                  {[...Array(t.rating)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 fill-amber-500" />
+                  ))}
+                </div>
+                <p className="text-gray-700 mb-6 leading-relaxed text-sm sm:text-base">"{t.text}"</p>
+                <div className="flex items-center gap-3 sm:gap-4 pt-6 border-t border-gray-100">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-[#C8945C] to-[#B8844C] rounded-full flex items-center justify-center text-white font-semibold text-sm sm:text-base">
+                    {t.author.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900 text-sm sm:text-base">{t.author}</p>
+                    <p className="text-xs sm:text-sm text-gray-600">{t.role}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mt-8 sm:mt-12"
+          >
+            <Link 
+              to="/product#reviews"
+              className="inline-flex items-center gap-2 text-[#C8945C] font-semibold hover:underline text-base sm:text-lg"
+            >
+              <span>Read All Reviews</span>
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="py-16 sm:py-24 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12 sm:mb-16"
+          >
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+              Frequently Asked Questions
             </h2>
           </motion.div>
 
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {faqs.map((faq, idx) => (
               <motion.div
                 key={idx}
@@ -739,14 +810,14 @@ useEffect(() => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="bg-[#F8F2EC] border border-border rounded-xl"
+                className="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden"
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                  className="w-full flex items-center justify-between p-5 text-left hover:bg-muted/50 transition-colors"
+                  className="w-full flex items-center justify-between p-4 sm:p-6 text-left hover:bg-gray-100 transition-colors"
                 >
-                  <span className="font-semibold text-foreground pr-4">{faq.q}</span>
-                  <ChevronDown className={`w-5 h-5 text-primary flex-shrink-0 transition-transform ${openFaq === idx ? 'rotate-180' : ''}`} />
+                  <span className="font-semibold text-gray-900 pr-4 text-sm sm:text-base">{faq.q}</span>
+                  <ChevronDown className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform ${openFaq === idx ? 'rotate-180' : ''}`} />
                 </button>
                 <AnimatePresence>
                   {openFaq === idx && (
@@ -757,7 +828,7 @@ useEffect(() => {
                       transition={{ duration: 0.3 }}
                       className="overflow-hidden"
                     >
-                      <p className="px-5 pb-5 text-muted-foreground">{faq.a}</p>
+                      <p className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-600 leading-relaxed text-sm sm:text-base">{faq.a}</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -768,55 +839,36 @@ useEffect(() => {
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-primary">
-        <div className="max-w-[900px] mx-auto text-center">
+      <section className="py-16 sm:py-24 bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-foreground mb-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
               Give Your Dog The Best
             </h2>
-            <p className="text-lg text-primary-foreground/80 mb-8 max-w-xl mx-auto">
-              Join 1000 + dog parents who made the switch. 90-day money-back guarantee.
+            <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl mx-auto">
+              Join 1,000+ dog parents who made the switch. 90-day money-back guarantee.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 to="/product"
-                className="bg-[#C8945C] hover:bg-muted text-foreground px-8 sm:px-12 py-4 rounded-xl font-bold text-lg transition-all shadow-elevated hover:scale-105 inline-flex items-center justify-center space-x-2"
+                className="inline-flex items-center justify-center gap-2 bg-white text-[#C8945C] px-6 sm:px-8 py-4 rounded-xl font-semibold text-base sm:text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-105"
               >
                 <span>Shop Now - 25% OFF</span>
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
             
-            <p className="text-primary-foreground/70 mt-6 text-sm">
-              Free shipping • 10-day guarantee • Cancel anytime
+            <p className="text-white/80 mt-6 sm:mt-8 text-sm sm:text-base">
+              Free shipping • 90-day guarantee • Cancel anytime
             </p>
           </motion.div>
         </div>
       </section>
-
-      {/* <Footer /> */}
-
-      {/* Mobile Bottom CTA */}
-      {/* <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-[#C8945C] border-t border-border shadow-elevated z-50 p-3">
-        <div className="flex items-center gap-3">
-          <div className="flex-1">
-            <p className="font-bold text-foreground text-sm">${currentPrice?.price}</p>
-            <p className="text-xs text-muted-foreground line-through">${currentPrice?.oldPrice}</p>
-          </div>
-          <button 
-            onClick={addToCart}
-            className="flex-[2] bg-primary hover:bg-accent text-primary-foreground py-3 rounded-xl font-bold transition-all flex items-center justify-center space-x-2"
-          >
-            <ShoppingCart className="w-4 h-4" />
-            <span>Add to Cart</span>
-          </button>
-        </div>
-      </div> */}
     </div>
   );
 };
