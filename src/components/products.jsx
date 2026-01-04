@@ -443,7 +443,7 @@ const Product = () => {
       <Navbar cartCount={cartCount} />
       
       {/* Modern Product Section with Creative Layout */}
-      <section className="py-6 sm:py-12 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 via-white to-white">
+      <section className="pt-32 pb-6 sm:py-12 lg:pt-32 lg:pb-6 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 via-white to-white">
         <div className="max-w-7xl mx-auto">
           {/* Mobile-First Layout */}
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16">
