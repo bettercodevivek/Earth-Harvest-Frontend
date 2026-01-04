@@ -15,7 +15,7 @@ const Footer = () => {
 
           {/* Logo */}
           <img 
-            src="https://i.ibb.co/99XT05ZF/New-Logo-Tinny-transparent.png" 
+            src="https://res.cloudinary.com/dpc7tj2ze/image/upload/v1767539648/New_Logo_Tinny_transparent_v6if1w.png" 
             alt="Earth & Harvest Logo"
             className="w-32 h-12 object-contain"
           />
