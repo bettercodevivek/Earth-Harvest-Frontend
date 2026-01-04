@@ -40,6 +40,31 @@ const Index = () => {
     },
   ];
 
+  const videoTestimonials = [
+    {
+      id: 1,
+      name: "Mark’s Journey",
+      description: "How Earth & Harvest improved digestion and energy",
+      videoUrl: "https://res.cloudinary.com/dpc7tj2ze/video/upload/v1767530853/VID-20260104-WA0002_uhnbbd.mp4",
+      thumbnail: "https://res.cloudinary.com/your-cloud/image/upload/v1/max-thumb.jpg"
+    },
+    {
+      id: 2,
+      name: "Bella’s Journey",
+      description: "From picky eater to happy chewer",
+      videoUrl: "https://res.cloudinary.com/dpc7tj2ze/video/upload/v1767530852/VID-20251228-WA0006_yg7xbs.mp4",
+      thumbnail: "https://res.cloudinary.com/your-cloud/image/upload/v1/bella-thumb.jpg"
+    },
+    {
+      id: 3,
+      name: "Julia’s Journey",
+      description: "From picky eater to happy chewer",
+      videoUrl: "https://res.cloudinary.com/dpc7tj2ze/video/upload/v1767532309/VID-20260104-WA0008_2_imjmoo.mp4",
+      thumbnail: "https://res.cloudinary.com/your-cloud/image/upload/v1/bella-thumb.jpg"
+    }
+  ];
+  
+
   const ingredientVideoUrl = "https://res.cloudinary.com/dpc7tj2ze/video/upload/v1765639780/IMG_2946_yrrhj7.mp4";
 
   const product = {
@@ -689,48 +714,68 @@ const Index = () => {
         </div>
       </section> */}
 
-      {/* Video Testimonials */}
-      <section id="video-testimonials" className="py-16 sm:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12 sm:mb-16"
-          >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-              Real Stories from Real Pet Parents
-            </h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
-              Watch how Earth & Harvest has transformed the lives of dogs and their families
-            </p>
-          </motion.div>
+{/* Video Testimonials */}
+<section id="video-testimonials" className="py-16 sm:py-24 bg-white">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {[1, 2, 3].map((idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="group relative bg-gray-900 rounded-2xl overflow-hidden aspect-video cursor-pointer"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-[#C8945C]/20 to-[#B8844C]/20" />
-                <div className="absolute inset-0 flex items-center justify-center z-10">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/90 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl">
-                    <Play className="w-8 h-8 sm:w-10 sm:h-10 text-[#C8945C] ml-1" />
-                  </div>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-10 bg-gradient-to-t from-black/80 to-transparent">
-                  <p className="text-white font-semibold text-sm sm:text-base">Customer Testimonial {idx}</p>
-                  <p className="text-white/80 text-xs sm:text-sm">Watch their story</p>
-                </div>
-              </motion.div>
-            ))}
+    {/* Heading */}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="text-center mb-12 sm:mb-16"
+    >
+      <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+        Real Stories from Real Pet Parents
+      </h2>
+      <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+        Watch how Earth & Harvest has transformed the lives of dogs and their families
+      </p>
+    </motion.div>
+
+    {/* Portrait Video Grid */}
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 place-items-center">
+      {videoTestimonials.map((video, idx) => (
+        <motion.div
+          key={video.id}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: idx * 0.1 }}
+          className="relative w-full max-w-[320px] sm:max-w-[300px] lg:max-w-[320px]
+                     aspect-[9/16] rounded-2xl overflow-hidden shadow-xl bg-black"
+        >
+          {/* Video */}
+          <video
+            src={video.videoUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+
+          {/* Soft Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
+
+          {/* Text Overlay */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
+            <p className="text-white font-semibold text-sm">
+              {video.name}
+            </p>
+            <p className="text-white/80 text-xs mt-1">
+              {video.description}
+            </p>
           </div>
-        </div>
-      </section>
+        </motion.div>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+
 
       {/* Written Testimonials */}
       <section id="reviews" className="py-16 sm:py-24 bg-gray-50">
