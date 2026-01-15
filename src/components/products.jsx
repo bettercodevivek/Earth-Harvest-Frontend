@@ -40,9 +40,13 @@ const Product = () => {
   const [address, setAddress] = useState({
     name: "",
     phone: "",
+    email: "",
     street: "",
     city: "",
-    zipcode: ""
+    state: "",
+    country: "United Arab Emirates",
+    zipcode: "",
+    deliveryInstructions: ""
   });
   const [imageDirection, setImageDirection] = useState(1);
   const [touchStart, setTouchStart] = useState(null);
@@ -177,21 +181,24 @@ const Product = () => {
 
   // Transform backend product data to match frontend format
   const productData = {
-    name: product.productName || product.name,
+    _id: product?._id, // Include the _id field
+    id: product?._id, // Also include as id for compatibility
+    name: product?.productName || product?.name,
+    productName: product?.productName || product?.name,
     tagline: "Premium All-in-One Dog Nutrition",
-    brand: product.brand || "Earth & Harvest",
-    description: product.smallDescription || product.description || "",
-    longDescription: product.longDescription || product.description || "",
-    rating: product.rating || 0,
-    reviews: product.totalReviews || 0,
+    brand: product?.brand || "Earth & Harvest",
+    description: product?.smallDescription || product?.description || "",
+    longDescription: product?.longDescription || product?.description || "",
+    rating: product?.rating || 0,
+    reviews: product?.totalReviews || 0,
     answeredQuestions: 847,
-    sizes: product.sizes || [],
-    images: product.images || [],
-    stock: product.stock || 0,
-    soldThisMonth: product.soldThisMonth || 0,
-    features: product.features || [],
-    ingredients: product.ingredients || [],
-    nutritionFacts: product.nutritionFacts || [],
+    sizes: product?.sizes || [],
+    images: product?.images || [],
+    stock: product?.stock || 0,
+    soldThisMonth: product?.soldThisMonth || 0,
+    features: product?.features || [],
+    ingredients: product?.ingredients || [],
+    nutritionFacts: product?.nutritionFacts || [],
   };
 
   // Calculate rating breakdown from real reviews
@@ -721,28 +728,6 @@ const Product = () => {
                     Order within <span className="font-bold text-[#C8945C]">4 hrs 23 mins</span> for delivery by <span className="font-semibold">Tuesday, Dec 10</span>
                   </p>
                 </div>
-
-                {/* Subscribe Option */}
-                <motion.div 
-                  className="mt-5 sm:mt-6 p-4 sm:p-5 bg-gradient-to-br from-[#C8945C]/10 via-[#B8844C]/10 to-[#C8945C]/10 rounded-xl border-2 border-[#C8945C]/20"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <label className="flex items-start gap-3 cursor-pointer">
-                    {/* <input 
-                      type="checkbox" 
-                      className="mt-1 w-4 h-4 sm:w-5 sm:h-5 rounded border-[#C8945C] text-[#C8945C] focus:ring-[#C8945C] cursor-pointer" 
-                    /> */}
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Box className="w-4 h-4 sm:w-5 sm:h-5 text-[#C8945C]" />
-                        <span className="font-bold text-gray-900 text-sm sm:text-base">Buy in bulk & Save</span>
-                      </div>
-                      <p className="text-xs sm:text-sm text-gray-600">
-                      28.5% off when ordering 5 packets or more
-                      </p>
-                    </div>
-                  </label>
-                </motion.div>
 
                 {/* Trust Badges - Responsive Grid */}
                 {/* <div className="mt-5 sm:mt-6 pt-5 sm:pt-6 border-t-2 border-gray-200">
@@ -1286,9 +1271,10 @@ const Product = () => {
         </motion.div>
       )}
 
-      {showCheckout && currentPrice && (
+      {showCheckout && currentPrice && product && (
         <PremiumCheckout
           product={productData}
+          productId={product._id || productId}
           selectedSize={selectedSize}
           quantity={quantity}
           currentPrice={currentPrice}

@@ -20,10 +20,10 @@ const Toast = ({ toast, onClose }) => {
   };
 
   const colors = {
-    success: 'bg-green-500',
-    error: 'bg-red-500',
-    warning: 'bg-yellow-500',
-    info: 'bg-blue-500',
+    success: 'bg-gradient-to-r from-green-600 to-emerald-600',
+    error: 'bg-gradient-to-r from-red-600 to-rose-600',
+    warning: 'bg-gradient-to-r from-[#C8945C] to-[#B8844C]',
+    info: 'bg-gradient-to-r from-[#2D4A3E] to-[#3D5A4E]',
   };
 
   const Icon = icons[toast.type] || Info;
@@ -33,7 +33,7 @@ const Toast = ({ toast, onClose }) => {
       initial={{ opacity: 0, y: -50, x: 300 }}
       animate={{ opacity: 1, y: 0, x: 0 }}
       exit={{ opacity: 0, x: 300, transition: { duration: 0.2 } }}
-      className={`${colors[toast.type] || colors.info} text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 min-w-[300px] max-w-[400px]`}
+      className={`${colors[toast.type] || colors.info} text-white px-4 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-xl border-2 border-white/20 backdrop-blur-sm flex items-center gap-3 min-w-[280px] sm:min-w-[300px] max-w-[90vw] sm:max-w-[400px]`}
     >
       <Icon className="w-5 h-5 flex-shrink-0" />
       <div className="flex-1">
@@ -54,7 +54,7 @@ const Toast = ({ toast, onClose }) => {
 
 export const ToastContainer = ({ toasts, removeToast }) => {
   return (
-    <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none">
+    <div className="fixed top-4 right-2 sm:right-4 z-[9999] flex flex-col gap-2 pointer-events-none px-2">
       <AnimatePresence>
         {toasts.map((toast) => (
           <div key={toast.id} className="pointer-events-auto">

@@ -163,9 +163,8 @@ const Index = () => {
 
   const ingredients = [
     { name: "Yak Milk", benefit: "Rich in protein & calcium", icon: "🥛" },
-    { name: "Himalayan Pink Salt", benefit: "Natural minerals & electrolytes", icon: "🧂" },
-    { name: "Lime Juice", benefit: "Supports digestion & immunity", icon: "🍋" },
-    { name: "Free Range Cow Milk", benefit: "Calcium & essential nutrients", icon: "🐄" },
+    { name: "Himalayan Salt", benefit: "Natural minerals & electrolytes", icon: "🧂" },
+    { name: "Lime Juice", benefit: "Supports digestion & immunity", icon: "🍋" }
   ];
 
   const benefits = [
@@ -316,7 +315,7 @@ const Index = () => {
               
               <div className="space-y-4">
                 <motion.h1 
-                  className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-semibold text-gray-900 leading-tight"
+                  className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-semibold text-gray-900 leading-tight font-chillax"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
@@ -617,7 +616,7 @@ const Index = () => {
                 Every ingredient is hand-selected for quality and purpose. No fillers, no by-products, no artificial anything.
               </p>
 
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
+              <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
                 {ingredients.map((ing, idx) => (
                   <motion.div
                     key={idx}

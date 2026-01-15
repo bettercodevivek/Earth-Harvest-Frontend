@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, User, LogOut, Settings, Package } from 'lucide-react';
+import { ShoppingCart, User, LogOut, Package } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Navbar = ({ cartCount }) => {
@@ -130,14 +130,6 @@ const Navbar = ({ cartCount }) => {
                           <span className="text-sm text-foreground">Admin Panel</span>
                         </Link>
                       )}
-                      <Link
-                        to="/profile?tab=settings"
-                        onClick={() => setShowUserMenu(false)}
-                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
-                      >
-                        <Settings className="w-4 h-4 text-[#C8945C]" />
-                        <span className="text-sm text-foreground">Settings</span>
-                      </Link>
                       <div className="border-t border-gray-200"></div>
                       <button
                         onClick={() => {

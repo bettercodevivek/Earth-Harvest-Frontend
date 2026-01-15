@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Mail, Phone, MapPin, Edit2, Save, X, Lock, Package, CreditCard } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -13,6 +13,8 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
   
   const [profileData, setProfileData] = useState({
     name: '',
@@ -36,7 +38,21 @@ const Profile = () => {
     
     fetchProfile();
     fetchCartCount();
+    
+    // Check URL params for tab
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if (tab === 'orders') {
+      setActiveTab('orders');
+      fetchOrders();
+    }
   }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (activeTab === 'orders') {
+      fetchOrders();
+    }
+  }, [activeTab]);
 
   const fetchProfile = async () => {
     try {
@@ -75,6 +91,28 @@ const Profile = () => {
       }
     } catch (error) {
       console.error('Failed to fetch cart:', error);
+    }
+  };
+
+  const fetchOrders = async () => {
+    setOrdersLoading(true);
+    try {
+      const response = await apiFetch('/order');
+      if (response.success && response.data) {
+        setOrders(Array.isArray(response.data) ? response.data : []);
+      } else {
+        setOrders([]);
+      }
+    } catch (error) {
+      console.error('Failed to fetch orders:', error);
+      setOrders([]);
+      showToast({
+        type: 'error',
+        title: 'Error',
+        message: 'Failed to load orders'
+      });
+    } finally {
+      setOrdersLoading(false);
     }
   };
 
@@ -309,8 +347,99 @@ const Profile = () => {
             animate={{ opacity: 1, y: 0 }}
             className="bg-[#F8F2EC] rounded-2xl p-6 sm:p-8 border border-[#E8DFD0]"
           >
-            <h2 className="text-2xl font-bold text-foreground mb-6">My Orders</h2>
-            <p className="text-muted-foreground">No orders yet. Start shopping to see your orders here!</p>
+            <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+              <Package className="w-6 h-6 text-[#C8945C]" />
+              My Orders
+            </h2>
+
+            {ordersLoading ? (
+              <div className="text-center py-12">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#C8945C]"></div>
+                <p className="text-muted-foreground mt-4">Loading orders...</p>
+              </div>
+            ) : orders.length === 0 ? (
+              <div className="text-center py-12">
+                <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-muted-foreground text-lg mb-2">No orders yet</p>
+                <p className="text-muted-foreground text-sm mb-6">Start shopping to see your orders here!</p>
+                <Link
+                  to="/product"
+                  className="inline-block bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
+                >
+                  Shop Now
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {orders.map((order) => (
+                  <motion.div
+                    key={order._id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white rounded-xl p-6 border-2 border-[#E8DFD0] hover:shadow-lg transition-all"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="font-bold text-foreground">
+                            Order #{order._id?.toString().slice(-8).toUpperCase() || 'N/A'}
+                          </h3>
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            order.orderStatus === 'Confirmed' || order.orderStatus === 'Shipped'
+                              ? 'bg-green-100 text-green-700'
+                              : order.orderStatus === 'Pending'
+                              ? 'bg-yellow-100 text-yellow-700'
+                              : order.orderStatus === 'Cancelled'
+                              ? 'bg-red-100 text-red-700'
+                              : 'bg-gray-100 text-gray-700'
+                          }`}>
+                            {order.orderStatus || 'Pending'}
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          }) : 'Date not available'}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-lg font-bold text-[#C8945C]">
+                          AED {order.amountPaid || '0.00'}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Payment: {order.paymentStatus || 'Pending'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {order.product && (
+                      <div className="border-t border-[#E8DFD0] pt-4">
+                        <p className="font-semibold text-foreground mb-2">
+                          {order.product.productName || order.product.name || 'Product'}
+                        </p>
+                        <div className="flex gap-4 text-sm text-muted-foreground">
+                          <span>Size: {order.sizeSelected}g</span>
+                          <span>Quantity: {order.quantity}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {order.address && (
+                      <div className="border-t border-[#E8DFD0] pt-4 mt-4">
+                        <p className="text-sm font-semibold text-foreground mb-1">Delivery Address</p>
+                        <p className="text-sm text-muted-foreground">
+                          {order.address.street && <>{order.address.street}<br /></>}
+                          {order.address.city}{order.address.zipCode ? `, ${order.address.zipCode}` : ''}<br />
+                          {order.address.country || 'United Arab Emirates'}
+                        </p>
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </motion.div>
         )}
       </div>
