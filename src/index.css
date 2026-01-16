@@ -134,9 +134,9 @@ body {
     scroll-behavior: smooth;
   }
 
-  /* Chillax font for hero sections */
+  /* Montserrat font for hero sections */
   .font-chillax {
-    font-family: 'Chillax', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 }
 

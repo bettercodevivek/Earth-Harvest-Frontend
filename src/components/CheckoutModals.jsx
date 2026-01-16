@@ -283,7 +283,7 @@ export default function PremiumCheckout({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/70 backdrop-blur-md z-[9999] flex items-end sm:items-center justify-center sm:p-4"
+      className="fixed inset-0 bg-black/70 backdrop-blur-md z-[9999] flex items-end sm:items-center justify-center sm:p-6 lg:p-8"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <motion.div
@@ -307,7 +307,7 @@ export default function PremiumCheckout({
           damping: 30,
           stiffness: 300
         }}
-        className="w-full sm:max-w-4xl bg-gradient-to-br from-[#FAF7F2] via-white to-[#F8F2EC] rounded-t-3xl sm:rounded-3xl shadow-2xl border-2 border-[#E8DFD0] max-h-[85vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
+        className="w-full sm:max-w-2xl lg:max-w-3xl bg-gradient-to-br from-[#FAF7F2] via-white to-[#F8F2EC] rounded-t-3xl sm:rounded-3xl shadow-2xl border-2 border-[#E8DFD0] max-h-[85vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
       >
         {/* Premium Header */}
         <div className="relative bg-gradient-to-r from-[#2D4A3E] via-[#3D5A4E] to-[#2D4A3E] px-4 sm:px-6 py-3 sm:py-5 border-b-2 border-[#C8945C]/30">
@@ -376,7 +376,7 @@ export default function PremiumCheckout({
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-5 lg:px-6 py-4 sm:py-5 lg:py-6">
           <AnimatePresence mode="wait">
             {/* SUMMARY STEP */}
             {step === "summary" && (
@@ -389,42 +389,42 @@ export default function PremiumCheckout({
                 className="space-y-6"
               >
                 {/* Product Card - Premium Design */}
-                <div className="relative bg-white rounded-2xl p-6 border-2 border-[#E8DFD0] shadow-xl overflow-hidden group hover:shadow-2xl transition-all">
+                <div className="relative bg-white rounded-2xl p-5 sm:p-6 border-2 border-[#E8DFD0] shadow-xl overflow-hidden group hover:shadow-2xl transition-all">
                   <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[#C8945C]/10 to-transparent rounded-bl-full"></div>
                   <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-[#C8945C]/5 to-transparent rounded-tr-full"></div>
                   
-                  <div className="relative flex gap-3 sm:gap-6">
+                  <div className="relative flex gap-3 sm:gap-4 lg:gap-6">
                     <div className="relative flex-shrink-0">
                       <img
                         src={product.images?.[0] || product.image}
-                        className="w-20 h-20 sm:w-32 sm:h-32 rounded-xl sm:rounded-2xl border-2 border-[#E8DFD0] object-cover shadow-lg group-hover:scale-105 transition-transform"
+                        className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-xl sm:rounded-2xl border-2 border-[#E8DFD0] object-cover shadow-lg group-hover:scale-105 transition-transform"
                         alt={product.name}
                       />
-                      <div className="absolute -top-3 -right-3 bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-xl flex items-center gap-1">
+                      <div className="absolute -top-3 -right-3 bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-xl flex items-center gap-1">
                         <Star className="w-3 h-3 fill-white" />
                         Premium
                       </div>
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg sm:text-2xl font-bold text-[#2D4A3E] mb-2 sm:mb-3">{product.name || product.productName}</h3>
-                      <div className="space-y-2 mb-4">
-                        <div className="flex items-center gap-2 text-sm text-[#6B7C72]">
-                          <Package className="w-4 h-4 text-[#C8945C]" />
+                      <h3 className="text-base sm:text-xl lg:text-2xl font-bold text-[#2D4A3E] mb-2 sm:mb-3">{product.name || product.productName}</h3>
+                      <div className="space-y-1.5 sm:space-y-2 mb-3 sm:mb-4">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-[#6B7C72]">
+                          <Package className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C8945C]" />
                           <span>Size: <span className="font-semibold text-[#2D4A3E]">{selectedSize}g</span></span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-[#6B7C72]">
-                          <Sparkles className="w-4 h-4 text-[#C8945C]" />
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-[#6B7C72]">
+                          <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C8945C]" />
                           <span>Quantity: <span className="font-semibold text-[#2D4A3E]">{quantity}</span></span>
                         </div>
                       </div>
                       
-                      <div className="flex items-baseline gap-2 sm:gap-3">
-                        <span className="text-xl sm:text-3xl font-bold text-[#C8945C]">AED {currentPrice.price.toFixed(2)}</span>
+                      <div className="flex items-baseline gap-2 sm:gap-3 flex-wrap">
+                        <span className="text-lg sm:text-2xl lg:text-3xl font-bold text-[#C8945C]">AED {currentPrice.price.toFixed(2)}</span>
                         {currentPrice.oldPrice && (
                           <>
-                            <span className="text-sm sm:text-lg text-gray-400 line-through">AED {currentPrice.oldPrice.toFixed(2)}</span>
-                            <span className="text-sm font-semibold text-green-600 bg-green-50 px-2 py-1 rounded">
+                            <span className="text-xs sm:text-sm lg:text-lg text-gray-400 line-through">AED {currentPrice.oldPrice.toFixed(2)}</span>
+                            <span className="text-xs sm:text-sm font-semibold text-green-600 bg-green-50 px-2 py-1 rounded">
                               {Math.round(((currentPrice.oldPrice - currentPrice.price) / currentPrice.oldPrice) * 100)}% OFF
                             </span>
                           </>
@@ -439,49 +439,49 @@ export default function PremiumCheckout({
                   <motion.div
                     initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="bg-gradient-to-r from-[#C8945C] to-[#B8844C] rounded-2xl p-5 text-white shadow-xl flex items-center justify-between"
+                    className="bg-gradient-to-r from-[#C8945C] to-[#B8844C] rounded-2xl p-4 sm:p-5 text-white shadow-xl flex items-center justify-between gap-4"
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                        <Award className="w-6 h-6" />
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+                        <Award className="w-5 h-5 sm:w-6 sm:h-6" />
                       </div>
                       <div>
-                        <p className="font-bold text-sm sm:text-lg">You're Saving!</p>
+                        <p className="font-bold text-sm sm:text-base lg:text-lg">You're Saving!</p>
                         <p className="text-xs sm:text-sm opacity-90">Premium quality at an incredible price</p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-xl sm:text-3xl font-bold">AED {savings.toFixed(2)}</p>
-                      <p className="text-sm opacity-90">Off regular price</p>
+                    <div className="text-right flex-shrink-0">
+                      <p className="text-lg sm:text-2xl lg:text-3xl font-bold">AED {savings.toFixed(2)}</p>
+                      <p className="text-xs sm:text-sm opacity-90">Off regular price</p>
                     </div>
                   </motion.div>
                 )}
 
                 {/* Order Summary */}
-                <div className="bg-white rounded-2xl p-6 border-2 border-[#E8DFD0] shadow-lg">
-                  <h3 className="font-bold text-[#2D4A3E] text-base sm:text-xl mb-4 sm:mb-5 flex items-center gap-2">
+                <div className="bg-white rounded-2xl p-5 sm:p-6 border-2 border-[#E8DFD0] shadow-lg">
+                  <h3 className="font-bold text-[#2D4A3E] text-base sm:text-lg lg:text-xl mb-4 sm:mb-5 flex items-center gap-2">
                     <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-[#C8945C]" />
                     Order Summary
                   </h3>
 
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center pb-4 border-b-2 border-[#E8DFD0]">
-                      <span className="text-[#6B7C72]">Subtotal ({quantity} {quantity === 1 ? 'item' : 'items'})</span>
-                      <span className="font-semibold text-[#2D4A3E] text-sm sm:text-lg">AED {subtotal.toFixed(2)}</span>
+                  <div className="space-y-3 sm:space-y-4">
+                    <div className="flex justify-between items-center pb-3 sm:pb-4 border-b-2 border-[#E8DFD0]">
+                      <span className="text-[#6B7C72] text-sm sm:text-base">Subtotal ({quantity} {quantity === 1 ? 'item' : 'items'})</span>
+                      <span className="font-semibold text-[#2D4A3E] text-sm sm:text-base lg:text-lg">AED {subtotal.toFixed(2)}</span>
                     </div>
 
-                    <div className="flex justify-between items-center pb-4 border-b-2 border-[#E8DFD0]">
+                    <div className="flex justify-between items-center pb-3 sm:pb-4 border-b-2 border-[#E8DFD0]">
                       <div className="flex items-center gap-2">
-                        <Truck className="w-5 h-5 text-[#C8945C]" />
-                        <span className="text-[#6B7C72]">Express Shipping</span>
+                        <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#C8945C]" />
+                        <span className="text-[#6B7C72] text-sm sm:text-base">Express Shipping</span>
                       </div>
-                      <span className="font-semibold text-green-600 text-sm sm:text-lg">FREE</span>
+                      <span className="font-semibold text-green-600 text-sm sm:text-base lg:text-lg">FREE</span>
                     </div>
 
-                    <div className="bg-gradient-to-br from-[#FAF7F2] to-[#F8F2EC] rounded-xl p-5 border-2 border-[#C8945C]/20">
+                    <div className="bg-gradient-to-br from-[#FAF7F2] to-[#F8F2EC] rounded-xl p-4 sm:p-5 border-2 border-[#C8945C]/20">
                       <div className="flex justify-between items-center">
-                        <span className="font-bold text-[#2D4A3E] text-base sm:text-xl">Total Amount</span>
-                        <span className="font-bold text-[#C8945C] text-xl sm:text-3xl">
+                        <span className="font-bold text-[#2D4A3E] text-base sm:text-lg lg:text-xl">Total Amount</span>
+                        <span className="font-bold text-[#C8945C] text-lg sm:text-2xl lg:text-3xl">
                           AED {finalTotal.toFixed(2)}
                         </span>
                       </div>
@@ -881,7 +881,7 @@ export default function PremiumCheckout({
         </div>
 
         {/* Footer Actions */}
-        <div className="px-4 sm:px-6 py-3 sm:py-5 bg-white border-t-2 border-[#E8DFD0]">
+        <div className="px-4 sm:px-5 lg:px-6 py-3 sm:py-4 lg:py-5 bg-white border-t-2 border-[#E8DFD0]">
           <div className="flex gap-4">
             {step !== "summary" && (
               <button
