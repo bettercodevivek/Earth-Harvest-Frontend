@@ -446,30 +446,32 @@ const Product = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#FAF7F2] overflow-x-hidden">
       <Navbar cartCount={cartCount} />
       
-      {/* Modern Product Section with Creative Layout */}
-      <section className="pt-20 sm:pt-24 lg:pt-32 pb-6 sm:pb-8 lg:pb-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 via-white to-white">
-        <div className="max-w-7xl mx-auto">
-          {/* Mobile-First Layout */}
-          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16">
+      {/* Premium Product Section */}
+      <section className="pt-24 sm:pt-28 lg:pt-32 pb-12 sm:pb-16 lg:pb-20 px-3 sm:px-4 md:px-6 lg:px-8 bg-[#FAF7F2]">
+        <div className="max-w-7xl mx-auto w-full">
+          {/* Premium Layout */}
+          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 lg:gap-20">
             {/* Product Images - Enhanced with Swipe */}
-            <div className="space-y-4 order-1">
+            <div className="space-y-3 sm:space-y-4 order-1 w-full min-w-0 max-w-full">
               {/* Main Image with Advanced Animations */}
               {productData.images.length > 0 && (
                 <div 
                   ref={imageRef}
-                  className={`relative w-full aspect-square rounded-2xl sm:rounded-3xl bg-gray-100 shadow-2xl group ${
+                  className={`relative w-full aspect-square rounded-lg sm:rounded-xl md:rounded-2xl bg-white border border-[#E8DFD0]/50 shadow-[0_4px_24px_rgba(0,0,0,0.06)] group ${
                     zoomLevel > 1 ? 'overflow-auto' : 'overflow-hidden'
                   }`}
-                  onTouchStart={onTouchStart}
-                  onTouchMove={onTouchMove}
-                  onTouchEnd={onTouchEnd}
                   style={{
+                    maxWidth: '100%',
+                    boxSizing: 'border-box',
                     touchAction: zoomLevel > 1 ? 'pan-x pan-y' : 'pan-x',
                     WebkitOverflowScrolling: 'touch'
                   }}
+                  onTouchStart={onTouchStart}
+                  onTouchMove={onTouchMove}
+                  onTouchEnd={onTouchEnd}
                 >
                   <AnimatePresence mode="wait" custom={imageDirection}>
                     <motion.div
@@ -516,63 +518,63 @@ const Product = () => {
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
 
-                  {/* Badges */}
+                  {/* Premium Badges */}
                   <motion.div 
-                    className="absolute top-4 sm:top-6 left-4 sm:left-6 flex flex-col gap-2 z-10"
+                    className="absolute top-2 sm:top-3 md:top-4 left-2 sm:left-3 md:left-4 flex flex-col gap-1.5 sm:gap-2 z-10 max-w-[calc(100%-80px)]"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 }}
                   >
-                    <span className="bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold shadow-xl backdrop-blur-sm">
+                    <span className="bg-[#2D4A3E] text-white px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-semibold tracking-wide shadow-lg backdrop-blur-sm border border-[#2D4A3E]/20 whitespace-nowrap">
                       SAVE 25%
                     </span>
-                    <span className="bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold shadow-xl backdrop-blur-sm">
-                      #1 BESTSELLER
+                    <span className="bg-[#C8945C] text-white px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-semibold tracking-wide shadow-lg backdrop-blur-sm border border-[#C8945C]/20 whitespace-nowrap">
+                      BESTSELLER
                     </span>
                   </motion.div>
 
-                  {/* Zoom Controls */}
+                  {/* Premium Zoom Controls */}
                   <motion.div 
-                    className="absolute top-3 sm:top-4 right-3 sm:right-4 lg:top-6 lg:right-6 flex flex-col gap-2 z-20"
+                    className="absolute top-2 sm:top-3 md:top-4 right-2 sm:right-3 md:right-4 flex flex-col gap-1.5 sm:gap-2 z-20"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 }}
                   >
                     <motion.button
                       onClick={handleZoomIn}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       disabled={zoomLevel >= 3}
-                      className="w-10 h-10 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-full flex items-center justify-center shadow-lg sm:shadow-xl transition-all backdrop-blur-md bg-white/95 sm:bg-white/90 text-gray-700 hover:bg-white active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
+                      className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-md sm:rounded-lg flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all bg-white/95 backdrop-blur-sm text-[#2D4A3E] hover:bg-white hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed touch-manipulation border border-[#E8DFD0]/50"
                       title="Zoom In"
                       aria-label="Zoom In"
                     >
-                      <ZoomIn className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+                      <ZoomIn className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />
                     </motion.button>
                     <motion.button
                       onClick={handleZoomOut}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       disabled={zoomLevel <= 1}
-                      className="w-10 h-10 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-full flex items-center justify-center shadow-lg sm:shadow-xl transition-all backdrop-blur-md bg-white/95 sm:bg-white/90 text-gray-700 hover:bg-white active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
+                      className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-md sm:rounded-lg flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all bg-white/95 backdrop-blur-sm text-[#2D4A3E] hover:bg-white hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed touch-manipulation border border-[#E8DFD0]/50"
                       title="Zoom Out"
                       aria-label="Zoom Out"
                     >
-                      <ZoomOut className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+                      <ZoomOut className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />
                     </motion.button>
                     {zoomLevel > 1 && (
                       <motion.button
                         onClick={handleResetZoom}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="w-10 h-10 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-full flex items-center justify-center shadow-lg sm:shadow-xl transition-all backdrop-blur-md bg-[#C8945C]/95 sm:bg-[#C8945C]/90 text-white hover:bg-[#C8945C] active:scale-95 touch-manipulation"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-md sm:rounded-lg flex items-center justify-center shadow-[0_2px_8px_rgba(200,148,92,0.3)] transition-all bg-[#C8945C] text-white hover:bg-[#B8844C] hover:shadow-[0_4px_12px_rgba(200,148,92,0.4)] active:scale-95 touch-manipulation"
                         title="Reset Zoom"
                         aria-label="Reset Zoom"
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
                       >
-                        <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
+                        <RotateCcw className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
                       </motion.button>
                     )}
                   </motion.div>
@@ -595,16 +597,16 @@ const Product = () => {
                     </>
                   )}
 
-                  {/* Image Counter */}
-                  <div className="absolute bottom-3 sm:bottom-4 lg:bottom-6 left-3 sm:left-4 lg:left-6 right-3 sm:right-4 lg:right-6 flex items-center justify-between z-10">
+                  {/* Premium Image Counter */}
+                  <div className="absolute bottom-2 sm:bottom-3 md:bottom-4 left-2 sm:left-3 md:left-4 right-2 sm:right-3 md:right-4 flex items-center justify-between z-10 gap-2">
                     {productData.images.length > 1 && (
-                      <div className="bg-black/75 backdrop-blur-md text-white px-2.5 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-2 rounded-full text-xs sm:text-sm font-medium">
+                      <div className="bg-[#2D4A3E]/90 backdrop-blur-md text-white px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-md sm:rounded-lg text-[10px] sm:text-xs md:text-sm font-medium shadow-lg border border-[#2D4A3E]/20 whitespace-nowrap">
                         {selectedImage + 1} / {productData.images.length}
                       </div>
                     )}
                     {zoomLevel > 1 && (
-                      <div className="bg-black/75 backdrop-blur-md text-white px-2.5 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-2 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1.5 ml-auto">
-                        <Camera className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <div className="bg-[#2D4A3E]/90 backdrop-blur-md text-white px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-md sm:rounded-lg text-[10px] sm:text-xs md:text-sm font-medium flex items-center gap-1 sm:gap-1.5 ml-auto shadow-lg border border-[#2D4A3E]/20 whitespace-nowrap">
+                        <Camera className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 flex-shrink-0" />
                         <span>{Math.round(zoomLevel * 100)}%</span>
                       </div>
                     )}
@@ -612,24 +614,24 @@ const Product = () => {
                 </div>
               )}
 
-              {/* Thumbnails - Mobile Optimized */}
+              {/* Premium Thumbnails */}
               {productData.images.length > 1 && (
-                <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-2 -mx-2 px-2 sm:mx-0 sm:px-0 scrollbar-hide">
+                <div className="flex gap-2 sm:gap-3 md:gap-4 overflow-x-auto pb-2 scrollbar-hide w-full" style={{ WebkitOverflowScrolling: 'touch' }}>
                   {productData.images.map((img, idx) => (
                     <motion.button
                       key={idx}
                       onClick={() => goToImage(idx, idx > selectedImage ? 1 : -1)}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 transition-all border-2 ${
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-md sm:rounded-lg overflow-hidden shrink-0 transition-all border ${
                         selectedImage === idx 
-                          ? 'border-[#C8945C] shadow-lg ring-2 ring-[#C8945C]/20' 
-                          : 'border-gray-200 hover:border-[#C8945C]/50'
+                          ? 'border-[#C8945C] shadow-[0_4px_12px_rgba(200,148,92,0.25)] ring-1 ring-[#C8945C]/30' 
+                          : 'border-[#E8DFD0] hover:border-[#C8945C]/40 bg-white'
                       }`}
                     >
                       <img src={img} alt="" className="w-full h-full object-cover" />
                       {selectedImage === idx && (
-                        <div className="absolute inset-0 bg-[#C8945C]/20" />
+                        <div className="absolute inset-0 bg-[#C8945C]/10 border-2 border-[#C8945C]" />
                       )}
                     </motion.button>
                   ))}
@@ -637,124 +639,129 @@ const Product = () => {
               )}
             </div>
 
-            {/* Product Info & Buy Box */}
-            <div className="space-y-6 sm:space-y-8 order-2" ref={buyBoxRef}>
-              {/* Breadcrumb */}
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <Link to="/" className="hover:text-[#C8945C] transition-colors">Home</Link>
-                <span>/</span>
-                <span className="text-gray-900 font-medium">{productData.brand}</span>
+            {/* Premium Product Info & Buy Box */}
+            <div className="space-y-6 sm:space-y-8 md:space-y-10 order-2 w-full min-w-0 max-w-full" ref={buyBoxRef}>
+              {/* Premium Breadcrumb */}
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-[#6B7C72] font-medium overflow-x-auto scrollbar-hide">
+                <Link to="/" className="hover:text-[#C8945C] transition-colors whitespace-nowrap">Home</Link>
+                <span className="text-[#E8DFD0] flex-shrink-0">/</span>
+                <span className="text-[#2D4A3E] whitespace-nowrap">{productData.brand}</span>
               </div>
 
-              {/* Brand & Title */}
+              {/* Premium Brand & Title */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
+                className="w-full min-w-0"
               >
-                <Link to="/" className="text-[#C8945C] hover:underline text-xs sm:text-sm font-semibold uppercase tracking-wider">
+                <Link to="/" className="text-[#C8945C] hover:text-[#B8844C] text-xs sm:text-sm font-semibold uppercase tracking-[0.1em] transition-colors inline-block">
                   {productData.brand}
                 </Link>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mt-2 mb-4 sm:mb-6 leading-tight">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#2D4A3E] mt-2 sm:mt-3 mb-4 sm:mb-6 md:mb-8 leading-[1.1] tracking-tight break-words">
                   {productData.name}
                 </h1>
                 
-                {/* Rating & Social Proof - Mobile Optimized */}
-                <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center">
+                {/* Premium Rating & Social Proof */}
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6 md:mb-8 pb-4 sm:pb-6 md:pb-8 border-b border-[#E8DFD0]">
+                  <div className="flex items-center gap-2 sm:gap-2.5">
+                    <div className="flex items-center gap-0.5">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className={`w-4 h-4 sm:w-5 sm:h-5 ${i < Math.floor(productData.rating) ? 'text-amber-500 fill-amber-500' : 'text-gray-300'}`} />
+                        <Star key={i} className={`w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 flex-shrink-0 ${i < Math.floor(productData.rating) ? 'text-[#C8945C] fill-[#C8945C]' : 'text-[#E8DFD0]'}`} />
                       ))}
                     </div>
-                    <span className="text-lg sm:text-xl font-bold text-gray-900 ml-1 sm:ml-2">{productData.rating}</span>
+                    <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#2D4A3E] ml-0.5 sm:ml-1">{productData.rating}</span>
                   </div>
-                  <div className="h-5 sm:h-6 w-px bg-gray-300 hidden sm:block" />
-                  <a href="#reviews" className="text-sm sm:text-base text-gray-600 hover:text-[#C8945C] transition-colors">
+                  <div className="h-5 sm:h-6 w-px bg-[#E8DFD0] hidden sm:block" />
+                  <a href="#reviews" className="text-xs sm:text-sm md:text-base text-[#6B7C72] hover:text-[#C8945C] transition-colors font-medium whitespace-nowrap">
                     {productData.reviews.toLocaleString()} reviews
                   </a>
-                  <div className="h-5 sm:h-6 w-px bg-gray-300 hidden sm:block" />
-                  <span className="text-sm sm:text-base text-gray-600 hidden sm:inline">
+                  <div className="h-5 sm:h-6 w-px bg-[#E8DFD0] hidden sm:block" />
+                  <span className="text-xs sm:text-sm md:text-base text-[#6B7C72] hidden sm:inline font-medium whitespace-nowrap">
                     {productData.soldThisMonth.toLocaleString()}+ sold
                   </span>
                 </div>
 
-                {/* Badges - Responsive */}
-                <div className="flex flex-wrap gap-2 sm:gap-3 mb-6">
+                {/* Premium Badges */}
+                <div className="flex flex-wrap gap-2 sm:gap-3 mb-6 sm:mb-8">
                   <motion.span 
-                    whileHover={{ scale: 1.05 }}
-                    className="inline-flex items-center gap-1.5 sm:gap-2 bg-amber-50 text-amber-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold border border-amber-200"
+                    whileHover={{ scale: 1.02 }}
+                    className="inline-flex items-center gap-1.5 sm:gap-2 bg-[#2D4A3E] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-[10px] sm:text-xs md:text-sm font-semibold tracking-wide shadow-sm whitespace-nowrap"
                   >
-                    <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-amber-500" />
+                    <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 fill-white flex-shrink-0" />
                     BESTSELLER
                   </motion.span>
                   <motion.span 
-                    whileHover={{ scale: 1.05 }}
-                    className="inline-flex items-center gap-1.5 sm:gap-2 bg-blue-50 text-blue-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold border border-blue-200"
+                    whileHover={{ scale: 1.02 }}
+                    className="inline-flex items-center gap-1.5 sm:gap-2 bg-white text-[#2D4A3E] px-3 sm:px-4 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-[10px] sm:text-xs md:text-sm font-semibold tracking-wide border border-[#E8DFD0] shadow-sm whitespace-nowrap"
                   >
-                    <Shield className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <Shield className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-[#C8945C] flex-shrink-0" />
                     VET APPROVED
                   </motion.span>
                   <motion.span 
-                    whileHover={{ scale: 1.05 }}
-                    className="inline-flex items-center gap-1.5 sm:gap-2 bg-green-50 text-green-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold border border-green-200"
+                    whileHover={{ scale: 1.02 }}
+                    className="inline-flex items-center gap-1.5 sm:gap-2 bg-white text-[#2D4A3E] px-3 sm:px-4 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-[10px] sm:text-xs md:text-sm font-semibold tracking-wide border border-[#E8DFD0] shadow-sm whitespace-nowrap"
                   >
-                    <BadgeCheck className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <BadgeCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-[#C8945C] flex-shrink-0" />
                     VERIFIED
                   </motion.span>
                 </div>
 
-                {/* Description */}
-                <p className="text-base sm:text-lg text-gray-600 leading-relaxed mb-6">
+                {/* Premium Description */}
+                <p className="text-sm sm:text-base md:text-lg text-[#6B7C72] leading-relaxed mb-6 sm:mb-8 font-light break-words">
                   {productData.description}
                 </p>
               </motion.div>
 
-              {/* Buy Box - Mobile Optimized */}
+              {/* Premium Buy Box */}
               <motion.div 
-                className="bg-white border-2 border-gray-200 rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-8 shadow-xl sticky top-4 sm:top-24 z-10"
+                className="bg-white border border-[#E8DFD0] rounded-lg sm:rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 lg:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.06)] sticky top-4 sm:top-6 md:top-24 z-10 w-full max-w-full"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
 
-                {/* Price - Prominent */}
-                <div className="mb-5 sm:mb-6">
-                  <div className="flex items-baseline gap-2 sm:gap-3 mb-2 sm:mb-3">
-                    <span className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900">AED {currentPrice?.price?.toFixed(2)}</span>
+                {/* Premium Price */}
+                <div className="mb-4 sm:mb-6 md:mb-8 pb-4 sm:pb-6 md:pb-8 border-b border-[#E8DFD0]">
+                  <div className="flex items-baseline gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-3 flex-wrap">
+                    <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#2D4A3E] tracking-tight break-words">AED {currentPrice?.price?.toFixed(2)}</span>
                     {currentPrice?.oldPrice && (
-                      <span className="text-lg sm:text-xl lg:text-2xl text-gray-400 line-through">AED {currentPrice.oldPrice.toFixed(2)}</span>
+                      <span className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-[#6B7C72] line-through font-light">AED {currentPrice.oldPrice.toFixed(2)}</span>
                     )}
                   </div>
                   {currentPrice?.oldPrice && (
                     <motion.span 
-                      initial={{ scale: 0.9 }}
-                      animate={{ scale: 1 }}
-                      className="inline-block bg-gradient-to-r from-red-50 to-orange-50 text-red-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-bold border-2 border-red-200"
+                      initial={{ scale: 0.95, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="inline-block bg-[#2D4A3E] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-xs sm:text-sm font-semibold tracking-wide shadow-sm whitespace-nowrap"
                     >
                       Save AED {((currentPrice.oldPrice) - (currentPrice.price)).toFixed(2)}
                     </motion.span>
                   )}
                 </div>
 
-                {/* Stock Status */}
-                <motion.div 
-                  className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-200"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-pulse"></span>
-                  <span className="text-green-700 font-bold text-sm sm:text-base">In Stock</span>
-                  <span className="text-green-600 text-xs sm:text-sm">({productData.stock} available)</span>
-                </motion.div>
-
-                {/* Delivery Info */}
-                <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-4 sm:p-5 mb-4 sm:mb-6 border border-gray-200">
-                  <div className="flex items-center gap-2 sm:gap-3 mb-2">
-                    <Truck className="w-5 h-5 sm:w-6 sm:h-6 text-[#C8945C]" />
-                    <span className="font-bold text-gray-900 text-sm sm:text-base">FREE 2-Day Delivery</span>
+                {/* Premium Stock Status */}
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 md:mb-8 pb-4 sm:pb-6 md:pb-8 border-b border-[#E8DFD0]">
+                  <span className="w-2 h-2 bg-[#10B981] rounded-full flex-shrink-0"></span>
+                  <div className="min-w-0">
+                    <span className="text-[#2D4A3E] font-semibold text-xs sm:text-sm md:text-base block">In Stock</span>
+                    <span className="text-[#6B7C72] text-[10px] sm:text-xs md:text-sm">{productData.stock} units available</span>
                   </div>
-                  <p className="text-xs sm:text-sm text-gray-600 pl-7 sm:pl-9">
-                    Order within <span className="font-bold text-[#C8945C]">4 hrs 23 mins</span> for delivery by <span className="font-semibold">Tuesday, Dec 10</span>
+                </div>
+
+                {/* Premium Delivery Info */}
+                <div className="bg-[#FAF7F2] rounded-lg p-4 sm:p-5 md:p-6 mb-4 sm:mb-6 md:mb-8 border border-[#E8DFD0]">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#C8945C]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#C8945C]" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="font-semibold text-[#2D4A3E] text-xs sm:text-sm md:text-base block">Free Express Delivery</span>
+                      <span className="text-[#6B7C72] text-[10px] sm:text-xs md:text-sm">2-3 business days</span>
+                    </div>
+                  </div>
+                  <p className="text-[10px] sm:text-xs md:text-sm text-[#6B7C72] pl-10 sm:pl-13 break-words">
+                    Order within <span className="font-semibold text-[#2D4A3E]">4 hrs 23 mins</span> for delivery by <span className="font-medium text-[#2D4A3E]">Tuesday, Dec 10</span>
                   </p>
                 </div>
 
@@ -780,35 +787,34 @@ const Product = () => {
                     <span>Secure transaction</span>
                   </div>
                 </div> */}
-                {/* CTA Buttons */}
-<div className="mt-6 space-y-3">
-  
-  {/* Add to Cart */}
-  <motion.button
-    onClick={addToCart}
-    whileHover={{ scale: 1.02 }}
-    whileTap={{ scale: 0.97 }}
-    className="w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold text-white
-               bg-gradient-to-r from-[#C8945C] to-[#B8844C]
-               shadow-lg hover:shadow-xl transition-all"
-  >
-    <ShoppingCart className="w-5 h-5" />
-    Add to Cart
-  </motion.button>
+                {/* Premium CTA Buttons */}
+                <div className="space-y-2 sm:space-y-3">
+                  {/* Add to Cart */}
+                  <motion.button
+                    onClick={addToCart}
+                    whileHover={{ scale: 1.01, y: -1 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="w-full flex items-center justify-center gap-2 sm:gap-3 py-3 sm:py-4 md:py-5 rounded-lg font-semibold text-white
+                               bg-[#C8945C] hover:bg-[#B8844C]
+                               shadow-[0_4px_12px_rgba(200,148,92,0.3)] hover:shadow-[0_6px_16px_rgba(200,148,92,0.4)]
+                               transition-all tracking-wide text-xs sm:text-sm md:text-base"
+                  >
+                    <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                    <span className="whitespace-nowrap">Add to Cart</span>
+                  </motion.button>
 
-  {/* Buy Now */}
-  <motion.button
-    onClick={handleBuyNow}
-    whileHover={{ scale: 1.02 }}
-    whileTap={{ scale: 0.97 }}
-    className="w-full py-4 rounded-xl font-bold text-[#C8945C]
-               border-2 border-[#C8945C] bg-white
-               hover:bg-[#C8945C]/10 transition-all"
-  >
-    Buy Now
-  </motion.button>
-
-</div>
+                  {/* Buy Now */}
+                  <motion.button
+                    onClick={handleBuyNow}
+                    whileHover={{ scale: 1.01, y: -1 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="w-full py-3 sm:py-4 md:py-5 rounded-lg font-semibold text-[#2D4A3E]
+                               border border-[#E8DFD0] bg-white
+                               hover:border-[#C8945C] hover:bg-[#FAF7F2] transition-all tracking-wide text-xs sm:text-sm md:text-base shadow-sm"
+                  >
+                    Buy Now
+                  </motion.button>
+                </div>
 
               </motion.div>
             </div>
@@ -817,9 +823,9 @@ const Product = () => {
       </section>
 
       {/* Product Details Tabs - Enhanced */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex overflow-x-auto scrollbar-hide border-b-2 border-gray-200 mb-8 sm:mb-12 -mx-4 sm:mx-0 px-4 sm:px-0">
+      <section className="py-12 sm:py-16 lg:py-20 px-3 sm:px-4 md:px-6 lg:px-8 bg-white">
+        <div className="max-w-7xl mx-auto w-full">
+          <div className="flex overflow-x-auto scrollbar-hide border-b-2 border-gray-200 mb-8 sm:mb-12 -mx-3 sm:-mx-4 md:mx-0 px-3 sm:px-4 md:px-0 w-full">
             {[
               { id: 'description', label: 'Description' },
               { id: 'ingredients', label: 'Ingredients' },
@@ -983,8 +989,8 @@ const Product = () => {
       </section>
 
       {/* Reviews Section - Enhanced */}
-      <section id="reviews" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto">
+      <section id="reviews" className="py-12 sm:py-16 lg:py-20 px-3 sm:px-4 md:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto w-full">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1195,8 +1201,8 @@ const Product = () => {
       </section>
 
       {/* FAQ Section - Enhanced */}
-      <section id="questions" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-4xl mx-auto">
+      <section id="questions" className="py-12 sm:py-16 lg:py-20 px-3 sm:px-4 md:px-6 lg:px-8 bg-white">
+        <div className="max-w-4xl mx-auto w-full">
           <motion.h2 
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-8 sm:mb-12 text-gray-900"
             initial={{ opacity: 0, y: 30 }}
@@ -1265,17 +1271,17 @@ const Product = () => {
       {/* Mobile Sticky CTA - Enhanced */}
       {showStickyBar && (
         <motion.div 
-          className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-2xl z-50 p-4"
+          className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-2xl z-50 p-3 sm:p-4"
           initial={{ y: 100 }}
           animate={{ y: 0 }}
           exit={{ y: 100 }}
         >
-          <div className="flex items-center gap-3 max-w-7xl mx-auto">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-baseline gap-2">
-                <span className="text-xl font-extrabold text-gray-900">AED {currentPrice?.price?.toFixed(2)}</span>
+          <div className="flex items-center gap-2 sm:gap-3 max-w-7xl mx-auto px-3 sm:px-4 w-full overflow-hidden">
+            <div className="flex-1 min-w-0 overflow-hidden">
+              <div className="flex items-baseline gap-1.5 sm:gap-2 flex-wrap">
+                <span className="text-lg sm:text-xl font-extrabold text-gray-900 whitespace-nowrap">AED {currentPrice?.price?.toFixed(2)}</span>
                 {currentPrice?.oldPrice && (
-                  <span className="text-sm text-gray-400 line-through">AED {currentPrice.oldPrice.toFixed(2)}</span>
+                  <span className="text-xs sm:text-sm text-gray-400 line-through whitespace-nowrap">AED {currentPrice.oldPrice.toFixed(2)}</span>
                 )}
               </div>
             </div>
@@ -1283,16 +1289,16 @@ const Product = () => {
             <motion.button
               onClick={addToCart}
               whileTap={{ scale: 0.95 }}
-              className="bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white px-5 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg flex-shrink-0"
+              className="bg-[#C8945C] hover:bg-[#B8844C] text-white px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 rounded-lg font-semibold flex items-center gap-1.5 sm:gap-2 shadow-lg shrink-0 text-xs sm:text-sm"
             >
-              <ShoppingCart className="w-5 h-5" />
-              <span className="hidden sm:inline">Add to Cart</span>
-              <span className="sm:hidden">Add</span>
+              <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+              <span className="hidden sm:inline whitespace-nowrap">Add to Cart</span>
+              <span className="sm:hidden whitespace-nowrap">Add</span>
             </motion.button>
             <motion.button
               onClick={handleBuyNow}
               whileTap={{ scale: 0.95 }}
-              className="bg-white border-2 border-[#C8945C] text-[#C8945C] px-4 py-3 rounded-xl font-bold flex-shrink-0"
+              className="bg-white border border-[#C8945C] text-[#C8945C] px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg font-semibold shrink-0 text-xs sm:text-sm whitespace-nowrap"
             >
               Buy
             </motion.button>

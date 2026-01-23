@@ -307,29 +307,23 @@ export default function PremiumCheckout({
           damping: 30,
           stiffness: 300
         }}
-        className="w-full sm:max-w-2xl lg:max-w-3xl bg-gradient-to-br from-[#FAF7F2] via-white to-[#F8F2EC] rounded-t-3xl sm:rounded-3xl shadow-2xl border-2 border-[#E8DFD0] max-h-[85vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
+        className="w-full sm:max-w-2xl lg:max-w-3xl bg-white rounded-t-2xl sm:rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-[#E8DFD0] max-h-[85vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
       >
-        {/* Premium Header */}
-        <div className="relative bg-gradient-to-r from-[#2D4A3E] via-[#3D5A4E] to-[#2D4A3E] px-4 sm:px-6 py-3 sm:py-5 border-b-2 border-[#C8945C]/30">
-          {/* Decorative Pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0" style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-2h-2v2h2zm0-4v-2h-2v2h2zm0-4v-2h-2v2h2zm0-4v-2h-2v2h2zm0-4v-2h-2v2h2zm0-4v-2h-2v2h2zm0-4v-2h-2v2h2zm0-4v-2h-2v2h2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}></div>
-          </div>
+        {/* Premium Corporate Header */}
+        <div className="relative bg-[#2D4A3E] px-5 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 border-b border-[#2D4A3E]/20">
 
           <div className="relative flex items-center justify-between">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-gradient-to-br from-[#C8945C] to-[#B8844C] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-xl">
-                {React.createElement(steps[currentStepIndex].icon, { className: "w-5 h-5 sm:w-7 sm:h-7 text-white" })}
+            <div className="flex items-center gap-4 sm:gap-5">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#C8945C] rounded-lg flex items-center justify-center shadow-sm">
+                {React.createElement(steps[currentStepIndex].icon, { className: "w-6 h-6 sm:w-7 sm:h-7 text-white" })}
               </div>
               <div>
-                <h2 className="text-lg sm:text-2xl font-bold text-white mb-0.5 sm:mb-1">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-1 tracking-tight">
                   {step === "summary" && "Order Summary"}
                   {step === "address" && "Delivery Information"}
                   {step === "payment" && "Secure Checkout"}
                 </h2>
-                <p className="text-[#C8945C] text-xs sm:text-sm font-medium">
+                <p className="text-white/70 text-xs sm:text-sm font-medium tracking-wide">
                   Step {currentStepIndex + 1} of {steps.length}
                 </p>
               </div>
@@ -337,36 +331,36 @@ export default function PremiumCheckout({
 
             <button
               onClick={onClose}
-              className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-all flex items-center justify-center group"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white/10 hover:bg-white/20 transition-all flex items-center justify-center group border border-white/10"
             >
               <X className="w-4 h-4 sm:w-5 sm:h-5 text-white group-hover:rotate-90 transition-transform" />
             </button>
           </div>
 
-          {/* Progress Steps */}
-          <div className="mt-4 sm:mt-6 flex items-center gap-2 sm:gap-3">
+          {/* Premium Progress Steps */}
+          <div className="mt-6 sm:mt-8 flex items-center gap-3 sm:gap-4">
             {steps.map((s, idx) => (
               <React.Fragment key={s.id}>
-                <div className="flex items-center gap-1.5 sm:gap-2 flex-1">
-                  <div className={`flex items-center gap-1.5 sm:gap-2 flex-1 ${idx <= currentStepIndex ? 'opacity-100' : 'opacity-40'}`}>
-                    <div className={`w-7 h-7 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all ${
+                <div className="flex items-center gap-2 flex-1">
+                  <div className={`flex items-center gap-2 flex-1 ${idx <= currentStepIndex ? 'opacity-100' : 'opacity-50'}`}>
+                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center transition-all ${
                       idx < currentStepIndex 
-                        ? 'bg-[#C8945C] text-white shadow-lg' 
+                        ? 'bg-[#C8945C] text-white shadow-sm' 
                         : idx === currentStepIndex 
-                        ? 'bg-[#C8945C] text-white shadow-lg scale-110' 
-                        : 'bg-white/20 text-white/60'
+                        ? 'bg-[#C8945C] text-white shadow-sm ring-2 ring-[#C8945C]/30' 
+                        : 'bg-white/10 text-white/50 border border-white/20'
                     }`}>
                       {idx < currentStepIndex ? (
-                        <CheckCircle className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+                        <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                       ) : (
-                        <span className="font-bold text-xs sm:text-sm">{idx + 1}</span>
+                        <span className="font-semibold text-xs sm:text-sm">{idx + 1}</span>
                       )}
                     </div>
-                    <span className="text-white font-medium text-xs sm:text-sm hidden sm:block">{s.label}</span>
+                    <span className="text-white font-medium text-xs sm:text-sm hidden sm:block tracking-wide">{s.label}</span>
                   </div>
                 </div>
                 {idx < steps.length - 1 && (
-                  <div className={`flex-1 h-0.5 sm:h-1 rounded-full transition-all ${
+                  <div className={`flex-1 h-px transition-all ${
                     idx < currentStepIndex ? 'bg-[#C8945C]' : 'bg-white/20'
                   }`}></div>
                 )}
@@ -375,8 +369,8 @@ export default function PremiumCheckout({
           </div>
         </div>
 
-        {/* Content Area */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-5 lg:px-6 py-4 sm:py-5 lg:py-6">
+        {/* Premium Content Area */}
+        <div className="flex-1 overflow-y-auto px-5 sm:px-6 lg:px-8 py-6 sm:py-8 bg-[#FAF7F2]">
           <AnimatePresence mode="wait">
             {/* SUMMARY STEP */}
             {step === "summary" && (
@@ -388,43 +382,41 @@ export default function PremiumCheckout({
                 exit="exit"
                 className="space-y-6"
               >
-                {/* Product Card - Premium Design */}
-                <div className="relative bg-white rounded-2xl p-5 sm:p-6 border-2 border-[#E8DFD0] shadow-xl overflow-hidden group hover:shadow-2xl transition-all">
-                  <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[#C8945C]/10 to-transparent rounded-bl-full"></div>
-                  <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-[#C8945C]/5 to-transparent rounded-tr-full"></div>
+                {/* Premium Product Card */}
+                <div className="relative bg-white rounded-xl p-6 sm:p-8 border border-[#E8DFD0] shadow-[0_4px_16px_rgba(0,0,0,0.06)] overflow-hidden group hover:shadow-[0_6px_24px_rgba(0,0,0,0.08)] transition-all">
                   
                   <div className="relative flex gap-3 sm:gap-4 lg:gap-6">
                     <div className="relative flex-shrink-0">
                       <img
                         src={product.images?.[0] || product.image}
-                        className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-xl sm:rounded-2xl border-2 border-[#E8DFD0] object-cover shadow-lg group-hover:scale-105 transition-transform"
+                        className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-lg border border-[#E8DFD0] object-cover shadow-sm group-hover:scale-[1.02] transition-transform"
                         alt={product.name}
                       />
-                      <div className="absolute -top-3 -right-3 bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-xl flex items-center gap-1">
+                      <div className="absolute -top-2 -right-2 bg-[#2D4A3E] text-white text-xs font-semibold px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1 tracking-wide">
                         <Star className="w-3 h-3 fill-white" />
                         Premium
                       </div>
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-base sm:text-xl lg:text-2xl font-bold text-[#2D4A3E] mb-2 sm:mb-3">{product.name || product.productName}</h3>
-                      <div className="space-y-1.5 sm:space-y-2 mb-3 sm:mb-4">
-                        <div className="flex items-center gap-2 text-xs sm:text-sm text-[#6B7C72]">
-                          <Package className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C8945C]" />
+                      <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[#2D4A3E] mb-3 sm:mb-4 tracking-tight">{product.name || product.productName}</h3>
+                      <div className="space-y-2 mb-4 sm:mb-5">
+                        <div className="flex items-center gap-2.5 text-sm text-[#6B7C72]">
+                          <Package className="w-4 h-4 text-[#C8945C]" />
                           <span>Size: <span className="font-semibold text-[#2D4A3E]">{selectedSize}g</span></span>
                         </div>
-                        <div className="flex items-center gap-2 text-xs sm:text-sm text-[#6B7C72]">
-                          <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C8945C]" />
+                        <div className="flex items-center gap-2.5 text-sm text-[#6B7C72]">
+                          <Sparkles className="w-4 h-4 text-[#C8945C]" />
                           <span>Quantity: <span className="font-semibold text-[#2D4A3E]">{quantity}</span></span>
                         </div>
                       </div>
                       
-                      <div className="flex items-baseline gap-2 sm:gap-3 flex-wrap">
-                        <span className="text-lg sm:text-2xl lg:text-3xl font-bold text-[#C8945C]">AED {currentPrice.price.toFixed(2)}</span>
+                      <div className="flex items-baseline gap-3 flex-wrap">
+                        <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2D4A3E] tracking-tight">AED {currentPrice.price.toFixed(2)}</span>
                         {currentPrice.oldPrice && (
                           <>
-                            <span className="text-xs sm:text-sm lg:text-lg text-gray-400 line-through">AED {currentPrice.oldPrice.toFixed(2)}</span>
-                            <span className="text-xs sm:text-sm font-semibold text-green-600 bg-green-50 px-2 py-1 rounded">
+                            <span className="text-base sm:text-lg lg:text-xl text-[#6B7C72] line-through font-light">AED {currentPrice.oldPrice.toFixed(2)}</span>
+                            <span className="text-xs sm:text-sm font-semibold text-white bg-[#2D4A3E] px-3 py-1 rounded-lg tracking-wide">
                               {Math.round(((currentPrice.oldPrice - currentPrice.price) / currentPrice.oldPrice) * 100)}% OFF
                             </span>
                           </>
@@ -434,54 +426,54 @@ export default function PremiumCheckout({
                   </div>
                 </div>
 
-                {/* Savings Banner */}
+                {/* Premium Savings Banner */}
                 {savings > 0 && (
                   <motion.div
-                    initial={{ scale: 0.95, opacity: 0 }}
+                    initial={{ scale: 0.98, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="bg-gradient-to-r from-[#C8945C] to-[#B8844C] rounded-2xl p-4 sm:p-5 text-white shadow-xl flex items-center justify-between gap-4"
+                    className="bg-[#2D4A3E] rounded-xl p-5 sm:p-6 text-white shadow-[0_4px_16px_rgba(45,74,62,0.2)] flex items-center justify-between gap-4"
                   >
-                    <div className="flex items-center gap-3 sm:gap-4">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
-                        <Award className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-[#C8945C]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Award className="w-6 h-6 text-[#C8945C]" />
                       </div>
                       <div>
-                        <p className="font-bold text-sm sm:text-base lg:text-lg">You're Saving!</p>
-                        <p className="text-xs sm:text-sm opacity-90">Premium quality at an incredible price</p>
+                        <p className="font-semibold text-base sm:text-lg tracking-wide">You're Saving</p>
+                        <p className="text-sm text-white/70 mt-0.5">Premium quality at an incredible price</p>
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <p className="text-lg sm:text-2xl lg:text-3xl font-bold">AED {savings.toFixed(2)}</p>
-                      <p className="text-xs sm:text-sm opacity-90">Off regular price</p>
+                      <p className="text-2xl sm:text-3xl font-bold tracking-tight">AED {savings.toFixed(2)}</p>
+                      <p className="text-xs sm:text-sm text-white/70 mt-0.5">Off regular price</p>
                     </div>
                   </motion.div>
                 )}
 
-                {/* Order Summary */}
-                <div className="bg-white rounded-2xl p-5 sm:p-6 border-2 border-[#E8DFD0] shadow-lg">
-                  <h3 className="font-bold text-[#2D4A3E] text-base sm:text-lg lg:text-xl mb-4 sm:mb-5 flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-[#C8945C]" />
+                {/* Premium Order Summary */}
+                <div className="bg-white rounded-xl p-6 sm:p-8 border border-[#E8DFD0] shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
+                  <h3 className="font-bold text-[#2D4A3E] text-lg sm:text-xl mb-5 sm:mb-6 flex items-center gap-2.5 tracking-tight">
+                    <CreditCard className="w-5 h-5 text-[#C8945C]" />
                     Order Summary
                   </h3>
 
-                  <div className="space-y-3 sm:space-y-4">
-                    <div className="flex justify-between items-center pb-3 sm:pb-4 border-b-2 border-[#E8DFD0]">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center pb-4 border-b border-[#E8DFD0]">
                       <span className="text-[#6B7C72] text-sm sm:text-base">Subtotal ({quantity} {quantity === 1 ? 'item' : 'items'})</span>
-                      <span className="font-semibold text-[#2D4A3E] text-sm sm:text-base lg:text-lg">AED {subtotal.toFixed(2)}</span>
+                      <span className="font-semibold text-[#2D4A3E] text-base sm:text-lg">AED {subtotal.toFixed(2)}</span>
                     </div>
 
-                    <div className="flex justify-between items-center pb-3 sm:pb-4 border-b-2 border-[#E8DFD0]">
-                      <div className="flex items-center gap-2">
-                        <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#C8945C]" />
+                    <div className="flex justify-between items-center pb-4 border-b border-[#E8DFD0]">
+                      <div className="flex items-center gap-2.5">
+                        <Truck className="w-5 h-5 text-[#C8945C]" />
                         <span className="text-[#6B7C72] text-sm sm:text-base">Express Shipping</span>
                       </div>
-                      <span className="font-semibold text-green-600 text-sm sm:text-base lg:text-lg">FREE</span>
+                      <span className="font-semibold text-[#10B981] text-base sm:text-lg">FREE</span>
                     </div>
 
-                    <div className="bg-gradient-to-br from-[#FAF7F2] to-[#F8F2EC] rounded-xl p-4 sm:p-5 border-2 border-[#C8945C]/20">
+                    <div className="bg-[#FAF7F2] rounded-lg p-5 sm:p-6 border border-[#E8DFD0]">
                       <div className="flex justify-between items-center">
-                        <span className="font-bold text-[#2D4A3E] text-base sm:text-lg lg:text-xl">Total Amount</span>
-                        <span className="font-bold text-[#C8945C] text-lg sm:text-2xl lg:text-3xl">
+                        <span className="font-bold text-[#2D4A3E] text-lg sm:text-xl tracking-tight">Total Amount</span>
+                        <span className="font-bold text-[#2D4A3E] text-2xl sm:text-3xl tracking-tight">
                           AED {finalTotal.toFixed(2)}
                         </span>
                       </div>
@@ -489,16 +481,16 @@ export default function PremiumCheckout({
                   </div>
                 </div>
 
-                {/* Trust Badges */}
-                <div className="grid grid-cols-3 gap-4">
+                {/* Premium Trust Badges */}
+                <div className="grid grid-cols-3 gap-3 sm:gap-4">
                   {[
                     { icon: Shield, title: "Secure", desc: "256-bit SSL" },
                     { icon: Truck, title: "Fast", desc: "2-3 Days" },
                     { icon: Award, title: "Premium", desc: "Quality" }
                   ].map((badge, idx) => (
-                    <div key={idx} className="bg-white rounded-xl p-4 border border-[#E8DFD0] text-center hover:shadow-lg transition-shadow">
-                      <badge.icon className="w-6 h-6 text-[#C8945C] mx-auto mb-2" />
-                      <p className="text-xs font-semibold text-[#2D4A3E]">{badge.title}</p>
+                    <div key={idx} className="bg-white rounded-lg p-4 sm:p-5 border border-[#E8DFD0] text-center hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all">
+                      <badge.icon className="w-5 h-5 sm:w-6 sm:h-6 text-[#C8945C] mx-auto mb-2.5" />
+                      <p className="text-xs sm:text-sm font-semibold text-[#2D4A3E] tracking-wide">{badge.title}</p>
                       <p className="text-xs text-[#6B7C72] mt-1">{badge.desc}</p>
                     </div>
                   ))}
@@ -516,23 +508,23 @@ export default function PremiumCheckout({
                 exit="exit"
                 className="space-y-6"
               >
-                {/* Delivery Info Banner */}
-                <div className="bg-gradient-to-br from-[#C8945C]/10 to-[#C8945C]/5 border-2 border-[#C8945C]/20 rounded-2xl p-5 flex items-start gap-4">
-                  <div className="w-12 h-12 bg-[#C8945C] rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <Truck className="w-6 h-6 text-white" />
+                {/* Premium Delivery Info Banner */}
+                <div className="bg-[#FAF7F2] border border-[#E8DFD0] rounded-xl p-5 sm:p-6 flex items-start gap-4">
+                  <div className="w-12 h-12 bg-[#C8945C]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Truck className="w-6 h-6 text-[#C8945C]" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#2D4A3E] mb-1 text-sm sm:text-lg">Fast & Free Delivery</h4>
-                    <p className="text-xs sm:text-sm text-[#6B7C72]">
+                    <h4 className="font-semibold text-[#2D4A3E] mb-1.5 text-base sm:text-lg tracking-tight">Fast & Free Delivery</h4>
+                    <p className="text-sm text-[#6B7C72] leading-relaxed">
                       We deliver across UAE. Your premium dog chews will arrive in 2-3 business days with express shipping.
                     </p>
                   </div>
                 </div>
 
-                {/* Contact Information */}
-                <div className="bg-white rounded-2xl p-6 border-2 border-[#E8DFD0] shadow-lg">
-                  <h3 className="font-bold text-[#2D4A3E] text-base sm:text-lg mb-4 sm:mb-5 flex items-center gap-2">
-                    <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-[#C8945C]" />
+                {/* Premium Contact Information */}
+                <div className="bg-white rounded-xl p-6 sm:p-8 border border-[#E8DFD0] shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
+                  <h3 className="font-bold text-[#2D4A3E] text-lg sm:text-xl mb-5 sm:mb-6 flex items-center gap-2.5 tracking-tight">
+                    <Mail className="w-5 h-5 text-[#C8945C]" />
                     Contact Information
                   </h3>
                   
@@ -550,7 +542,7 @@ export default function PremiumCheckout({
                             setAddress({ ...address, name: e.target.value });
                             if (errors.name) setErrors({ ...errors, name: null });
                           }}
-                          className={`w-full border-2 ${errors.name ? 'border-red-400' : 'border-[#E8DFD0]'} p-3 sm:p-4 rounded-xl bg-white text-[#2D4A3E] placeholder:text-[#6B7C72] focus:border-[#C8945C] focus:outline-none transition-colors text-sm sm:text-base`}
+                          className={`w-full border ${errors.name ? 'border-red-400' : 'border-[#E8DFD0]'} p-3 sm:p-4 rounded-lg bg-white text-[#2D4A3E] placeholder:text-[#6B7C72] focus:border-[#C8945C] focus:outline-none focus:ring-1 focus:ring-[#C8945C]/20 transition-all text-sm sm:text-base`}
                         />
                         {errors.name && (
                           <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
@@ -576,7 +568,7 @@ export default function PremiumCheckout({
                               setAddress({ ...address, phone: e.target.value });
                               if (errors.phone) setErrors({ ...errors, phone: null });
                             }}
-                            className={`w-full border-2 ${errors.phone ? 'border-red-400' : 'border-[#E8DFD0]'} pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 rounded-xl bg-white text-[#2D4A3E] placeholder:text-[#6B7C72] focus:border-[#C8945C] focus:outline-none transition-colors text-sm sm:text-base`}
+                            className={`w-full border ${errors.phone ? 'border-red-400' : 'border-[#E8DFD0]'} pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 rounded-lg bg-white text-[#2D4A3E] placeholder:text-[#6B7C72] focus:border-[#C8945C] focus:outline-none focus:ring-1 focus:ring-[#C8945C]/20 transition-all text-sm sm:text-base`}
                           />
                           {errors.phone && (
                             <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
@@ -615,10 +607,10 @@ export default function PremiumCheckout({
                   </div>
                 </div>
 
-                {/* Shipping Address */}
-                <div className="bg-white rounded-2xl p-6 border-2 border-[#E8DFD0] shadow-lg">
-                  <h3 className="font-bold text-[#2D4A3E] text-base sm:text-lg mb-4 sm:mb-5 flex items-center gap-2">
-                    <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[#C8945C]" />
+                {/* Premium Shipping Address */}
+                <div className="bg-white rounded-xl p-6 sm:p-8 border border-[#E8DFD0] shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
+                  <h3 className="font-bold text-[#2D4A3E] text-lg sm:text-xl mb-5 sm:mb-6 flex items-center gap-2.5 tracking-tight">
+                    <MapPin className="w-5 h-5 text-[#C8945C]" />
                     Shipping Address
                   </h3>
                   
@@ -637,7 +629,7 @@ export default function PremiumCheckout({
                             setAddress({ ...address, street: e.target.value });
                             if (errors.street) setErrors({ ...errors, street: null });
                           }}
-                          className={`w-full border-2 ${errors.street ? 'border-red-400' : 'border-[#E8DFD0]'} pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 rounded-xl bg-white text-[#2D4A3E] placeholder:text-[#6B7C72] focus:border-[#C8945C] focus:outline-none transition-colors text-sm sm:text-base`}
+                          className={`w-full border ${errors.street ? 'border-red-400' : 'border-[#E8DFD0]'} pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 rounded-lg bg-white text-[#2D4A3E] placeholder:text-[#6B7C72] focus:border-[#C8945C] focus:outline-none focus:ring-1 focus:ring-[#C8945C]/20 transition-all text-sm sm:text-base`}
                         />
                         {errors.street && (
                           <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
@@ -763,7 +755,7 @@ export default function PremiumCheckout({
                           value={deliveryInstructions}
                           onChange={(e) => setDeliveryInstructions(e.target.value)}
                           rows={3}
-                          className="w-full border-2 border-[#E8DFD0] pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 rounded-xl bg-white text-[#2D4A3E] placeholder:text-[#6B7C72] focus:border-[#C8945C] focus:outline-none transition-colors text-sm sm:text-base resize-none"
+                          className="w-full border border-[#E8DFD0] pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 rounded-lg bg-white text-[#2D4A3E] placeholder:text-[#6B7C72] focus:border-[#C8945C] focus:outline-none focus:ring-1 focus:ring-[#C8945C]/20 transition-all text-sm sm:text-base resize-none"
                         />
                       </div>
                     </div>
@@ -782,44 +774,44 @@ export default function PremiumCheckout({
                 exit="exit"
                 className="space-y-6"
               >
-                {/* Secure Payment Header */}
-                <div className="bg-gradient-to-br from-[#2D4A3E] to-[#3D5A4E] rounded-2xl p-6 text-white shadow-xl">
-                  <div className="flex items-center gap-4 mb-5">
-                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                      <Lock className="w-7 h-7" />
+                {/* Premium Secure Payment Header */}
+                <div className="bg-[#2D4A3E] rounded-xl p-6 sm:p-8 text-white shadow-[0_4px_16px_rgba(45,74,62,0.2)]">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-14 h-14 bg-[#C8945C]/20 rounded-lg flex items-center justify-center">
+                      <Lock className="w-7 h-7 text-[#C8945C]" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-xl">Secure Payment</h4>
-                      <p className="text-sm text-[#C8945C]">Powered by Nomod • Bank-level encryption</p>
+                      <h4 className="font-bold text-xl sm:text-2xl tracking-tight">Secure Payment</h4>
+                      <p className="text-sm text-white/70 mt-1">Powered by Nomod • Bank-level encryption</p>
                     </div>
                   </div>
                   
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-5 border border-white/20">
+                  <div className="bg-white/10 rounded-lg p-5 sm:p-6 border border-white/10">
                     <div className="flex justify-between items-center">
-                      <span className="text-white/90 text-sm sm:text-lg">Total Amount</span>
-                      <span className="text-2xl sm:text-4xl font-bold">AED {finalTotal.toFixed(2)}</span>
+                      <span className="text-white/90 text-base sm:text-lg font-medium">Total Amount</span>
+                      <span className="text-3xl sm:text-4xl font-bold tracking-tight">AED {finalTotal.toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Payment Security Features */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white rounded-xl p-5 border-2 border-[#E8DFD0] hover:shadow-lg transition-shadow">
-                    <Shield className="w-8 h-8 text-[#C8945C] mb-3" />
-                    <p className="font-semibold text-[#2D4A3E] text-sm mb-1">256-bit SSL</p>
+                {/* Premium Payment Security Features */}
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  <div className="bg-white rounded-lg p-5 border border-[#E8DFD0] hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all">
+                    <Shield className="w-7 h-7 text-[#C8945C] mb-3" />
+                    <p className="font-semibold text-[#2D4A3E] text-sm mb-1 tracking-wide">256-bit SSL</p>
                     <p className="text-xs text-[#6B7C72]">Bank-grade encryption</p>
                   </div>
-                  <div className="bg-white rounded-xl p-5 border-2 border-[#E8DFD0] hover:shadow-lg transition-shadow">
-                    <CheckCircle className="w-8 h-8 text-[#C8945C] mb-3" />
-                    <p className="font-semibold text-[#2D4A3E] text-sm mb-1">PCI Compliant</p>
+                  <div className="bg-white rounded-lg p-5 border border-[#E8DFD0] hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all">
+                    <CheckCircle className="w-7 h-7 text-[#C8945C] mb-3" />
+                    <p className="font-semibold text-[#2D4A3E] text-sm mb-1 tracking-wide">PCI Compliant</p>
                     <p className="text-xs text-[#6B7C72]">Secure transactions</p>
                   </div>
                 </div>
 
-                {/* Order Review */}
-                <div className="bg-white rounded-2xl p-6 border-2 border-[#E8DFD0] shadow-lg">
-                  <h4 className="font-bold text-[#2D4A3E] mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
-                    <Package className="w-4 h-4 sm:w-5 sm:h-5 text-[#C8945C]" />
+                {/* Premium Order Review */}
+                <div className="bg-white rounded-xl p-6 sm:p-8 border border-[#E8DFD0] shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
+                  <h4 className="font-bold text-[#2D4A3E] mb-4 sm:mb-5 text-lg sm:text-xl flex items-center gap-2.5 tracking-tight">
+                    <Package className="w-5 h-5 text-[#C8945C]" />
                     Order Review
                   </h4>
                   <div className="space-y-3">
@@ -841,17 +833,17 @@ export default function PremiumCheckout({
                         {address.street ? `${address.street}, ${address.city}` : "..."}
                       </span>
                     </div>
-                    <div className="pt-3 border-t-2 border-[#E8DFD0]">
+                    <div className="pt-4 border-t border-[#E8DFD0]">
                       <div className="flex justify-between items-center">
-                        <span className="font-bold text-[#2D4A3E] text-base sm:text-lg">Total</span>
-                        <span className="font-bold text-[#C8945C] text-xl sm:text-2xl">AED {finalTotal.toFixed(2)}</span>
+                        <span className="font-bold text-[#2D4A3E] text-lg sm:text-xl tracking-tight">Total</span>
+                        <span className="font-bold text-[#2D4A3E] text-2xl sm:text-3xl tracking-tight">AED {finalTotal.toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Terms & Conditions */}
-                <div className="bg-white rounded-xl p-5 border-2 border-[#E8DFD0]">
+                {/* Premium Terms & Conditions */}
+                <div className="bg-white rounded-lg p-5 sm:p-6 border border-[#E8DFD0] shadow-sm">
                   <label className="flex items-start gap-3 cursor-pointer">
                     <input
                       type="checkbox"
@@ -860,7 +852,7 @@ export default function PremiumCheckout({
                         setAgreeToTerms(e.target.checked);
                         if (errors.terms) setErrors({ ...errors, terms: null });
                       }}
-                      className="mt-1 w-5 h-5 rounded border-2 border-[#C8945C] text-[#C8945C] focus:ring-[#C8945C] cursor-pointer"
+                      className="mt-1 w-5 h-5 rounded border border-[#E8DFD0] text-[#C8945C] focus:ring-1 focus:ring-[#C8945C]/20 cursor-pointer"
                     />
                     <div className="flex-1">
                       <p className="text-sm text-[#2D4A3E]">
@@ -880,14 +872,14 @@ export default function PremiumCheckout({
           </AnimatePresence>
         </div>
 
-        {/* Footer Actions */}
-        <div className="px-4 sm:px-5 lg:px-6 py-3 sm:py-4 lg:py-5 bg-white border-t-2 border-[#E8DFD0]">
+        {/* Premium Footer Actions */}
+        <div className="px-5 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 bg-white border-t border-[#E8DFD0]">
           <div className="flex gap-4">
             {step !== "summary" && (
               <button
                 onClick={handleBack}
                 disabled={isSubmitting}
-                className="flex-1 border-2 border-[#E8DFD0] py-3 sm:py-4 px-4 rounded-xl font-bold bg-white text-[#2D4A3E] hover:bg-[#FAF7F2] transition-all flex items-center justify-center gap-2 disabled:opacity-50 text-sm sm:text-base min-w-0"
+                className="flex-1 border border-[#E8DFD0] py-3 sm:py-4 px-4 rounded-lg font-semibold bg-white text-[#2D4A3E] hover:bg-[#FAF7F2] transition-all flex items-center justify-center gap-2 disabled:opacity-50 text-sm sm:text-base min-w-0 tracking-wide shadow-sm"
               >
                 <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
                 <span className="truncate">Back</span>
@@ -897,7 +889,7 @@ export default function PremiumCheckout({
             {step !== "payment" ? (
                 <button
                   onClick={handleNext}
-                  className="flex-1 bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white py-3 sm:py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 text-sm sm:text-base"
+                  className="flex-1 bg-[#C8945C] hover:bg-[#B8844C] text-white py-3 sm:py-4 rounded-lg font-semibold shadow-[0_4px_12px_rgba(200,148,92,0.3)] hover:shadow-[0_6px_16px_rgba(200,148,92,0.4)] transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 text-sm sm:text-base tracking-wide"
                 >
                   Continue
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -907,7 +899,7 @@ export default function PremiumCheckout({
                 <button
                   onClick={handleCompletePayment}
                   disabled={isSubmitting || !agreeToTerms}
-                  className={`${isDevelopment ? 'w-full sm:flex-1' : 'flex-1'} bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white py-3 sm:py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base`}
+                  className={`${isDevelopment ? 'w-full sm:flex-1' : 'flex-1'} bg-[#C8945C] hover:bg-[#B8844C] text-white py-3 sm:py-4 rounded-lg font-semibold shadow-[0_4px_12px_rgba(200,148,92,0.3)] hover:shadow-[0_6px_16px_rgba(200,148,92,0.4)] transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base tracking-wide`}
                 >
                   {isSubmitting ? (
                     <>
@@ -925,7 +917,7 @@ export default function PremiumCheckout({
                   <button
                     onClick={handleTestPayment}
                     disabled={isSubmitting || !agreeToTerms}
-                    className="w-full sm:flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 sm:py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                    className="w-full sm:flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 sm:py-4 rounded-lg font-semibold shadow-[0_4px_12px_rgba(37,99,235,0.3)] hover:shadow-[0_6px_16px_rgba(37,99,235,0.4)] transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base tracking-wide"
                     title="Test payment without actual transaction"
                   >
                     {isSubmitting ? (

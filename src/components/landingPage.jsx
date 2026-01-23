@@ -136,8 +136,7 @@ const Index = () => {
   const stats = [
     { value: 1000, label: "Happy Dogs", icon: Heart, suffix: "+" },
     { value: 3, label: "Countries", icon: Globe },
-    { value: 99, label: "Satisfaction", icon: Award, suffix: "%" },
-    { value: 1, label: "Vet Recommended", icon: Shield, prefix: "#" }
+    { value: 99, label: "Satisfaction", icon: Award, suffix: "%" }
   ];
 
   const testimonials = [
@@ -195,7 +194,6 @@ const Index = () => {
     { icon: Truck, title: "Free Shipping", desc: "On all orders" },
     { icon: Lock, title: "30-days guarantee", desc: "Full refund, no questions on unopened packets" },
     { icon: Package, title: "Buy in bulk & Save", desc: "28.5% off when ordering 5 packets or more" },
-    { icon: Gift, title: "Free Sample", desc: "With every order" }
   ];
 
   const transformationSteps = [
@@ -407,11 +405,11 @@ const Index = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-                  <span>30-days money back guarantee</span>
+                  <span>10-days money back guarantee</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-                  <span>Vet Approved</span>
+                  <span>Customer Approved</span>
                 </div>
               </motion.div>
             </motion.div>
@@ -518,7 +516,7 @@ const Index = () => {
       {/* Trust Bar */}
       <section className="py-8 sm:py-10 bg-gray-50 border-y border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {guarantees.map((item, idx) => (
               <motion.div
                 key={idx}
@@ -544,7 +542,7 @@ const Index = () => {
       {/* Stats Section */}
       <section className="py-16 sm:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
             {stats.map((stat, idx) => (
               <CountUpStat
                 key={idx}
@@ -915,7 +913,7 @@ const Index = () => {
             </div>
             
             <p className="text-white/80 mt-6 sm:mt-8 text-sm sm:text-base">
-              Free shipping • 30-day guarantee • Cancel anytime
+              Free shipping • 10-day guarantee • Cancel anytime
             </p>
           </motion.div>
         </div>
