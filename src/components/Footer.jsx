@@ -7,7 +7,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-foreground text-muted-foreground py-10 px-4 sm:px-6 lg:px-12 relative">
+    <footer className="bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white text-muted-foreground py-10 px-4 sm:px-6 lg:px-12 relative">
       <div className="max-w-[1200px] mx-auto">
 
         {/* Top Row */}
