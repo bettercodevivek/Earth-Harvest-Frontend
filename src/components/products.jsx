@@ -300,23 +300,18 @@ const Product = () => {
 
 
   const features = [
-    { icon: Shield, title: "Vet Formulated", desc: "Developed with leading veterinary nutritionists" },
     { icon: Leaf, title: "100% Natural", desc: "No artificial colors, flavors, or preservatives" },
     { icon: Award, title: "Human Grade", desc: "Every ingredient meets human food standards" },
-    { icon: Heart, title: "Complete Nutrition", desc: "47 essential nutrients in every serving" },
-    { icon: Zap, title: "High Energy", desc: "Optimal protein levels for active dogs" },
+    { icon: Heart, title: "Complete Nutrition", desc: "All essential nutrients in every serving" },
+    { icon: Zap, title: "Optimal Protein", desc: "Optimal protein levels for active dogs" },
     { icon: RotateCcw, title: "Easy Digest", desc: "Probiotics for healthy gut flora" },
   ];
 
   const nutritionFacts = [
-    { name: "Crude Protein", value: "32% min", bar: 85 },
-    { name: "Crude Fat", value: "18% min", bar: 60 },
-    { name: "Crude Fiber", value: "4% max", bar: 20 },
-    { name: "Moisture", value: "10% max", bar: 30 },
-    { name: "Omega-3 Fatty Acids", value: "0.5% min", bar: 40 },
-    { name: "Omega-6 Fatty Acids", value: "3% min", bar: 55 },
-    { name: "Glucosamine", value: "400mg/kg min", bar: 45 },
-    { name: "Chondroitin", value: "200mg/kg min", bar: 35 },
+    { name: "Crude Protein", value: "69% min", bar: 85 },
+    { name: "Crude Fat", value: "4% max", bar: 60 },
+    { name: "Ash", value: "7% max", bar: 20 },
+    { name: "Moisture", value: "14% max", bar: 30 },
   ];
 
   const ingredients = [
@@ -881,7 +876,6 @@ const Product = () => {
               { id: 'description', label: 'Description' },
               { id: 'ingredients', label: 'Ingredients' },
               { id: 'nutrition', label: 'Nutrition Facts' },
-              { id: 'feeding', label: 'Feeding Guide' },
             ].map((tab) => (
               <motion.button
                 key={tab.id}
@@ -977,7 +971,7 @@ const Product = () => {
                     ))}
                   </div>
 
-                  <div className="space-y-3">
+                  {/* <div className="space-y-3">
                     <div className="bg-card border border-border rounded-xl p-6">
                       <h4 className="font-bold flex items-center gap-2">
                         <Award className="w-5 h-5 text-primary" />
@@ -992,7 +986,7 @@ const Product = () => {
                       <h4 className="font-bold">Calorie Content</h4>
                       <p className="text-2xl font-bold text-primary mt-1">3,650 kcal/kg</p>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </motion.div>
             )}

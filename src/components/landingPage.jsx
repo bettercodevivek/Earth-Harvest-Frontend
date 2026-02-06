@@ -20,6 +20,9 @@ const Index = () => {
   const [quantity, setQuantity] = useState(1);
   const { showLoginModal, setShowLoginModal } = useAuth();
   const [imageDirection, setImageDirection] = useState(1);
+  const [testimonials, setTestimonials] = useState([]);
+  const [productRating, setProductRating] = useState(4.9);
+  const [productReviews, setProductReviews] = useState(1000);
   
   const { scrollYProgress } = useScroll();
   const heroScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
@@ -27,7 +30,11 @@ const Index = () => {
 
   const heroImages = [
     {
-      src: "https://res.cloudinary.com/dpc7tj2ze/image/upload/v1765534823/20251202_0058_Luxurious_Dog_Chew_Scene_remix_01kbdp3v53er4tx9gv6h3nf06c_zm6nbh.png",
+      src: "https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770408590/20260207_0136_Image_Generation_remix_01kgt8z4neftyredvv4898g1ms_kdhdvp.png",
+      alt: "Energetic German Shepherd"
+    },
+    {
+      src: "https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770407267/1000095094_yp3ltw.jpg",
       alt: "Happy Golden Retriever"
     },
     {
@@ -35,7 +42,7 @@ const Index = () => {
       alt: "Healthy Labrador"
     },
     {
-      src: "https://res.cloudinary.com/dpc7tj2ze/image/upload/v1765534823/20251202_0045_Majestic_Golden_Retriever_simple_compose_01kbdnbbh8fmm8xrwxagafwra8_zexv3d.png",
+      src: "https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770408590/20260207_0138_Image_Generation_remix_01kgt91ngdf6ks4zw3rtggg5wc_mclxzy.png",
       alt: "Energetic German Shepherd"
     },
   ];
@@ -107,7 +114,7 @@ const Index = () => {
       await apiFetch(`${API_BASE}/cart/add`, {
         method: "POST",
         body: JSON.stringify({
-          productId: "65f9e8c2f4c1a8b345456789",
+          productId: "695a7c123d10f91ab8d66f03",
           size: selectedSize,
           quantity
         })
@@ -133,31 +140,54 @@ const Index = () => {
     }
   }, []);
 
+  // Fetch product reviews from database
+  useEffect(() => {
+    const fetchProductReviews = async () => {
+      try {
+        const productId = "695a7c123d10f91ab8d66f03"; // Product ID
+        const response = await apiFetch(`/products/${productId}`);
+        
+        if (response.success && response.data) {
+          const product = response.data;
+          
+          // Update product stats
+          if (product.rating) {
+            setProductRating(product.rating);
+          }
+          if (product.totalReviews) {
+            setProductReviews(product.totalReviews);
+          }
+          
+          // Transform reviews to testimonials format
+          if (product.reviews && product.reviews.length > 0) {
+            const transformedTestimonials = product.reviews
+              .slice(0, 3) // Take first 3 reviews
+              .map(review => ({
+                text: review.content || review.title || "",
+                author: review.userName || "Anonymous",
+                role: review.dogBreed 
+                  ? `${review.dogBreed}${review.sizePurchased ? ` • ${review.sizePurchased}` : ''}`
+                  : review.sizePurchased || "Pet Parent",
+                rating: review.rating || 5
+              }))
+              .filter(t => t.text); // Filter out empty reviews
+            
+            setTestimonials(transformedTestimonials);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch product reviews:", err);
+        // Keep default testimonials if fetch fails
+      }
+    };
+    
+    fetchProductReviews();
+  }, []);
+
   const stats = [
     { value: 1000, label: "Happy Dogs", icon: Heart, suffix: "+" },
     { value: 3, label: "Countries", icon: Globe },
     { value: 99, label: "Satisfaction", icon: Award, suffix: "%" }
-  ];
-
-  const testimonials = [
-    {
-      text: "After 3 weeks on Earth & Harvest Complete, Max's coat is shinier than ever. His energy levels are through the roof, and he actually gets excited for meal time now!",
-      author: "Dr. Sarah Mitchell",
-      role: "Veterinarian & Golden Retriever Owner",
-      rating: 5
-    },
-    {
-      text: "I've recommended Earth & Harvest to over 500 clients this year. The results speak for themselves - healthier coats, better digestion, and more vitality.",
-      author: "Marcus Chen",
-      role: "Professional Dog Trainer",
-      rating: 5
-    },
-    {
-      text: "Switching our entire rescue facility to Earth & Harvest reduced health issues by 40%. It's now the only food we trust for our 200+ dogs.",
-      author: "Jennifer Rodriguez",
-      role: "Rescue Facility Director",
-      rating: 5
-    },
   ];
 
   const ingredients = [
@@ -350,14 +380,14 @@ const Index = () => {
                     ))}
                   </div>
                   <div className="ml-2">
-                    <span className="text-xl sm:text-2xl font-bold text-gray-900">{product.rating}</span>
+                    <span className="text-xl sm:text-2xl font-bold text-gray-900">{productRating.toFixed(1)}</span>
                     <span className="text-gray-500 text-sm ml-1">/5</span>
                   </div>
                 </div>
                 <div className="h-6 w-px bg-gray-300 hidden sm:block" />
                 <div className="hidden sm:block">
                   <p className="text-sm text-gray-500">Trusted by</p>
-                  <p className="text-base sm:text-lg font-semibold text-gray-900">{product.reviews.toLocaleString()}+ Pet Parents</p>
+                  <p className="text-base sm:text-lg font-semibold text-gray-900">{productReviews.toLocaleString()}+ Pet Parents</p>
                 </div>
               </motion.div>
 
@@ -796,7 +826,7 @@ const Index = () => {
           </motion.div>
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {testimonials.map((t, idx) => (
+            {testimonials.length > 0 ? testimonials.map((t, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 30 }}
@@ -821,7 +851,11 @@ const Index = () => {
                   </div>
                 </div>
               </motion.div>
-            ))}
+            )) : (
+              <div className="col-span-full text-center py-8">
+                <p className="text-gray-500">Loading reviews...</p>
+              </div>
+            )}
           </div>
 
           <motion.div
