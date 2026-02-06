@@ -937,7 +937,7 @@ const Index = () => {
               Give Your Dog The Best
             </h2>
             <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl mx-auto">
-              Join 1,000+ dog parents who made the switch. 90-day money-back guarantee.
+              Join 1,000+ dog parents who made the switch. 10-day money-back guarantee.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

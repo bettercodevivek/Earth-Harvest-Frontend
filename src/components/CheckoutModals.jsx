@@ -142,144 +142,6 @@ export default function PremiumCheckout({
     }
   };
 
-  const isDevelopment = import.meta.env.DEV || window.location.hostname === 'localhost';
-
-  const handleTestPayment = async () => {
-    if (!validatePayment()) return;
-    
-    setIsSubmitting(true);
-    try {
-      // Validate all required fields before proceeding
-      if (!currentPrice || !currentPrice.price) {
-        throw new Error("Please select a product size");
-      }
-
-      if (!selectedSize) {
-        throw new Error("Please select a size");
-      }
-
-      if (!quantity || quantity < 1) {
-        throw new Error("Please select a quantity");
-      }
-
-      // Validate address fields
-      if (!address.street || !address.city) {
-        throw new Error("Please fill in all required address fields");
-      }
-
-      // Get productId - check multiple possible fields including prop
-      const productIdValue = productId || product?._id || product?.id;
-      
-      if (!productIdValue) {
-        console.error("Product object:", product);
-        console.error("ProductId prop:", productId);
-        console.error("Available product fields:", Object.keys(product || {}));
-        throw new Error("Product ID is missing. Please refresh the page and try again.");
-      }
-
-      console.log("Using productId for order:", productIdValue);
-
-      // Normalize phone number (remove spaces) before storing
-      const normalizedPhone = address.phone ? address.phone.replace(/\s+/g, '') : address.phone;
-      // Update address with email and normalized phone
-      const completeAddress = {
-        ...address,
-        phone: normalizedPhone, // Use normalized phone (spaces removed)
-        email: email,
-        deliveryInstructions: deliveryInstructions
-      };
-      setAddress(completeAddress);
-      
-      // First create the order (same as regular payment)
-      const amount = currentPrice.price * quantity;
-      const formattedAddress = {
-        street: address.street,
-        city: address.city,
-        state: address.state || "",
-        country: address.country || "United Arab Emirates",
-        zipCode: address.zipcode ? parseInt(address.zipcode) : undefined,
-        phone: normalizedPhone
-      };
-
-      console.log("Creating order with:", {
-        productId: productIdValue,
-        sizeSelected: selectedSize,
-        quantity: quantity,
-        address: formattedAddress,
-        amount: amount,
-        product: product
-      });
-
-      const orderRes = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:5000/api'}/order/create`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          productId: productIdValue,
-          sizeSelected: selectedSize.toString(),
-          quantity: parseInt(quantity),
-          address: {
-            ...formattedAddress,
-            phone: normalizedPhone
-          },
-          amount: parseFloat(amount)
-        })
-      });
-
-      const orderData = await orderRes.json();
-      
-      console.log("Order creation response:", orderData);
-      
-      if (!orderData.success) {
-        console.error("Order creation failed:", orderData);
-        throw new Error(orderData.message || "Failed to create order");
-      }
-
-      if (!orderData.data) {
-        console.error("Order data missing in response:", orderData);
-        throw new Error("Order created but data is missing");
-      }
-
-      const createdOrderId = orderData.data._id || orderData.data.orderId;
-      
-      if (!createdOrderId) {
-        console.error("Order ID missing in response:", orderData);
-        throw new Error("Order created but ID is missing");
-      }
-      
-      console.log("Created order ID:", createdOrderId);
-
-      // Then call test payment endpoint
-      const response = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:5000/api'}/payment/test`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          orderId: createdOrderId
-        })
-      });
-
-      const data = await response.json();
-      
-      console.log("Test payment response:", data);
-      
-      if (data.success && data.data && data.data.order) {
-        const orderId = data.data.order._id || data.data.order.orderId;
-        // Show success message and redirect
-        window.location.href = `${window.location.origin}/payment-success?orderId=${orderId}&test=true`;
-      } else {
-        throw new Error(data.message || 'Test payment failed');
-      }
-    } catch (error) {
-      console.error("Test payment error:", error);
-      alert(error.message || "Test payment failed. Please try again.");
-      setIsSubmitting(false);
-    }
-  };
 
   const stepVariants = {
     hidden: { opacity: 0, x: 20 },
@@ -867,7 +729,7 @@ export default function PremiumCheckout({
                 className="flex-1 border border-[#E8DFD0] py-3 sm:py-4 px-4 rounded-lg font-semibold bg-white text-[#2D4A3E] hover:bg-[#FAF7F2] transition-all flex items-center justify-center gap-2 disabled:opacity-50 text-sm sm:text-base min-w-0 tracking-wide shadow-sm"
               >
                 <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                <span className="truncate">Back</span>
+                {/* <span className="truncate">Back</span> */}
               </button>
             )}
 
@@ -880,11 +742,11 @@ export default function PremiumCheckout({
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
             ) : (
-              <div className={`flex gap-4 ${isDevelopment ? 'flex-col sm:flex-row' : ''} w-full`}>
+              <div className="flex gap-4 w-full">
                 <button
                   onClick={handleCompletePayment}
                   disabled={isSubmitting || !agreeToTerms}
-                  className={`${isDevelopment ? 'w-full sm:flex-1' : 'flex-1'} bg-[#C8945C] hover:bg-[#B8844C] text-white py-3 sm:py-4 rounded-lg font-semibold shadow-[0_4px_12px_rgba(200,148,92,0.3)] hover:shadow-[0_6px_16px_rgba(200,148,92,0.4)] transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base tracking-wide`}
+                  className="flex-1 bg-[#C8945C] hover:bg-[#B8844C] text-white py-3 sm:py-4 rounded-lg font-semibold shadow-[0_4px_12px_rgba(200,148,92,0.3)] hover:shadow-[0_6px_16px_rgba(200,148,92,0.4)] transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base tracking-wide"
                 >
                   {isSubmitting ? (
                     <>
@@ -898,26 +760,6 @@ export default function PremiumCheckout({
                     </>
                   )}
                 </button>
-                {isDevelopment && (
-                  <button
-                    onClick={handleTestPayment}
-                    disabled={isSubmitting || !agreeToTerms}
-                    className="w-full sm:flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 sm:py-4 rounded-lg font-semibold shadow-[0_4px_12px_rgba(37,99,235,0.3)] hover:shadow-[0_6px_16px_rgba(37,99,235,0.4)] transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base tracking-wide"
-                    title="Test payment without actual transaction"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                        Testing...
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-                        Test Payment
-                      </>
-                    )}
-                  </button>
-                )}
               </div>
             )}
           </div>

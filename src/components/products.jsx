@@ -770,12 +770,9 @@ const Product = () => {
                     </div>
                     <div className="min-w-0">
                       <span className="font-semibold text-[#2D4A3E] text-xs sm:text-sm md:text-base block">Free Express Delivery</span>
-                      <span className="text-[#6B7C72] text-[10px] sm:text-xs md:text-sm">2-3 business days</span>
+                      <span className="text-[#6B7C72] text-[10px] sm:text-xs md:text-sm">5-7 business days</span>
                     </div>
                   </div>
-                  <p className="text-[10px] sm:text-xs md:text-sm text-[#6B7C72] pl-10 sm:pl-13 break-words">
-                    Order within <span className="font-semibold text-[#2D4A3E]">4 hrs 23 mins</span> for delivery by <span className="font-medium text-[#2D4A3E]">Tuesday, Dec 10</span>
-                  </p>
                 </div>
 
                 {/* Trust Badges - Responsive Grid */}
@@ -1299,7 +1296,7 @@ const Product = () => {
             ))}
           </div>
 
-          <motion.div 
+          {/* <motion.div 
             className="text-center mt-8 sm:mt-12"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -1309,7 +1306,7 @@ const Product = () => {
               <Users className="w-4 h-4 sm:w-5 sm:h-5" /> 
               <span>See all {productData.answeredQuestions} answered questions</span>
             </button>
-          </motion.div>
+          </motion.div> */}
         </div>
       </section>
 
