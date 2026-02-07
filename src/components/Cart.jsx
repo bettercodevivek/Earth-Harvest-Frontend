@@ -4,14 +4,27 @@ import { ShoppingCart, Plus, Minus, Trash2, Package, ArrowLeft, ArrowRight } fro
 import { useAuth } from '../contexts/AuthContext';
 import { apiFetch } from '../utils/api';
 import Navbar from './Navbar';
+import PremiumCheckout from './CheckoutModals';
 
 const Cart = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, showToast } = useAuth();
+  const { isAuthenticated, showToast, requireAuth } = useAuth();
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const [cartCount, setCartCount] = useState(0);
   const [updating, setUpdating] = useState(null);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [address, setAddress] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    street: "",
+    city: "",
+    state: "",
+    country: "United Arab Emirates",
+    zipcode: "",
+    deliveryInstructions: ""
+  });
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -122,6 +135,130 @@ const Cart = () => {
     }, 0);
   };
 
+  const handleProceedToCheckout = () => {
+    if (!cart || !cart.items || cart.items.length === 0) {
+      showToast({
+        type: 'error',
+        title: 'Error',
+        message: 'Your cart is empty'
+      });
+      return;
+    }
+
+    requireAuth(() => {
+      setShowCheckout(true);
+    });
+  };
+
+  const initiatePayment = async () => {
+    try {
+      if (!cart || !cart.items || cart.items.length === 0) {
+        showToast({
+          type: 'error',
+          title: 'Error',
+          message: 'Your cart is empty'
+        });
+        return;
+      }
+
+      // Process all cart items - create orders for each item
+      const normalizedPhone = address.phone ? address.phone.replace(/\s+/g, '') : address.phone;
+      const formattedAddress = {
+        street: address.street,
+        city: address.city,
+        state: address.state || "",
+        country: address.country || "United Arab Emirates",
+        zipCode: address.zipcode ? parseInt(address.zipcode) : undefined,
+        phone: normalizedPhone
+      };
+
+      // For now, process the first item. In the future, we can process all items
+      const firstItem = cart.items[0];
+      if (!firstItem || !firstItem.product) {
+        throw new Error("Invalid cart item");
+      }
+
+      const size = firstItem.product.sizes?.find(s => 
+        s.weight.toString() === firstItem.size || s.weight === firstItem.size
+      );
+
+      if (!size) {
+        throw new Error("Invalid size selected");
+      }
+
+      const amount = size.price * firstItem.quantity;
+
+      const orderRes = await apiFetch('/order/create', {
+        method: "POST",
+        body: JSON.stringify({
+          productId: firstItem.product._id,
+          sizeSelected: firstItem.size,
+          quantity: firstItem.quantity,
+          address: formattedAddress,
+          amount,
+          fromCart: true,
+          cartItemId: firstItem._id
+        })
+      });
+
+      if (!orderRes.success || !orderRes.data) {
+        throw new Error(orderRes.message || "Failed to create order");
+      }
+
+      const orderId = orderRes.data._id || orderRes.data.orderId;
+
+      const paymentRes = await apiFetch('/payment/create', {
+        method: "POST",
+        body: JSON.stringify({
+          orderId,
+          amount
+        })
+      });
+
+      if (paymentRes.success && paymentRes.paymentUrl) {
+        window.location.href = paymentRes.paymentUrl;
+      } else {
+        throw new Error(paymentRes.message || "Failed to create payment");
+      }
+
+    } catch (err) {
+      console.error("Checkout failed:", err);
+      showToast({
+        type: 'error',
+        title: 'Error',
+        message: err.message || "Checkout failed. Please try again."
+      });
+    }
+  };
+
+  // Get the first cart item for checkout (since checkout modal handles single product)
+  const getFirstCartItemForCheckout = () => {
+    if (!cart || !cart.items || cart.items.length === 0) return null;
+    
+    const firstItem = cart.items[0];
+    const size = firstItem.product?.sizes?.find(s => 
+      s.weight.toString() === firstItem.size || s.weight === firstItem.size
+    );
+
+    if (!size) return null;
+
+    return {
+      product: {
+        _id: firstItem.product._id,
+        productName: firstItem.product.productName || firstItem.product.name,
+        name: firstItem.product.productName || firstItem.product.name,
+        images: firstItem.product.images || [],
+        sizes: firstItem.product.sizes || []
+      },
+      productId: firstItem.product._id,
+      selectedSize: firstItem.size,
+      quantity: firstItem.quantity,
+      currentPrice: size
+    };
+  };
+
+  const checkoutData = getFirstCartItemForCheckout();
+
   if (!isAuthenticated) {
     return null;
   }
@@ -130,7 +267,7 @@ const Cart = () => {
     <div className="min-h-screen bg-[#FAF7F2]">
       <Navbar cartCount={cartCount} />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pt-20 sm:pt-24">
+      <div className="max-w-7xl mt-8 mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pt-20 sm:pt-24">
         {/* HEADER */}
         <div className="flex items-center gap-4 mb-8">
           <Link
@@ -299,7 +436,10 @@ const Cart = () => {
 
                 {/* CTA BUTTONS */}
                 <div className="space-y-2.5">
-                  <button className="w-full bg-[#C8945C] text-white py-2.5 text-sm font-medium hover:bg-[#B8844C] rounded-md transition-colors">
+                  <button 
+                    onClick={handleProceedToCheckout}
+                    className="w-full bg-[#C8945C] text-white py-2.5 text-sm font-medium hover:bg-[#B8844C] rounded-md transition-colors"
+                  >
                     Proceed to Checkout
                   </button>
                   
@@ -315,6 +455,21 @@ const Cart = () => {
           </div>
         )}
       </div>
+
+      {/* CHECKOUT MODAL */}
+      {showCheckout && checkoutData && (
+        <PremiumCheckout
+          product={checkoutData.product}
+          productId={checkoutData.productId}
+          selectedSize={checkoutData.selectedSize}
+          quantity={checkoutData.quantity}
+          currentPrice={checkoutData.currentPrice}
+          address={address}
+          setAddress={setAddress}
+          onClose={() => setShowCheckout(false)}
+          onPayNow={initiatePayment}
+        />
+      )}
     </div>
   );
 };

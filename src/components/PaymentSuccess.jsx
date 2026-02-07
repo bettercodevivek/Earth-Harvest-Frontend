@@ -25,11 +25,9 @@ const PaymentSuccess = () => {
         return;
       }
 
-      // Check if user has token (might be authenticated but context not loaded yet)
       const hasToken = localStorage.getItem('token');
       
       if (!hasToken) {
-        // No token, but still show success page with basic info
         setOrder({
           _id: orderId,
           orderStatus: 'Confirmed',
@@ -40,14 +38,12 @@ const PaymentSuccess = () => {
       }
 
       try {
-        // Try to verify payment and get order details
         try {
           const response = await apiFetch(`/payment/verify/${orderId}`);
           
           if (response.success && response.data && response.data.order) {
             setOrder(response.data.order);
             
-            // Show success toast
             if (showToast) {
               showToast({
                 type: 'success',
@@ -63,7 +59,6 @@ const PaymentSuccess = () => {
           console.log("Verify payment failed, trying direct order fetch:", verifyErr);
         }
 
-        // If verify fails, try to get order directly
         try {
           const orderResponse = await apiFetch(`/order/${orderId}`);
           if (orderResponse.success && orderResponse.data) {
@@ -75,7 +70,6 @@ const PaymentSuccess = () => {
           console.log("Direct order fetch failed:", orderErr);
         }
 
-        // If both fail, still show success with basic info from URL
         setOrder({
           _id: orderId,
           orderStatus: 'Confirmed',
@@ -84,7 +78,6 @@ const PaymentSuccess = () => {
         
       } catch (err) {
         console.error("Error fetching order:", err);
-        // Even if we can't fetch order details, show success page with orderId
         setOrder({
           _id: orderId,
           orderStatus: 'Confirmed',
@@ -95,7 +88,6 @@ const PaymentSuccess = () => {
       }
     };
 
-    // Always try to fetch if we have orderId
     if (orderId) {
       fetchOrderDetails();
     } else {
@@ -110,8 +102,8 @@ const PaymentSuccess = () => {
         <Navbar />
         <div className="flex items-center justify-center min-h-[80vh]">
           <div className="text-center">
-            <Loader2 className="w-12 h-12 animate-spin text-[#C8945C] mx-auto mb-4" />
-            <p className="text-[#2D4A3E] font-medium">Loading order details...</p>
+            <Loader2 className="w-10 h-10 animate-spin text-[#C8945C] mx-auto mb-3" />
+            <p className="text-sm text-gray-600">Loading order details...</p>
           </div>
         </div>
       </div>
@@ -124,16 +116,16 @@ const PaymentSuccess = () => {
         <Navbar />
         <div className="flex items-center justify-center min-h-[80vh] px-4">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-md w-full bg-white rounded-2xl p-8 shadow-xl text-center border-2 border-red-200"
+            className="max-w-md w-full bg-white rounded-lg p-8 border border-gray-200 text-center"
           >
-            <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-[#2D4A3E] mb-2">Error</h2>
-            <p className="text-[#6B7C72] mb-6">{error}</p>
+            <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Error</h2>
+            <p className="text-sm text-gray-600 mb-6">{error}</p>
             <Link
               to="/"
-              className="inline-block bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg transition-all"
+              className="inline-block bg-[#C8945C] hover:bg-[#B8844C] text-white px-6 py-2.5 rounded-md text-sm font-medium transition-colors"
             >
               Go Home
             </Link>
@@ -147,87 +139,82 @@ const PaymentSuccess = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#FAF7F2] to-[#F8F2EC]">
       <Navbar />
       
-      <div className="max-w-4xl mx-auto px-4 pt-24 sm:pt-28 pb-12 sm:pb-16">
+      <div className="max-w-3xl mx-auto px-4 pt-24 sm:pt-28 pb-12 sm:pb-16">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          {/* Success Icon */}
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 200, damping: 15 }}
-            className="w-20 h-20 sm:w-24 sm:h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg"
-          >
-            <CheckCircle className="w-12 h-12 sm:w-16 sm:h-16 text-white" />
-          </motion.div>
+          {/* SUCCESS INDICATOR */}
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-50 border-2 border-green-200 rounded-full mb-5">
+            <CheckCircle className="w-9 h-9 text-green-600" />
+          </div>
 
-          <h1 className="text-3xl sm:text-4xl font-bold text-[#2D4A3E] mb-3">
-            Payment Successful!
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-2">
+            Payment Successful
           </h1>
-          <p className="text-lg text-[#6B7C72]">
-            {isTest ? "Test payment completed successfully" : "Thank you for your order"}
+          <p className="text-base text-gray-600">
+            {isTest ? "Test payment completed successfully" : "Your order has been confirmed"}
           </p>
           {isTest && (
-            <div className="mt-4 inline-block bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold">
+            <div className="mt-4 inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-md text-xs font-medium border border-blue-200">
               Test Mode
             </div>
           )}
         </motion.div>
 
-        {/* Order Details Card - Always show, even with minimal info */}
+        {/* ORDER DETAILS CARD */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white rounded-2xl p-6 sm:p-8 shadow-xl border-2 border-[#E8DFD0] mb-6"
+          transition={{ delay: 0.1 }}
+          className="bg-white rounded-lg p-6 sm:p-8 border border-gray-200 mb-6"
         >
-          <h2 className="text-xl sm:text-2xl font-bold text-[#2D4A3E] mb-6 flex items-center gap-2">
-            <Package className="w-6 h-6 text-[#C8945C]" />
+          <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <Package className="w-5 h-5 text-gray-600" />
             Order Details
           </h2>
 
           {order ? (
             <div className="space-y-4">
-              <div className="flex justify-between items-center pb-4 border-b-2 border-[#E8DFD0]">
-                <span className="text-[#6B7C72] font-medium">Order Number</span>
-                <span className="font-bold text-[#2D4A3E] text-lg">
+              <div className="flex justify-between items-center py-3 border-b border-gray-200">
+                <span className="text-sm text-gray-600">Order Number</span>
+                <span className="font-semibold text-gray-900">
                   #{order._id ? (typeof order._id === 'string' ? order._id.slice(-8) : order._id.toString().slice(-8)).toUpperCase() : orderId?.slice(-8).toUpperCase() || 'N/A'}
                 </span>
               </div>
 
-              <div className="flex justify-between items-center pb-4 border-b-2 border-[#E8DFD0]">
-                <span className="text-[#6B7C72] font-medium">Order Status</span>
-                <span className="px-4 py-2 bg-green-100 text-green-700 rounded-full font-semibold text-sm">
+              <div className="flex justify-between items-center py-3 border-b border-gray-200">
+                <span className="text-sm text-gray-600">Order Status</span>
+                <span className="inline-flex px-3 py-1 bg-green-50 text-green-700 rounded-md text-xs font-medium border border-green-200">
                   {order.orderStatus || 'Confirmed'}
                 </span>
               </div>
 
-              <div className="flex justify-between items-center pb-4 border-b-2 border-[#E8DFD0]">
-                <span className="text-[#6B7C72] font-medium">Payment Status</span>
-                <span className="px-4 py-2 bg-green-100 text-green-700 rounded-full font-semibold text-sm">
+              <div className="flex justify-between items-center py-3 border-b border-gray-200">
+                <span className="text-sm text-gray-600">Payment Status</span>
+                <span className="inline-flex px-3 py-1 bg-green-50 text-green-700 rounded-md text-xs font-medium border border-green-200">
                   {order.paymentStatus || 'Completed'}
                 </span>
               </div>
 
               {order.amountPaid && (
-                <div className="flex justify-between items-center pb-4 border-b-2 border-[#E8DFD0]">
-                  <span className="text-[#6B7C72] font-medium">Total Amount</span>
-                  <span className="font-bold text-[#C8945C] text-xl">
+                <div className="flex justify-between items-center py-3 border-b border-gray-200">
+                  <span className="text-sm text-gray-600">Total Amount</span>
+                  <span className="font-semibold text-gray-900 text-lg">
                     AED {order.amountPaid}
                   </span>
                 </div>
               )}
 
               {order.product && (
-                <div className="pt-4">
-                  <p className="text-[#6B7C72] font-medium mb-2">Product</p>
-                  <p className="font-semibold text-[#2D4A3E]">
+                <div className="pt-3">
+                  <p className="text-sm text-gray-600 mb-2">Product</p>
+                  <p className="font-medium text-gray-900">
                     {order.product.productName || order.product.name || 'Earth & Harvest Product'}
                   </p>
                   {order.sizeSelected && order.quantity && (
-                    <div className="mt-2 flex gap-4 text-sm text-[#6B7C72]">
+                    <div className="mt-2 flex gap-4 text-sm text-gray-600">
                       <span>Size: {order.sizeSelected}g</span>
                       <span>Quantity: {order.quantity}</span>
                     </div>
@@ -236,12 +223,12 @@ const PaymentSuccess = () => {
               )}
 
               {order.address && (
-                <div className="pt-4 border-t-2 border-[#E8DFD0]">
-                  <p className="text-[#6B7C72] font-medium mb-2 flex items-center gap-2">
+                <div className="pt-4 border-t border-gray-200">
+                  <p className="text-sm text-gray-600 mb-2 flex items-center gap-2">
                     <Truck className="w-4 h-4" />
                     Delivery Address
                   </p>
-                  <p className="text-[#2D4A3E]">
+                  <p className="text-sm text-gray-900 leading-relaxed">
                     {order.address.street && <>{order.address.street}<br /></>}
                     {order.address.city}{order.address.zipCode ? `, ${order.address.zipCode}` : ''}<br />
                     {order.address.country || 'United Arab Emirates'}
@@ -250,65 +237,65 @@ const PaymentSuccess = () => {
               )}
 
               {!order.product && !order.address && (
-                <div className="pt-4 text-center text-[#6B7C72]">
-                  <p className="text-sm">Order details are being processed. You'll receive a confirmation email shortly.</p>
+                <div className="pt-3 text-center">
+                  <p className="text-sm text-gray-600">Order details are being processed. You'll receive a confirmation email shortly.</p>
                 </div>
               )}
             </div>
           ) : (
             <div className="text-center py-8">
-              <Loader2 className="w-8 h-8 animate-spin text-[#C8945C] mx-auto mb-4" />
-              <p className="text-[#6B7C72]">Loading order details...</p>
+              <Loader2 className="w-8 h-8 animate-spin text-[#C8945C] mx-auto mb-3" />
+              <p className="text-sm text-gray-600">Loading order details...</p>
             </div>
           )}
         </motion.div>
 
-        {/* Next Steps */}
+        {/* NEXT STEPS */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-white rounded-2xl p-6 sm:p-8 shadow-xl border-2 border-[#E8DFD0] mb-6"
+          transition={{ delay: 0.2 }}
+          className="bg-white rounded-lg p-6 sm:p-8 border border-gray-200 mb-6"
         >
-          <h3 className="text-xl font-bold text-[#2D4A3E] mb-4 flex items-center gap-2">
-            <Mail className="w-5 h-5 text-[#C8945C]" />
+          <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <Mail className="w-4 h-4 text-gray-600" />
             What's Next?
           </h3>
-          <ul className="space-y-3 text-[#6B7C72]">
-            <li className="flex items-start gap-3">
-              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+          <ul className="space-y-3">
+            <li className="flex items-start gap-3 text-sm text-gray-700">
+              <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
               <span>You'll receive an order confirmation email shortly</span>
             </li>
-            <li className="flex items-start gap-3">
-              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+            <li className="flex items-start gap-3 text-sm text-gray-700">
+              <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
               <span>We'll send you tracking information once your order ships</span>
             </li>
-            <li className="flex items-start gap-3">
-              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+            <li className="flex items-start gap-3 text-sm text-gray-700">
+              <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
               <span>Expected delivery: 2-3 business days</span>
             </li>
           </ul>
         </motion.div>
 
-        {/* Action Buttons */}
+        {/* ACTION BUTTONS */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
+          transition={{ delay: 0.3 }}
+          className="flex flex-col sm:flex-row gap-3 justify-center"
         >
           <Link
             to="/"
-            className="flex-1 sm:flex-initial bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white px-8 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
+            className="flex-1 sm:flex-initial bg-[#C8945C] hover:bg-[#B8844C] text-white px-6 py-2.5 rounded-md font-medium text-sm transition-colors flex items-center justify-center gap-2"
           >
-            <Home className="w-5 h-5" />
+            <Home className="w-4 h-4" />
             Continue Shopping
           </Link>
           <Link
             to="/profile"
-            className="flex-1 sm:flex-initial border-2 border-[#C8945C] text-[#C8945C] px-8 py-4 rounded-xl font-bold hover:bg-[#C8945C]/10 transition-all flex items-center justify-center gap-2"
+            className="flex-1 sm:flex-initial border border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2.5 rounded-md font-medium text-sm transition-colors flex items-center justify-center gap-2"
           >
-            <ShoppingBag className="w-5 h-5" />
+            <ShoppingBag className="w-4 h-4" />
             View Orders
           </Link>
         </motion.div>
@@ -318,4 +305,3 @@ const PaymentSuccess = () => {
 };
 
 export default PaymentSuccess;
-
