@@ -53,7 +53,6 @@ const AdminPanel = () => {
       return;
     }
     
-    // Check if user is admin
     if (user?.role !== 'admin') {
       navigate('/');
       showToast({
@@ -173,7 +172,6 @@ const AdminPanel = () => {
   };
 
   const handleOrderStatusUpdate = async (orderId, newStatus, currentStatus) => {
-    // Show confirmation modal
     setStatusUpdateConfirm({ orderId, newStatus, currentStatus });
   };
 
@@ -281,7 +279,6 @@ const AdminPanel = () => {
     setLoading(true);
 
     try {
-      // Clean up empty arrays/strings
       const cleanedForm = {
         ...productForm,
         images: productForm.images.filter(img => img.trim() !== ''),
@@ -292,7 +289,6 @@ const AdminPanel = () => {
       };
 
       if (editingProduct) {
-        // Update product
         const response = await apiFetch(`/admin/products/${editingProduct._id}`, {
           method: 'PUT',
           body: JSON.stringify(cleanedForm)
@@ -309,7 +305,6 @@ const AdminPanel = () => {
           fetchProducts();
         }
       } else {
-        // Create product
         const response = await apiFetch('/admin/products', {
           method: 'POST',
           body: JSON.stringify(cleanedForm)
@@ -402,195 +397,215 @@ const AdminPanel = () => {
     }
   };
 
-  // Show loading or redirect - don't render if not admin
   if (!isAuthenticated || user?.role !== 'admin') {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Redirecting...</p>
+          <div className="w-12 h-12 border-3 border-gray-300 border-t-[#C8945C] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-sm text-gray-600">Redirecting...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#FAFAFA]">
       <Navbar cartCount={cartCount} />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Admin Panel</h1>
-          {activeTab === 'products' && (
+      {/* ADMIN HEADER */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">Admin Panel</h1>
+              <p className="text-sm text-gray-500 mt-0.5">Manage products, orders, and users</p>
+            </div>
+            {activeTab === 'products' && (
+              <button
+                onClick={() => {
+                  resetForm();
+                  setEditingProduct(null);
+                  setShowProductForm(true);
+                }}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#C8945C] text-white text-sm font-medium rounded-md hover:bg-[#B8844C] transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                <span className="hidden sm:inline">Add Product</span>
+                <span className="sm:hidden">Add</span>
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* NAVIGATION TABS */}
+        <div className="bg-white border border-gray-200 rounded-lg mb-6 overflow-x-auto">
+          <nav className="flex min-w-max sm:min-w-0">
             <button
-              onClick={() => {
-                resetForm();
-                setEditingProduct(null);
-                setShowProductForm(true);
-              }}
-              className="flex items-center gap-2 px-4 py-2 bg-[#C8945C] text-white rounded-lg hover:bg-[#B8844C] transition-colors"
+              onClick={() => setActiveTab('dashboard')}
+              className={`flex items-center gap-2 px-4 sm:px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                activeTab === 'dashboard'
+                  ? 'text-[#C8945C] border-[#C8945C] bg-[#C8945C]/5'
+                  : 'text-gray-600 border-transparent hover:text-gray-900 hover:bg-gray-50'
+              }`}
             >
-              <Plus className="w-5 h-5" />
-              Add Product
+              <BarChart3 className="w-4 h-4" />
+              Dashboard
             </button>
-          )}
+            <button
+              onClick={() => setActiveTab('products')}
+              className={`flex items-center gap-2 px-4 sm:px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                activeTab === 'products'
+                  ? 'text-[#C8945C] border-[#C8945C] bg-[#C8945C]/5'
+                  : 'text-gray-600 border-transparent hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Package className="w-4 h-4" />
+              Products
+            </button>
+            <button
+              onClick={() => setActiveTab('orders')}
+              className={`flex items-center gap-2 px-4 sm:px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                activeTab === 'orders'
+                  ? 'text-[#C8945C] border-[#C8945C] bg-[#C8945C]/5'
+                  : 'text-gray-600 border-transparent hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <ShoppingBag className="w-4 h-4" />
+              Orders
+            </button>
+            <button
+              onClick={() => setActiveTab('users')}
+              className={`flex items-center gap-2 px-4 sm:px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                activeTab === 'users'
+                  ? 'text-[#C8945C] border-[#C8945C] bg-[#C8945C]/5'
+                  : 'text-gray-600 border-transparent hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Users className="w-4 h-4" />
+              Users
+            </button>
+          </nav>
         </div>
 
-        {/* Tabs */}
-        <div className="flex border-b border-border mb-6 overflow-x-auto">
-          <button
-            onClick={() => setActiveTab('dashboard')}
-            className={`px-6 py-3 font-semibold transition-colors border-b-2 -mb-px whitespace-nowrap ${
-              activeTab === 'dashboard'
-                ? 'text-primary border-primary'
-                : 'text-muted-foreground border-transparent hover:text-foreground'
-            }`}
-          >
-            <BarChart3 className="w-4 h-4 inline mr-2" />
-            Dashboard
-          </button>
-          <button
-            onClick={() => setActiveTab('products')}
-            className={`px-6 py-3 font-semibold transition-colors border-b-2 -mb-px whitespace-nowrap ${
-              activeTab === 'products'
-                ? 'text-primary border-primary'
-                : 'text-muted-foreground border-transparent hover:text-foreground'
-            }`}
-          >
-            <Package className="w-4 h-4 inline mr-2" />
-            Products
-          </button>
-          <button
-            onClick={() => setActiveTab('orders')}
-            className={`px-6 py-3 font-semibold transition-colors border-b-2 -mb-px whitespace-nowrap ${
-              activeTab === 'orders'
-                ? 'text-primary border-primary'
-                : 'text-muted-foreground border-transparent hover:text-foreground'
-            }`}
-          >
-            <ShoppingBag className="w-4 h-4 inline mr-2" />
-            Orders
-          </button>
-          <button
-            onClick={() => setActiveTab('users')}
-            className={`px-6 py-3 font-semibold transition-colors border-b-2 -mb-px whitespace-nowrap ${
-              activeTab === 'users'
-                ? 'text-primary border-primary'
-                : 'text-muted-foreground border-transparent hover:text-foreground'
-            }`}
-          >
-            <Users className="w-4 h-4 inline mr-2" />
-            Users
-          </button>
-        </div>
-
-        {/* Dashboard Tab */}
+        {/* DASHBOARD TAB */}
         {activeTab === 'dashboard' && (
           <div>
             {loading ? (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Loading dashboard...</p>
+              <div className="flex items-center justify-center py-16">
+                <div className="w-12 h-12 border-3 border-gray-300 border-t-[#C8945C] rounded-full animate-spin"></div>
               </div>
             ) : dashboardStats ? (
               <div className="space-y-6">
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="bg-[#F8F2EC] rounded-xl p-6 border border-[#E8DFD0]">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-muted-foreground mb-1">Total Users</p>
-                        <p className="text-3xl font-bold text-foreground">{dashboardStats.stats?.totalUsers || 0}</p>
-                      </div>
-                      <Users className="w-12 h-12 text-[#C8945C] opacity-50" />
+                {/* STATS GRID */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="bg-white border border-gray-200 rounded-lg p-5">
+                    <div className="flex items-center justify-between mb-3">
+                      <Users className="w-8 h-8 text-gray-400" />
                     </div>
+                    <p className="text-2xl font-semibold text-gray-900">{dashboardStats.stats?.totalUsers || 0}</p>
+                    <p className="text-sm text-gray-500 mt-1">Total Users</p>
                   </div>
-                  <div className="bg-[#F8F2EC] rounded-xl p-6 border border-[#E8DFD0]">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-muted-foreground mb-1">Total Products</p>
-                        <p className="text-3xl font-bold text-foreground">{dashboardStats.stats?.totalProducts || 0}</p>
-                      </div>
-                      <Package className="w-12 h-12 text-[#C8945C] opacity-50" />
+                  <div className="bg-white border border-gray-200 rounded-lg p-5">
+                    <div className="flex items-center justify-between mb-3">
+                      <Package className="w-8 h-8 text-gray-400" />
                     </div>
+                    <p className="text-2xl font-semibold text-gray-900">{dashboardStats.stats?.totalProducts || 0}</p>
+                    <p className="text-sm text-gray-500 mt-1">Total Products</p>
                   </div>
-                  <div className="bg-[#F8F2EC] rounded-xl p-6 border border-[#E8DFD0]">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-muted-foreground mb-1">Total Orders</p>
-                        <p className="text-3xl font-bold text-foreground">{dashboardStats.stats?.totalOrders || 0}</p>
-                      </div>
-                      <ShoppingBag className="w-12 h-12 text-[#C8945C] opacity-50" />
+                  <div className="bg-white border border-gray-200 rounded-lg p-5">
+                    <div className="flex items-center justify-between mb-3">
+                      <ShoppingBag className="w-8 h-8 text-gray-400" />
                     </div>
+                    <p className="text-2xl font-semibold text-gray-900">{dashboardStats.stats?.totalOrders || 0}</p>
+                    <p className="text-sm text-gray-500 mt-1">Total Orders</p>
                   </div>
-                  <div className="bg-[#F8F2EC] rounded-xl p-6 border border-[#E8DFD0]">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-muted-foreground mb-1">Total Revenue</p>
-                        <p className="text-3xl font-bold text-foreground">AED {dashboardStats.stats?.totalRevenue?.toFixed(2) || '0.00'}</p>
-                      </div>
-                      <DollarSign className="w-12 h-12 text-[#C8945C] opacity-50" />
+                  <div className="bg-white border border-gray-200 rounded-lg p-5">
+                    <div className="flex items-center justify-between mb-3">
+                      <DollarSign className="w-8 h-8 text-gray-400" />
                     </div>
+                    <p className="text-2xl font-semibold text-gray-900">AED {dashboardStats.stats?.totalRevenue?.toFixed(2) || '0.00'}</p>
+                    <p className="text-sm text-gray-500 mt-1">Total Revenue</p>
                   </div>
                 </div>
 
-                {/* Pending Orders Alert */}
+                {/* PENDING ORDERS ALERT */}
                 {dashboardStats.stats?.pendingOrders > 0 && (
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 flex items-center gap-3">
-                    <AlertCircle className="w-5 h-5 text-yellow-600" />
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-yellow-900">Pending Orders</p>
-                      <p className="text-sm text-yellow-700">{dashboardStats.stats.pendingOrders} orders require attention</p>
+                      <p className="text-sm font-medium text-amber-900">Pending Orders</p>
+                      <p className="text-sm text-amber-700 mt-0.5">{dashboardStats.stats.pendingOrders} orders require attention</p>
                     </div>
                   </div>
                 )}
 
-                {/* Recent Orders */}
-                <div className="bg-[#F8F2EC] rounded-xl p-6 border border-[#E8DFD0]">
-                  <h3 className="text-xl font-bold text-foreground mb-4">Recent Orders</h3>
+                {/* RECENT ORDERS TABLE */}
+                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-200">
+                    <h3 className="text-base font-semibold text-gray-900">Recent Orders</h3>
+                  </div>
                   {dashboardStats.recentOrders?.length > 0 ? (
-                    <div className="space-y-3">
-                      {dashboardStats.recentOrders.map((order) => (
-                        <div key={order._id} className="bg-white rounded-lg p-4 border border-[#E8DFD0]">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <p className="font-semibold">Order #{order._id?.toString().slice(-8).toUpperCase()}</p>
-                              <p className="text-sm text-muted-foreground">{order.user?.name || order.user?.email || 'Unknown'}</p>
-                              <p className="text-sm text-muted-foreground">{order.product?.productName || 'Product'}</p>
-                            </div>
-                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                              order.orderStatus === 'Confirmed' || order.orderStatus === 'Shipped'
-                                ? 'bg-green-100 text-green-700'
-                                : order.orderStatus === 'Pending'
-                                ? 'bg-yellow-100 text-yellow-700'
-                                : 'bg-gray-100 text-gray-700'
-                            }`}>
-                              {order.orderStatus || 'Pending'}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="bg-gray-50 border-b border-gray-200">
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Order ID</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Customer</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden sm:table-cell">Product</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {dashboardStats.recentOrders.map((order) => (
+                            <tr key={order._id} className="hover:bg-gray-50">
+                              <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                                #{order._id?.toString().slice(-8).toUpperCase()}
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-700">
+                                {order.user?.name || order.user?.email || 'Unknown'}
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-600 hidden sm:table-cell">
+                                {order.product?.productName || 'Product'}
+                              </td>
+                              <td className="px-6 py-4">
+                                <span className={`inline-flex px-2.5 py-1 text-xs font-medium rounded ${
+                                  order.orderStatus === 'Confirmed' || order.orderStatus === 'Shipped'
+                                    ? 'bg-green-100 text-green-800'
+                                    : order.orderStatus === 'Pending'
+                                    ? 'bg-amber-100 text-amber-800'
+                                    : 'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {order.orderStatus || 'Pending'}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   ) : (
-                    <p className="text-muted-foreground">No recent orders</p>
+                    <div className="px-6 py-12 text-center">
+                      <p className="text-sm text-gray-500">No recent orders</p>
+                    </div>
                   )}
                 </div>
               </div>
             ) : (
-              <div className="bg-[#F8F2EC] rounded-2xl p-12 text-center border border-[#E8DFD0]">
-                <p className="text-muted-foreground">Failed to load dashboard data</p>
+              <div className="bg-white border border-gray-200 rounded-lg p-12 text-center">
+                <p className="text-sm text-gray-500">Failed to load dashboard data</p>
               </div>
             )}
           </div>
         )}
 
-        {/* Products Tab */}
+        {/* PRODUCTS TAB */}
         {activeTab === 'products' && (
           <div>
             {loading && !showProductForm ? (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Loading products...</p>
+              <div className="flex items-center justify-center py-16">
+                <div className="w-12 h-12 border-3 border-gray-300 border-t-[#C8945C] rounded-full animate-spin"></div>
               </div>
             ) : showProductForm ? (
               <ProductForm
@@ -606,81 +621,106 @@ const AdminPanel = () => {
                 editing={!!editingProduct}
               />
             ) : (
-              <div className="grid gap-4">
+              <div>
                 {products.length === 0 ? (
-                  <div className="bg-[#F8F2EC] rounded-2xl p-12 text-center border border-[#E8DFD0]">
-                    <Package className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground mb-4">No products found</p>
+                  <div className="bg-white border border-gray-200 rounded-lg p-12 text-center">
+                    <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-sm text-gray-600 mb-4">No products found</p>
                     <button
                       onClick={() => {
                         resetForm();
                         setShowProductForm(true);
                       }}
-                      className="px-4 py-2 bg-[#C8945C] text-white rounded-lg hover:bg-[#B8844C] transition-colors"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-[#C8945C] text-white text-sm font-medium rounded-md hover:bg-[#B8844C] transition-colors"
                     >
+                      <Plus className="w-4 h-4" />
                       Create First Product
                     </button>
                   </div>
                 ) : (
-                  products.map((product) => (
-                    <motion.div
-                      key={product._id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="bg-[#F8F2EC] rounded-2xl p-6 border border-[#E8DFD0]"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="text-xl font-bold text-foreground mb-2">{product.productName}</h3>
-                          <p className="text-muted-foreground mb-4">{product.smallDescription}</p>
-                          <div className="flex gap-4 text-sm">
-                            <span className="text-foreground">Stock: <strong>{product.stock}</strong></span>
-                            <span className="text-foreground">Sizes: <strong>{product.sizes?.length || 0}</strong></span>
-                            <span className="text-foreground">Rating: <strong>{product.rating || 0}</strong></span>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleToggleProductStatus(product._id, product.enabled !== false)}
-                            className={`p-2 rounded-lg transition-colors ${
-                              product.enabled === false
-                                ? 'bg-green-500 text-white hover:bg-green-600'
-                                : 'bg-yellow-500 text-white hover:bg-yellow-600'
-                            }`}
-                            title={product.enabled === false ? 'Enable Product' : 'Disable Product'}
-                          >
-                            {product.enabled === false ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                          </button>
-                          <button
-                            onClick={() => handleEdit(product)}
-                            className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(product._id)}
-                            className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))
+                  <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="bg-gray-50 border-b border-gray-200">
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">Stock</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden lg:table-cell">Sizes</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden lg:table-cell">Rating</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                            <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {products.map((product) => (
+                            <tr key={product._id} className="hover:bg-gray-50">
+                              <td className="px-6 py-4">
+                                <div>
+                                  <p className="text-sm font-medium text-gray-900">{product.productName}</p>
+                                  <p className="text-sm text-gray-500 mt-0.5 line-clamp-1">{product.smallDescription}</p>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-700 hidden md:table-cell">
+                                {product.stock}
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-700 hidden lg:table-cell">
+                                {product.sizes?.length || 0}
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-700 hidden lg:table-cell">
+                                {product.rating || 0}
+                              </td>
+                              <td className="px-6 py-4">
+                                <span className={`inline-flex px-2.5 py-1 text-xs font-medium rounded ${
+                                  product.enabled === false
+                                    ? 'bg-gray-100 text-gray-800'
+                                    : 'bg-green-100 text-green-800'
+                                }`}>
+                                  {product.enabled === false ? 'Disabled' : 'Active'}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4">
+                                <div className="flex items-center justify-end gap-2">
+                                  <button
+                                    onClick={() => handleToggleProductStatus(product._id, product.enabled !== false)}
+                                    className="p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
+                                    title={product.enabled === false ? 'Enable' : 'Disable'}
+                                  >
+                                    {product.enabled === false ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                  </button>
+                                  <button
+                                    onClick={() => handleEdit(product)}
+                                    className="p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
+                                  >
+                                    <Edit2 className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDelete(product._id)}
+                                    className="p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 )}
               </div>
             )}
           </div>
         )}
 
-        {/* Orders Tab */}
+        {/* ORDERS TAB */}
         {activeTab === 'orders' && (
           <div className="space-y-6">
-            {/* Filters */}
-            <div className="bg-[#F8F2EC] rounded-xl p-4 border border-[#E8DFD0]">
-              <div className="grid md:grid-cols-3 gap-4">
+            {/* FILTERS */}
+            <div className="bg-white border border-gray-200 rounded-lg p-4">
+              <div className="grid sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2">Order Status</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1.5">Order Status</label>
                   <select
                     value={orderFilters.status}
                     onChange={(e) => {
@@ -688,7 +728,7 @@ const AdminPanel = () => {
                       setOrderFilters(newFilters);
                       fetchOrders(newFilters);
                     }}
-                    className="w-full border-2 border-[#E8DFD0] p-2 rounded-lg bg-white focus:border-[#C8945C] focus:outline-none"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
                   >
                     <option value="">All Statuses</option>
                     <option value="Pending">Pending</option>
@@ -699,7 +739,7 @@ const AdminPanel = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2">Payment Status</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1.5">Payment Status</label>
                   <select
                     value={orderFilters.paymentStatus}
                     onChange={(e) => {
@@ -707,7 +747,7 @@ const AdminPanel = () => {
                       setOrderFilters(newFilters);
                       fetchOrders(newFilters);
                     }}
-                    className="w-full border-2 border-[#E8DFD0] p-2 rounded-lg bg-white focus:border-[#C8945C] focus:outline-none"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
                   >
                     <option value="">All Payments</option>
                     <option value="Pending">Pending</option>
@@ -722,7 +762,7 @@ const AdminPanel = () => {
                       setOrderFilters(clearedFilters);
                       fetchOrders(clearedFilters);
                     }}
-                    className="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                    className="w-full px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors"
                   >
                     Clear Filters
                   </button>
@@ -730,266 +770,295 @@ const AdminPanel = () => {
               </div>
             </div>
 
-            {/* Orders List */}
+            {/* ORDERS TABLE */}
             {ordersLoading ? (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Loading orders...</p>
+              <div className="flex items-center justify-center py-16">
+                <div className="w-12 h-12 border-3 border-gray-300 border-t-[#C8945C] rounded-full animate-spin"></div>
               </div>
             ) : orders.length === 0 ? (
-              <div className="bg-[#F8F2EC] rounded-2xl p-12 text-center border border-[#E8DFD0]">
-                <ShoppingBag className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No orders found</p>
+              <div className="bg-white border border-gray-200 rounded-lg p-12 text-center">
+                <ShoppingBag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-sm text-gray-500">No orders found</p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {orders.map((order) => (
-                  <div key={order._id} className="bg-[#F8F2EC] rounded-xl p-6 border border-[#E8DFD0]">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-bold text-foreground">
-                            Order #{order._id?.toString().slice(-8).toUpperCase()}
-                          </h3>
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            order.orderStatus === 'Confirmed' || order.orderStatus === 'Shipped'
-                              ? 'bg-green-100 text-green-700'
-                              : order.orderStatus === 'Pending'
-                              ? 'bg-yellow-100 text-yellow-700'
-                              : order.orderStatus === 'Cancelled'
-                              ? 'bg-red-100 text-red-700'
-                              : 'bg-gray-100 text-gray-700'
-                          }`}>
-                            {order.orderStatus || 'Pending'}
-                          </span>
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            order.paymentStatus === 'Completed'
-                              ? 'bg-blue-100 text-blue-700'
-                              : order.paymentStatus === 'Failed'
-                              ? 'bg-red-100 text-red-700'
-                              : 'bg-yellow-100 text-yellow-700'
-                          }`}>
-                            Payment: {order.paymentStatus || 'Pending'}
-                          </span>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-2">
-                          Customer: {order.user?.name || order.user?.email || 'Unknown'}
-                        </p>
-                        {order.product && (
-                          <p className="text-sm text-foreground">
-                            {order.product.productName || 'Product'} - {order.sizeSelected}g × {order.quantity}
-                          </p>
-                        )}
-                        <p className="text-lg font-bold text-[#C8945C] mt-2">
-                          AED {order.amountPaid || '0.00'}
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {order.createdAt ? new Date(order.createdAt).toLocaleString() : 'Date not available'}
-                        </p>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <label className="text-sm font-semibold text-foreground">Update Status:</label>
-                        <select
-                          value={order.orderStatus || 'Pending'}
-                          onChange={(e) => {
-                            if (e.target.value !== order.orderStatus) {
-                              handleOrderStatusUpdate(order._id, e.target.value, order.orderStatus);
-                            }
-                          }}
-                          className="border-2 border-[#E8DFD0] p-2 rounded-lg bg-white focus:border-[#C8945C] focus:outline-none"
-                        >
-                          <option value="Pending">Pending</option>
-                          <option value="Confirmed">Confirmed</option>
-                          <option value="Shipped">Shipped</option>
-                          <option value="Delivered">Delivered</option>
-                          <option value="Cancelled">Cancelled</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-gray-50 border-b border-gray-200">
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Order</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">Customer</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden lg:table-cell">Product</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Amount</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Update</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {orders.map((order) => (
+                        <tr key={order._id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4">
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">
+                                #{order._id?.toString().slice(-8).toUpperCase()}
+                              </p>
+                              <p className="text-xs text-gray-500 mt-0.5">
+                                {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : '—'}
+                              </p>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-700 hidden md:table-cell">
+                            {order.user?.name || order.user?.email || 'Unknown'}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-600 hidden lg:table-cell">
+                            {order.product?.productName || 'Product'}
+                          </td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                            AED {order.amountPaid || '0.00'}
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex flex-col gap-1">
+                              <span className={`inline-flex px-2.5 py-1 text-xs font-medium rounded ${
+                                order.orderStatus === 'Confirmed' || order.orderStatus === 'Shipped'
+                                  ? 'bg-green-100 text-green-800'
+                                  : order.orderStatus === 'Pending'
+                                  ? 'bg-amber-100 text-amber-800'
+                                  : order.orderStatus === 'Cancelled'
+                                  ? 'bg-red-100 text-red-800'
+                                  : 'bg-gray-100 text-gray-800'
+                              }`}>
+                                {order.orderStatus || 'Pending'}
+                              </span>
+                              <span className={`inline-flex px-2.5 py-1 text-xs font-medium rounded ${
+                                order.paymentStatus === 'Completed'
+                                  ? 'bg-blue-100 text-blue-800'
+                                  : order.paymentStatus === 'Failed'
+                                  ? 'bg-red-100 text-red-800'
+                                  : 'bg-amber-100 text-amber-800'
+                              }`}>
+                                {order.paymentStatus || 'Pending'}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <select
+                              value={order.orderStatus || 'Pending'}
+                              onChange={(e) => {
+                                if (e.target.value !== order.orderStatus) {
+                                  handleOrderStatusUpdate(order._id, e.target.value, order.orderStatus);
+                                }
+                              }}
+                              className="w-full border border-gray-300 px-2 py-1.5 rounded text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
+                            >
+                              <option value="Pending">Pending</option>
+                              <option value="Confirmed">Confirmed</option>
+                              <option value="Shipped">Shipped</option>
+                              <option value="Delivered">Delivered</option>
+                              <option value="Cancelled">Cancelled</option>
+                            </select>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
           </div>
         )}
 
-        {/* Users Tab */}
+        {/* USERS TAB */}
         {activeTab === 'users' && (
           <div className="space-y-6">
-            {/* Search */}
-            <div className="bg-[#F8F2EC] rounded-xl p-4 border border-[#E8DFD0]">
-              <div className="flex gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder="Search users by name or email..."
-                    value={userSearch}
-                    onChange={(e) => {
-                      setUserSearch(e.target.value);
-                      setTimeout(fetchUsers, 300);
-                    }}
-                    className="w-full pl-10 border-2 border-[#E8DFD0] p-2 rounded-lg bg-white focus:border-[#C8945C] focus:outline-none"
-                  />
-                </div>
+            {/* SEARCH */}
+            <div className="bg-white border border-gray-200 rounded-lg p-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search users by name or email..."
+                  value={userSearch}
+                  onChange={(e) => {
+                    setUserSearch(e.target.value);
+                    setTimeout(fetchUsers, 300);
+                  }}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
+                />
               </div>
             </div>
 
-            {/* Users List */}
+            {/* USERS TABLE */}
             {usersLoading ? (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Loading users...</p>
+              <div className="flex items-center justify-center py-16">
+                <div className="w-12 h-12 border-3 border-gray-300 border-t-[#C8945C] rounded-full animate-spin"></div>
               </div>
             ) : users.length === 0 ? (
-              <div className="bg-[#F8F2EC] rounded-2xl p-12 text-center border border-[#E8DFD0]">
-                <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No users found</p>
+              <div className="bg-white border border-gray-200 rounded-lg p-12 text-center">
+                <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-sm text-gray-500">No users found</p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {users.map((user) => (
-                  <div key={user._id} className="bg-[#F8F2EC] rounded-xl p-6 border border-[#E8DFD0]">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-bold text-foreground">{user.name || 'Unknown'}</h3>
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            user.role === 'admin'
-                              ? 'bg-purple-100 text-purple-700'
-                              : 'bg-blue-100 text-blue-700'
-                          }`}>
-                            {user.role || 'user'}
-                          </span>
-                          {user.isBlocked && (
-                            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
-                              Blocked
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-1">Email: {user.email}</p>
-                        {user.phoneNumber && (
-                          <p className="text-sm text-muted-foreground">
-                            Phone: {user.countryCode || ''} {user.phoneNumber}
-                          </p>
-                        )}
-                        <p className="text-xs text-muted-foreground mt-2">
-                          Joined: {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Unknown'}
-                        </p>
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleViewUserDetails(user._id)}
-                          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
-                        >
-                          <Eye className="w-4 h-4" />
-                          View Details
-                        </button>
-                        <button
-                          onClick={() => handleToggleUserBlock(user._id, user.isBlocked)}
-                          className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2 ${
-                            user.isBlocked
-                              ? 'bg-green-500 text-white hover:bg-green-600'
-                              : 'bg-red-500 text-white hover:bg-red-600'
-                          }`}
-                        >
-                          {user.isBlocked ? (
-                            <>
-                              <Unlock className="w-4 h-4" />
-                              Unblock
-                            </>
-                          ) : (
-                            <>
-                              <Ban className="w-4 h-4" />
-                              Block
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-gray-50 border-b border-gray-200">
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">User</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">Email</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden lg:table-cell">Joined</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {users.map((user) => (
+                        <tr key={user._id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4">
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{user.name || 'Unknown'}</p>
+                              <p className="text-xs text-gray-500 mt-0.5 md:hidden">{user.email}</p>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-700 hidden md:table-cell">
+                            {user.email}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-600 hidden lg:table-cell">
+                            {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—'}
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex flex-col gap-1">
+                              <span className={`inline-flex px-2.5 py-1 text-xs font-medium rounded ${
+                                user.role === 'admin'
+                                  ? 'bg-purple-100 text-purple-800'
+                                  : 'bg-blue-100 text-blue-800'
+                              }`}>
+                                {user.role || 'user'}
+                              </span>
+                              {user.isBlocked && (
+                                <span className="inline-flex px-2.5 py-1 text-xs font-medium rounded bg-red-100 text-red-800">
+                                  Blocked
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => handleViewUserDetails(user._id)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                                <span className="hidden sm:inline">View</span>
+                              </button>
+                              <button
+                                onClick={() => handleToggleUserBlock(user._id, user.isBlocked)}
+                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded transition-colors ${
+                                  user.isBlocked
+                                    ? 'text-green-700 bg-green-50 border border-green-200 hover:bg-green-100'
+                                    : 'text-red-700 bg-red-50 border border-red-200 hover:bg-red-100'
+                                }`}
+                              >
+                                {user.isBlocked ? (
+                                  <>
+                                    <Unlock className="w-3.5 h-3.5" />
+                                    <span className="hidden sm:inline">Unblock</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Ban className="w-3.5 h-3.5" />
+                                    <span className="hidden sm:inline">Block</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
           </div>
         )}
 
-        {/* User Details Modal */}
+        {/* USER DETAILS MODAL */}
         {selectedUser && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-foreground">User Details</h2>
+            <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-gray-900">User Details</h2>
                 <button
                   onClick={() => {
                     setSelectedUser(null);
                     setUserOrders([]);
                   }}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <div className="p-6">
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold text-foreground mb-4">User Information</h3>
-                  <div className="grid md:grid-cols-2 gap-4">
+              <div className="p-6 space-y-6">
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4">User Information</h3>
+                  <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-muted-foreground">Name</p>
-                      <p className="font-semibold">{selectedUser.name || 'Unknown'}</p>
+                      <p className="text-xs font-medium text-gray-500 mb-1">Name</p>
+                      <p className="text-sm text-gray-900">{selectedUser.name || 'Unknown'}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Email</p>
-                      <p className="font-semibold">{selectedUser.email}</p>
+                      <p className="text-xs font-medium text-gray-500 mb-1">Email</p>
+                      <p className="text-sm text-gray-900">{selectedUser.email}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Role</p>
-                      <p className="font-semibold">{selectedUser.role || 'user'}</p>
+                      <p className="text-xs font-medium text-gray-500 mb-1">Role</p>
+                      <p className="text-sm text-gray-900">{selectedUser.role || 'user'}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Status</p>
-                      <p className={`font-semibold ${selectedUser.isBlocked ? 'text-red-600' : 'text-green-600'}`}>
+                      <p className="text-xs font-medium text-gray-500 mb-1">Status</p>
+                      <p className={`text-sm font-medium ${selectedUser.isBlocked ? 'text-red-600' : 'text-green-600'}`}>
                         {selectedUser.isBlocked ? 'Blocked' : 'Active'}
                       </p>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-foreground mb-4">Order History</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4">Order History</h3>
                   {loadingUserOrders ? (
-                    <div className="text-center py-8">
-                      <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                      <p className="text-muted-foreground">Loading orders...</p>
+                    <div className="flex items-center justify-center py-8">
+                      <div className="w-8 h-8 border-3 border-gray-300 border-t-[#C8945C] rounded-full animate-spin"></div>
                     </div>
                   ) : userOrders.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-8">No orders found</p>
+                    <p className="text-sm text-gray-500 text-center py-8">No orders found</p>
                   ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       {userOrders.map((order) => (
-                        <div key={order._id} className="bg-[#F8F2EC] rounded-xl p-4 border border-[#E8DFD0]">
+                        <div key={order._id} className="border border-gray-200 rounded-lg p-4">
                           <div className="flex justify-between items-start mb-2">
                             <div>
-                              <p className="font-bold">Order #{order._id?.toString().slice(-8).toUpperCase()}</p>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-sm font-medium text-gray-900">
+                                Order #{order._id?.toString().slice(-8).toUpperCase()}
+                              </p>
+                              <p className="text-xs text-gray-500 mt-0.5">
                                 {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown date'}
                               </p>
                             </div>
-                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            <span className={`inline-flex px-2.5 py-1 text-xs font-medium rounded ${
                               order.orderStatus === 'Confirmed' || order.orderStatus === 'Shipped'
-                                ? 'bg-green-100 text-green-700'
+                                ? 'bg-green-100 text-green-800'
                                 : order.orderStatus === 'Pending'
-                                ? 'bg-yellow-100 text-yellow-700'
-                                : 'bg-gray-100 text-gray-700'
+                                ? 'bg-amber-100 text-amber-800'
+                                : 'bg-gray-100 text-gray-800'
                             }`}>
                               {order.orderStatus || 'Pending'}
                             </span>
                           </div>
                           {order.product && (
-                            <p className="text-sm text-foreground mb-1">
+                            <p className="text-sm text-gray-700 mb-1">
                               {order.product.productName} - {order.sizeSelected}g × {order.quantity}
                             </p>
                           )}
-                          <p className="text-lg font-bold text-[#C8945C]">AED {order.amountPaid || '0.00'}</p>
+                          <p className="text-sm font-medium text-gray-900">AED {order.amountPaid || '0.00'}</p>
                         </div>
                       ))}
                     </div>
@@ -1000,27 +1069,27 @@ const AdminPanel = () => {
           </div>
         )}
 
-        {/* Order Status Update Confirmation Modal */}
+        {/* STATUS UPDATE CONFIRMATION MODAL */}
         {statusUpdateConfirm && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-xl max-w-md w-full p-6">
-              <h3 className="text-xl font-bold text-foreground mb-4">Confirm Status Update</h3>
-              <p className="text-muted-foreground mb-6">
+            <div className="bg-white rounded-lg max-w-md w-full p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Confirm Status Update</h3>
+              <p className="text-sm text-gray-600 mb-6">
                 Are you sure you want to update order status from <strong>{statusUpdateConfirm.currentStatus}</strong> to <strong>{statusUpdateConfirm.newStatus}</strong>?
                 {statusUpdateConfirm.newStatus !== 'Pending' && (
-                  <span className="block mt-2 text-sm">An email notification will be sent to the customer.</span>
+                  <span className="block mt-2">An email notification will be sent to the customer.</span>
                 )}
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setStatusUpdateConfirm(null)}
-                  className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-semibold"
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={confirmStatusUpdate}
-                  className="flex-1 px-4 py-2 bg-[#C8945C] text-white rounded-lg hover:bg-[#B8844C] transition-colors font-semibold"
+                  className="flex-1 px-4 py-2 bg-[#C8945C] text-white text-sm font-medium rounded-md hover:bg-[#B8844C] transition-colors"
                 >
                   Confirm
                 </button>
@@ -1033,7 +1102,7 @@ const AdminPanel = () => {
   );
 };
 
-// Product Form Component
+// PRODUCT FORM COMPONENT
 const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading, editing }) => {
   const addSize = () => {
     setProductForm({
@@ -1056,64 +1125,61 @@ const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading,
   };
 
   return (
-    <motion.form
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      onSubmit={onSubmit}
-      className="bg-[#F8F2EC] rounded-2xl p-6 sm:p-8 border border-[#E8DFD0] space-y-6"
-    >
-      <h2 className="text-2xl font-bold text-foreground mb-6">
-        {editing ? 'Edit Product' : 'Create New Product'}
-      </h2>
+    <form onSubmit={onSubmit} className="bg-white border border-gray-200 rounded-lg p-6 space-y-6">
+      <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+        <h2 className="text-lg font-semibold text-gray-900">
+          {editing ? 'Edit Product' : 'Create New Product'}
+        </h2>
+      </div>
 
-      {/* Basic Info */}
-      <div className="grid md:grid-cols-2 gap-4">
+      {/* BASIC INFO */}
+      <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-semibold text-foreground mb-2">Product Name *</label>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">Product Name *</label>
           <input
             type="text"
             required
             value={productForm.productName}
             onChange={(e) => setProductForm({ ...productForm, productName: e.target.value })}
-            className="w-full border-2 border-[#E8DFD0] p-3 rounded-xl bg-white focus:border-[#C8945C] focus:outline-none"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
           />
         </div>
         <div>
-          <label className="block text-sm font-semibold text-foreground mb-2">Brand</label>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">Brand</label>
           <input
             type="text"
             value={productForm.brand}
             onChange={(e) => setProductForm({ ...productForm, brand: e.target.value })}
-            className="w-full border-2 border-[#E8DFD0] p-3 rounded-xl bg-white focus:border-[#C8945C] focus:outline-none"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-foreground mb-2">Short Description *</label>
+        <label className="block text-xs font-medium text-gray-700 mb-1.5">Short Description *</label>
         <textarea
           required
           value={productForm.smallDescription}
           onChange={(e) => setProductForm({ ...productForm, smallDescription: e.target.value })}
           rows={2}
-          className="w-full border-2 border-[#E8DFD0] p-3 rounded-xl bg-white focus:border-[#C8945C] focus:outline-none"
+          className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-foreground mb-2">Long Description</label>
+        <label className="block text-xs font-medium text-gray-700 mb-1.5">Long Description</label>
         <textarea
           value={productForm.longDescription}
           onChange={(e) => setProductForm({ ...productForm, longDescription: e.target.value })}
           rows={4}
-          className="w-full border-2 border-[#E8DFD0] p-3 rounded-xl bg-white focus:border-[#C8945C] focus:outline-none"
+          className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
         />
       </div>
 
-      {/* Stats */}
-      <div className="grid md:grid-cols-4 gap-4">
+      {/* STATS */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div>
-          <label className="block text-sm font-semibold text-foreground mb-2">Rating</label>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">Rating</label>
           <input
             type="number"
             step="0.1"
@@ -1121,45 +1187,45 @@ const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading,
             max="5"
             value={productForm.rating}
             onChange={(e) => setProductForm({ ...productForm, rating: parseFloat(e.target.value) || 0 })}
-            className="w-full border-2 border-[#E8DFD0] p-3 rounded-xl bg-white focus:border-[#C8945C] focus:outline-none"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
           />
         </div>
         <div>
-          <label className="block text-sm font-semibold text-foreground mb-2">Total Reviews</label>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">Reviews</label>
           <input
             type="number"
             min="0"
             value={productForm.totalReviews}
             onChange={(e) => setProductForm({ ...productForm, totalReviews: parseInt(e.target.value) || 0 })}
-            className="w-full border-2 border-[#E8DFD0] p-3 rounded-xl bg-white focus:border-[#C8945C] focus:outline-none"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
           />
         </div>
         <div>
-          <label className="block text-sm font-semibold text-foreground mb-2">Sold This Month</label>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">Sold/Month</label>
           <input
             type="number"
             min="0"
             value={productForm.soldThisMonth}
             onChange={(e) => setProductForm({ ...productForm, soldThisMonth: parseInt(e.target.value) || 0 })}
-            className="w-full border-2 border-[#E8DFD0] p-3 rounded-xl bg-white focus:border-[#C8945C] focus:outline-none"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
           />
         </div>
         <div>
-          <label className="block text-sm font-semibold text-foreground mb-2">Stock *</label>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">Stock *</label>
           <input
             type="number"
             required
             min="0"
             value={productForm.stock}
             onChange={(e) => setProductForm({ ...productForm, stock: parseInt(e.target.value) || 0 })}
-            className="w-full border-2 border-[#E8DFD0] p-3 rounded-xl bg-white focus:border-[#C8945C] focus:outline-none"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
           />
         </div>
       </div>
 
-      {/* Images */}
+      {/* IMAGES */}
       <div>
-        <label className="block text-sm font-semibold text-foreground mb-2">Images (URLs)</label>
+        <label className="block text-xs font-medium text-gray-700 mb-1.5">Images (URLs)</label>
         {productForm.images.map((img, index) => (
           <div key={index} className="flex gap-2 mb-2">
             <input
@@ -1171,7 +1237,7 @@ const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading,
                 newImages[index] = e.target.value;
                 setProductForm({ ...productForm, images: newImages });
               }}
-              className="flex-1 border-2 border-[#E8DFD0] p-3 rounded-xl bg-white focus:border-[#C8945C] focus:outline-none"
+              className="flex-1 border border-gray-300 px-3 py-2 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
             />
             {productForm.images.length > 1 && (
               <button
@@ -1182,7 +1248,7 @@ const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading,
                     images: productForm.images.filter((_, i) => i !== index)
                   });
                 }}
-                className="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600"
+                className="px-3 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-md hover:bg-red-100"
               >
                 Remove
               </button>
@@ -1192,24 +1258,24 @@ const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading,
         <button
           type="button"
           onClick={() => setProductForm({ ...productForm, images: [...productForm.images, ''] })}
-          className="mt-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300"
+          className="mt-1 text-sm text-[#C8945C] hover:text-[#B8844C] font-medium"
         >
           + Add Image
         </button>
       </div>
 
-      {/* Sizes */}
+      {/* SIZES */}
       <div>
-        <label className="block text-sm font-semibold text-foreground mb-2">Sizes *</label>
+        <label className="block text-xs font-medium text-gray-700 mb-1.5">Sizes *</label>
         {productForm.sizes.map((size, index) => (
-          <div key={index} className="grid md:grid-cols-5 gap-2 mb-2 p-4 bg-white rounded-xl border border-[#E8DFD0]">
+          <div key={index} className="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-2 p-3 bg-gray-50 border border-gray-200 rounded-md">
             <input
               type="number"
-              placeholder="Weight (lbs)"
+              placeholder="Weight"
               required
               value={size.weight || ''}
               onChange={(e) => updateSize(index, 'weight', parseFloat(e.target.value) || 0)}
-              className="border-2 border-[#E8DFD0] p-2 rounded-lg focus:border-[#C8945C] focus:outline-none"
+              className="border border-gray-300 px-2 py-1.5 rounded text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C]"
             />
             <input
               type="number"
@@ -1218,7 +1284,7 @@ const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading,
               step="0.01"
               value={size.price || ''}
               onChange={(e) => updateSize(index, 'price', parseFloat(e.target.value) || 0)}
-              className="border-2 border-[#E8DFD0] p-2 rounded-lg focus:border-[#C8945C] focus:outline-none"
+              className="border border-gray-300 px-2 py-1.5 rounded text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C]"
             />
             <input
               type="number"
@@ -1226,20 +1292,20 @@ const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading,
               step="0.01"
               value={size.oldPrice || ''}
               onChange={(e) => updateSize(index, 'oldPrice', parseFloat(e.target.value) || 0)}
-              className="border-2 border-[#E8DFD0] p-2 rounded-lg focus:border-[#C8945C] focus:outline-none"
+              className="border border-gray-300 px-2 py-1.5 rounded text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C]"
             />
             <input
               type="text"
               placeholder="Servings"
               value={size.servings || ''}
               onChange={(e) => updateSize(index, 'servings', e.target.value)}
-              className="border-2 border-[#E8DFD0] p-2 rounded-lg focus:border-[#C8945C] focus:outline-none"
+              className="border border-gray-300 px-2 py-1.5 rounded text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C]"
             />
             {productForm.sizes.length > 1 && (
               <button
                 type="button"
                 onClick={() => removeSize(index)}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 border border-red-200 rounded hover:bg-red-100"
               >
                 Remove
               </button>
@@ -1249,15 +1315,15 @@ const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading,
         <button
           type="button"
           onClick={addSize}
-          className="mt-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300"
+          className="mt-1 text-sm text-[#C8945C] hover:text-[#B8844C] font-medium"
         >
           + Add Size
         </button>
       </div>
 
-      {/* Ingredients */}
+      {/* INGREDIENTS */}
       <div>
-        <label className="block text-sm font-semibold text-foreground mb-2">Ingredients</label>
+        <label className="block text-xs font-medium text-gray-700 mb-1.5">Ingredients</label>
         {productForm.ingredients.map((ing, index) => (
           <div key={index} className="flex gap-2 mb-2">
             <input
@@ -1269,7 +1335,7 @@ const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading,
                 newIngredients[index] = e.target.value;
                 setProductForm({ ...productForm, ingredients: newIngredients });
               }}
-              className="flex-1 border-2 border-[#E8DFD0] p-3 rounded-xl bg-white focus:border-[#C8945C] focus:outline-none"
+              className="flex-1 border border-gray-300 px-3 py-2 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
             />
             {productForm.ingredients.length > 1 && (
               <button
@@ -1280,7 +1346,7 @@ const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading,
                     ingredients: productForm.ingredients.filter((_, i) => i !== index)
                   });
                 }}
-                className="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600"
+                className="px-3 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-md hover:bg-red-100"
               >
                 Remove
               </button>
@@ -1290,42 +1356,41 @@ const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading,
         <button
           type="button"
           onClick={() => setProductForm({ ...productForm, ingredients: [...productForm.ingredients, ''] })}
-          className="mt-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300"
+          className="mt-1 text-sm text-[#C8945C] hover:text-[#B8844C] font-medium"
         >
           + Add Ingredient
         </button>
       </div>
 
-      {/* Actions */}
-      <div className="flex gap-4 pt-4">
+      {/* ACTIONS */}
+      <div className="flex gap-3 pt-4 border-t border-gray-200">
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-semibold"
+          className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={loading}
-          className="flex-1 px-6 py-3 bg-[#C8945C] text-white rounded-xl hover:bg-[#B8844C] transition-colors font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
+          className="flex-1 px-4 py-2 bg-[#C8945C] text-white text-sm font-medium rounded-md hover:bg-[#B8844C] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
               Saving...
             </>
           ) : (
             <>
-              <Save className="w-5 h-5" />
+              <Save className="w-4 h-4" />
               {editing ? 'Update Product' : 'Create Product'}
             </>
           )}
         </button>
       </div>
-    </motion.form>
+    </form>
   );
 };
 
 export default AdminPanel;
-

@@ -609,100 +609,97 @@ const Product = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
               >
-                <Link to="/" className="text-[#C8945C] hover:text-[#B8844C] text-sm font-semibold uppercase tracking-wider transition-colors inline-block mb-2">
+                <Link to="/" className="text-[#C8945C] hover:text-[#B8844C] text-sm font-semibold uppercase tracking-wider transition-colors inline-block mb-3">
                   {productData.brand}
                 </Link>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#2D4A3E] mb-6 leading-tight max-w-2xl">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2D4A3E] mb-6 leading-tight max-w-2xl">
                   {productData.name}
                 </h1>
                 
                 {/* Condensed Rating Section */}
                 <div className="flex flex-wrap items-center gap-4 mb-6 pb-6 border-b border-gray-200">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200">
                     <div className="flex">
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} className={`w-4 h-4 ${i < Math.floor(productData.rating) ? 'text-amber-500 fill-amber-500' : 'text-gray-300'}`} />
                       ))}
                     </div>
-                    <span className="text-xl font-bold text-gray-900">{productData.rating}</span>
+                    <span className="text-lg font-bold text-gray-900">{productData.rating}</span>
                   </div>
-                  <a href="#reviews" className="text-sm text-gray-600 hover:text-[#C8945C] underline underline-offset-2">
+                  <a href="#reviews" className="text-sm text-gray-600 hover:text-[#C8945C] underline underline-offset-2 font-medium">
                     {productData.reviews.toLocaleString()} reviews
                   </a>
-                  <span className="text-sm text-gray-500">
-                    {productData.soldThisMonth.toLocaleString()}+ sold
-                  </span>
+                  <div className="flex items-center gap-1.5 text-sm text-gray-600">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                    <span>{productData.soldThisMonth.toLocaleString()}+ sold</span>
+                  </div>
                 </div>
 
                 {/* Reduced Badges */}
                 <div className="flex flex-wrap gap-2 mb-6">
-                  <span className="inline-flex items-center gap-1.5 bg-[#2D4A3E] text-white px-3 py-1.5 rounded-lg text-xs font-medium">
-                    <Star className="w-3.5 h-3.5" />
+                  <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#2D4A3E] to-[#3a5c4e] text-white px-4 py-2 rounded-full text-xs font-semibold shadow-sm">
+                    <Star className="w-3.5 h-3.5 fill-white" />
                     BESTSELLER
                   </span>
-                  <span className="inline-flex items-center gap-1.5 border border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-medium bg-white">
+                  <span className="inline-flex items-center gap-1.5 border-2 border-[#C8945C] text-[#2D4A3E] px-4 py-2 rounded-full text-xs font-semibold bg-white">
                     <Shield className="w-3.5 h-3.5 text-[#C8945C]" />
                     VET APPROVED
                   </span>
                 </div>
 
                 {/* Description */}
-                <p className="text-base text-gray-600 leading-relaxed mb-8 max-w-xl">
+                <p className="text-base text-gray-700 leading-relaxed mb-8 max-w-2xl">
                   {productData.description}
                 </p>
               </motion.div>
 
-              {/* Refined Buy Box */}
+              {/* BUY BOX */}
               <motion.div 
-                className="bg-white rounded-xl p-6 lg:p-8 shadow-sm border border-gray-200 lg:sticky lg:top-24 space-y-6"
+                className="bg-[#FAF7F2] rounded-lg p-6 border border-[#E8DFD0] shadow-sm lg:sticky lg:top-24 space-y-5"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                {/* Cleaner Price */}
-                <div className="pb-6 border-b border-gray-200">
+                {/* PRICE SECTION */}
+                <div className="pb-4 border-b border-[#E8DFD0]">
                   <div className="flex items-baseline gap-3 mb-2">
-                    <span className="text-4xl sm:text-5xl font-bold text-gray-900">
+                    <span className="text-3xl font-semibold text-[#2D4A3E]">
                       AED {currentPrice?.price?.toFixed(2)}
                     </span>
                     {currentPrice?.oldPrice && (
-                      <span className="text-xl text-gray-400 line-through">
+                      <span className="text-lg text-gray-400 line-through">
                         AED {currentPrice.oldPrice.toFixed(2)}
                       </span>
                     )}
                   </div>
                   {currentPrice?.oldPrice && (
-                    <span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-md text-sm font-medium">
+                    <p className="text-sm text-[#2D4A3E]">
                       Save AED {(currentPrice.oldPrice - currentPrice.price).toFixed(2)}
-                    </span>
+                    </p>
                   )}
                 </div>
 
-                {/* Simplified Stock Status */}
-                <div className="flex items-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="font-medium text-gray-900">In Stock</span>
-                  <span className="text-gray-500">• {productData.stock} available</span>
-                </div>
-
-                {/* Minimalist Delivery Info */}
-                <div className="flex items-center gap-3 py-4 px-4 bg-gray-50 rounded-lg border border-gray-100">
-                  <Truck className="w-5 h-5 text-[#C8945C] shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Free Express Delivery</p>
-                    <p className="text-xs text-gray-500">5-7 business days</p>
+                {/* AVAILABILITY & DELIVERY */}
+                <div className="space-y-2.5 text-sm">
+                  <div className="flex items-center gap-2 text-[#2D4A3E]">
+                    <span>In Stock</span>
+                    <span className="text-gray-400">•</span>
+                    <span className="text-gray-600">{productData.stock} available</span>
+                  </div>
+                  <div className="text-gray-600">
+                    Free delivery • 5-7 business days
                   </div>
                 </div>
 
-                {/* Improved Quantity Selector */}
-                <div className="space-y-3">
-                  <label className="block text-sm font-medium text-gray-900">Quantity</label>
-                  <div className="flex items-center gap-3">
+                {/* QUANTITY SELECTOR */}
+                <div className="space-y-2.5 pb-4 border-b border-[#E8DFD0]">
+                  <label className="block text-sm font-medium text-[#2D4A3E]">Quantity</label>
+                  <div className="flex items-center gap-2">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-colors"
+                      className="w-9 h-9 flex items-center justify-center border border-[#E8DFD0] bg-white hover:border-[#C8945C] hover:bg-[#FAF7F2] transition-colors"
                     >
-                      <Minus className="w-4 h-4 text-gray-700" />
+                      <Minus className="w-4 h-4 text-[#2D4A3E]" />
                     </button>
                     <input
                       type="number"
@@ -713,32 +710,28 @@ const Product = () => {
                         const val = parseInt(e.target.value) || 1;
                         setQuantity(Math.max(1, Math.min(val, productData.stock)));
                       }}
-                      className="w-20 text-center text-lg font-semibold border border-gray-300 rounded-lg py-2 focus:border-[#C8945C] focus:ring-1 focus:ring-[#C8945C] focus:outline-none"
+                      className="w-20 text-center text-base font-medium border border-[#E8DFD0] bg-white py-2 focus:border-[#C8945C] focus:outline-none"
                     />
                     <button
                       onClick={() => setQuantity(Math.min(productData.stock, quantity + 1))}
-                      className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-colors"
+                      className="w-9 h-9 flex items-center justify-center border border-[#E8DFD0] bg-white hover:border-[#C8945C] hover:bg-[#FAF7F2] transition-colors"
                     >
-                      <Plus className="w-4 h-4 text-gray-700" />
+                      <Plus className="w-4 h-4 text-[#2D4A3E]" />
                     </button>
                   </div>
                 </div>
 
-                {/* Clear CTA Hierarchy */}
-                <div className="space-y-3 pt-4">
-                  <motion.button
+                {/* CTA SECTION */}
+                <div className="space-y-2.5">
+                  <button
                     onClick={addToCart}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full bg-[#C8945C] hover:bg-[#B8844C] text-white py-4 rounded-lg font-semibold text-base shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                    className="w-full bg-[#C8945C] text-white py-3 rounded-md font-medium text-sm hover:bg-[#B8844C] transition-colors"
                   >
-                    <ShoppingCart className="w-5 h-5" />
                     Add to Cart
-                  </motion.button>
-
+                  </button>
                   <button
                     onClick={handleBuyNow}
-                    className="w-full border-2 border-gray-300 text-gray-900 py-4 rounded-lg font-medium text-base hover:border-gray-400 hover:bg-gray-50 transition-all"
+                    className="w-full border border-[#E8DFD0] text-[#2D4A3E] bg-white py-3 rounded-md font-medium text-sm hover:bg-[#FAF7F2] transition-colors"
                   >
                     Buy Now
                   </button>
