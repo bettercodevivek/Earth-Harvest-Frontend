@@ -9,34 +9,37 @@ import OTPModal from "./components/OTPModal";
 import EarthHarvestPreloader from "./components/Preloader";
 
 export default function Layout() {
-  const [loading, setLoading] = useState(true);
+  const [showPreloader, setShowPreloader] = useState(false);
 
   useEffect(() => {
     const hasVisited = sessionStorage.getItem("earthHarvestVisited");
 
-    if (hasVisited) {
-      setLoading(false);
+    if (!hasVisited) {
+      setShowPreloader(true);
     }
   }, []);
 
   const handlePreloaderComplete = () => {
     sessionStorage.setItem("earthHarvestVisited", "true");
-    setLoading(false);
+    setShowPreloader(false);
   };
 
-  if (loading) {
-    return <EarthHarvestPreloader onComplete={handlePreloaderComplete} />;
-  }
-
   return (
-    <AuthProvider>
-      <ScrollToTop />
-      <ScrollRestoration />
-      <ScrollToHash />
-      <Outlet />
-      <Footer />
-      <LoginModal />
-      <OTPModal />
-    </AuthProvider>
+    <>
+ 
+      {showPreloader && (
+        <EarthHarvestPreloader onComplete={handlePreloaderComplete} />
+      )}
+
+      <AuthProvider>
+        <ScrollToTop />
+        <ScrollRestoration />
+        <ScrollToHash />
+        <Outlet />
+        <Footer />
+        <LoginModal />
+        <OTPModal />
+      </AuthProvider>
+    </>
   );
 }

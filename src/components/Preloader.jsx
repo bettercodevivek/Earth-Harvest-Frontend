@@ -62,7 +62,7 @@ const EarthHarvestPreloader = ({ onComplete }) => {
     <AnimatePresence>
       {!exit && (
         <motion.div
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#F5EFE6] text-[#2E2E2E] px-4"
+          className="fixed inset-0 z-9999 flex flex-col items-center justify-center bg-[#F5EFE6] text-[#2E2E2E] px-4"
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6 }}
         >
