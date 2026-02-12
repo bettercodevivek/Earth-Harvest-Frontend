@@ -1,0 +1,182 @@
+/* ============================================
+   MINIMAL PRELOADER STYLES
+   ============================================ */
+
+   .minimal-preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #F5EFE6;
+    opacity: 1;
+    transition: opacity 0.6s ease-in-out;
+  }
+  
+  .minimal-preloader.fade-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  /* ============================================
+     CHEW STICK ANIMATION
+     ============================================ */
+  
+  .chew-container {
+    margin-bottom: 48px;
+    position: relative;
+  }
+  
+  .chew-stick {
+    display: block;
+  }
+  
+  /* Smooth bite progress animation */
+  .bite-progress {
+    transition: width 0.045s linear;
+  }
+  
+  /* Bite marks fade in as progress reaches them */
+  .bite-mark {
+    transition: opacity 0.3s ease-out;
+  }
+  
+  .progress-indicator {
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #8B7355;
+    letter-spacing: 0.5px;
+  }
+  
+  /* ============================================
+     USP CHECKLIST
+     ============================================ */
+  
+  .usp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+    min-height: 120px; /* Prevents layout shift */
+  }
+  
+  .usp-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  }
+  
+  .usp-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  /* Checkmark icon */
+  .checkmark {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.3s ease-out 0.1s, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.1s;
+  }
+  
+  .usp-item.visible .checkmark {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  /* Animated check path */
+  .check-path {
+    stroke-dasharray: 20;
+    stroke-dashoffset: 20;
+    transition: stroke-dashoffset 0.3s ease-out 0.2s;
+  }
+  
+  .usp-item.visible .check-path {
+    stroke-dashoffset: 0;
+  }
+  
+  /* USP text */
+  .usp-text {
+    font-size: 15px;
+    font-weight: 300;
+    letter-spacing: 0.3px;
+    color: #2D2D2D;
+  }
+  
+  /* ============================================
+     FINAL MESSAGE
+     ============================================ */
+  
+  .final-message {
+    padding-top: 24px;
+    border-top: 1px solid rgba(200, 161, 101, 0.2);
+    font-size: 16px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    color: #C8A165;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+  
+  .final-message.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* ============================================
+     RESPONSIVE
+     ============================================ */
+  
+  @media (max-width: 640px) {
+    .chew-container {
+      margin-bottom: 36px;
+    }
+  
+    .chew-stick {
+      width: 200px;
+      height: 20px;
+    }
+  
+    .usp-list {
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+  
+    .usp-text {
+      font-size: 14px;
+    }
+  
+    .final-message {
+      font-size: 15px;
+      padding-top: 20px;
+    }
+  }
+  
+  /* ============================================
+     ACCESSIBILITY
+     ============================================ */
+  
+  @media (prefers-reduced-motion: reduce) {
+    .minimal-preloader,
+    .usp-item,
+    .checkmark,
+    .check-path,
+    .final-message,
+    .bite-progress,
+    .bite-mark {
+      transition-duration: 0.01s !important;
+      animation-duration: 0.01s !important;
+    }
+  }
