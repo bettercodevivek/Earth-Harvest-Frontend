@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { apiFetch } from '../utils/api';
 import Navbar from './Navbar';
 import PremiumCheckout from './CheckoutModals';
+import { optimizeCloudinaryImage } from '../utils/cloudinary';
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -339,9 +340,12 @@ const Cart = () => {
                         <div className="col-span-12 sm:col-span-5 flex items-center gap-3">
                           {item.product?.images?.[0] && (
                             <img
-                              src={item.product.images[0]}
+                              src={optimizeCloudinaryImage(item.product.images[0], "w_400", true)}
                               alt={item.product.productName}
                               className="w-16 h-16 object-cover border border-[#E8DFD0] rounded-md"
+                              width="64"
+                              height="64"
+                              loading="lazy"
                             />
                           )}
                           <div className="min-w-0 flex-1">

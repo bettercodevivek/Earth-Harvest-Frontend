@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, User, LogOut, Package } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { optimizeCloudinaryImage } from '../utils/cloudinary';
 
 const Navbar = ({ cartCount }) => {
   const [scrolled, setScrolled] = useState(false);
@@ -47,9 +48,12 @@ const Navbar = ({ cartCount }) => {
           <div className="flex-shrink-0 flex items-center">
             <Link to="/" className="flex items-center">
               <img
-                src="https://res.cloudinary.com/dpc7tj2ze/image/upload/v1767539648/New_Logo_Tinny_transparent_v6if1w.png"
+                src={optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1767539648/New_Logo_Tinny_transparent_v6if1w.png", "w_auto", false)}
                 alt="Earth & Harvest Logo"
                 className="h-10 sm:h-12 lg:h-16 w-auto object-contain"
+                width="200"
+                height="64"
+                fetchPriority="high"
               />
             </Link>
           </div>

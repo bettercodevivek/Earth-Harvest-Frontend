@@ -1,4 +1,5 @@
 import { ArrowUp } from "lucide-react";
+import { optimizeCloudinaryImage } from '../utils/cloudinary';
 
 const Footer = () => {
 
@@ -15,9 +16,12 @@ const Footer = () => {
 
           {/* Logo */}
           <img 
-            src="https://res.cloudinary.com/dpc7tj2ze/image/upload/v1767539648/New_Logo_Tinny_transparent_v6if1w.png" 
+            src={optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1767539648/New_Logo_Tinny_transparent_v6if1w.png", "w_auto", true)} 
             alt="Earth & Harvest Logo"
             className="w-32 h-12 object-contain"
+            width="128"
+            height="48"
+            loading="lazy"
           />
 
           {/* Quick Links */}

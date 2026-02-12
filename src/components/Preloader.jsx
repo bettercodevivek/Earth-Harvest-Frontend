@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { optimizeCloudinaryImage } from '../utils/cloudinary';
 
 const ingredients = [
   {
     name: "Yak & Cow Milk",
-    icon: "https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770889027/glass-of-milk-svgrepo-com_eolgvp.svg", // add real svg icons
+    icon: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770889027/glass-of-milk-svgrepo-com_eolgvp.svg", "w_auto", false),
   },
   {
     name: "Lime Juice",
-    icon: "https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770889027/lime-svgrepo-com_ceqkrf.svg",
+    icon: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770889027/lime-svgrepo-com_ceqkrf.svg", "w_auto", false),
   },
   {
     name: "Natural Salt",
-    icon: "https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770889026/salt-svgrepo-com_qkvy79.svg",
+    icon: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770889026/salt-svgrepo-com_qkvy79.svg", "w_auto", false),
   },
 ];
 
@@ -21,16 +22,40 @@ const EarthHarvestPreloader = ({ onComplete }) => {
   const [exit, setExit] = useState(false);
 
   useEffect(() => {
+    // Check if page is already loaded - if so, skip preloader quickly
+    const isPageLoaded = document.readyState === 'complete';
+    
+    // If page is already loaded, skip preloader entirely
+    if (isPageLoaded) {
+      onComplete?.();
+      return;
+    }
+    
+    // Listen for page load event
+    const handleLoad = () => {
+      // If page loads before preloader completes, finish quickly
+      setExit(true);
+      setTimeout(() => onComplete?.(), 200);
+    };
+    
+    window.addEventListener('load', handleLoad);
+    
     const timers = [
-      setTimeout(() => setStage(1), 0),      // Logo
-      setTimeout(() => setStage(2), 800),    // Tagline
-      setTimeout(() => setStage(3), 1600),   // Ingredients slide
-      setTimeout(() => setStage(4), 2800),   // Final line
-      setTimeout(() => setExit(true), 3300),
-      setTimeout(() => onComplete?.(), 3800),
+      setTimeout(() => setStage(1), 0),           // Logo
+      setTimeout(() => setStage(2), 400),         // Tagline
+      setTimeout(() => setStage(3), 800),         // Ingredients slide
+      setTimeout(() => setStage(4), 1200),        // Final line
+      setTimeout(() => setExit(true), 1500),
+      setTimeout(() => {
+        window.removeEventListener('load', handleLoad);
+        onComplete?.();
+      }, 1800), // Max 1800ms total
     ];
 
-    return () => timers.forEach(clearTimeout);
+    return () => {
+      timers.forEach(clearTimeout);
+      window.removeEventListener('load', handleLoad);
+    };
   }, [onComplete]);
 
   return (
@@ -43,12 +68,14 @@ const EarthHarvestPreloader = ({ onComplete }) => {
         >
           {/* Logo */}
           <motion.img
-            src="https://res.cloudinary.com/dpc7tj2ze/image/upload/v1767539648/New_Logo_Tinny_transparent_v6if1w.png"
+            src={optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1767539648/New_Logo_Tinny_transparent_v6if1w.png", "w_auto", false)}
             alt="Earth & Harvest"
             className="w-32 mb-6"
+            width="128"
+            height="128"
             initial={{ opacity: 0 }}
             animate={{ opacity: stage >= 1 ? 1 : 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.4 }}
           />
 
           {/* Tagline */}
@@ -84,6 +111,8 @@ const EarthHarvestPreloader = ({ onComplete }) => {
                   src={item.icon}
                   alt={item.name}
                   className="w-12 h-12 mb-3"
+                  width="48"
+                  height="48"
                 />
                 <p className="text-sm font-medium">{item.name}</p>
               </motion.div>

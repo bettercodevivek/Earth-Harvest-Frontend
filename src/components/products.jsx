@@ -13,6 +13,7 @@ import PremiumCheckout from "./CheckoutModals";
 import ReviewForm from "./ReviewForm";
 import { apiFetch } from "../utils/api";
 import { useAuth } from "../contexts/AuthContext";
+import { optimizeCloudinaryImage } from '../utils/cloudinary';
 
 
 const Product = () => {
@@ -483,13 +484,16 @@ const Product = () => {
                       className="absolute inset-0"
                     >
                       <img
-                        src={productData.images[selectedImage] || productData.images[0]}
+                        src={optimizeCloudinaryImage(productData.images[selectedImage] || productData.images[0], "w_800", false)}
                         alt={productData.name}
                         className="w-full h-full object-cover transition-transform duration-300"
                         style={{
                           transform: `scale(${zoomLevel})`,
                           transformOrigin: 'center center',
                         }}
+                        width="800"
+                        height="800"
+                        fetchPriority="high"
                         draggable={false}
                       />
                     </motion.div>
@@ -587,7 +591,14 @@ const Product = () => {
                       onClick={() => goToImage(idx, idx > selectedImage ? 1 : -1)}
                       className={`w-16 h-16 sm:w-24 sm:h-24 rounded-lg overflow-hidden shrink-0 transition-all`}
                     >
-                      <img src={img} alt="" className="w-full h-full object-cover" />
+                      <img 
+                        src={optimizeCloudinaryImage(img, "w_400", true)} 
+                        alt="" 
+                        className="w-full h-full object-cover" 
+                        width="96"
+                        height="96"
+                        loading="lazy"
+                      />
                     </button>
                   ))}
                 </div>
@@ -996,7 +1007,15 @@ const Product = () => {
                       {review.images?.length > 0 && (
                         <div className="flex gap-2">
                           {review.images.map((img, i) => (
-                            <img key={i} src={img} className="w-20 h-20 rounded-lg object-cover border border-gray-200" />
+                            <img 
+                              key={i} 
+                              src={optimizeCloudinaryImage(img, "w_400", true)} 
+                              className="w-20 h-20 rounded-lg object-cover border border-gray-200" 
+                              width="80"
+                              height="80"
+                              loading="lazy"
+                              alt="Review image"
+                            />
                           ))}
                         </div>
                       )}
