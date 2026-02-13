@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Mail, Phone, MapPin, Edit2, Save, X, Lock, Package, CreditCard } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Edit2, Save, X, Lock, Package, CreditCard, RotateCcw, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { apiFetch } from '../utils/api';
 import Navbar from './Navbar';
@@ -15,6 +15,7 @@ const Profile = () => {
   const [cartCount, setCartCount] = useState(0);
   const [orders, setOrders] = useState([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
+  const [retryingPayment, setRetryingPayment] = useState(null);
   
   const [profileData, setProfileData] = useState({
     name: '',
@@ -140,6 +141,34 @@ const Profile = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const retryPayment = async (orderId, amount) => {
+    setRetryingPayment(orderId);
+    try {
+      // Create new payment link for the order
+      const response = await apiFetch('/payment/create', {
+        method: 'POST',
+        body: JSON.stringify({
+          orderId: orderId,
+          amount: amount
+        })
+      });
+
+      if (response.success && response.paymentUrl) {
+        // Redirect to payment page
+        window.location.href = response.paymentUrl;
+      } else {
+        throw new Error('Failed to create payment link');
+      }
+    } catch (error) {
+      showToast({
+        type: 'error',
+        title: 'Error',
+        message: error.message || 'Failed to retry payment. Please try again.'
+      });
+      setRetryingPayment(null);
     }
   };
 
@@ -376,8 +405,36 @@ const Profile = () => {
                     key={order._id}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-xl p-6 border-2 border-[#E8DFD0] hover:shadow-lg transition-all"
+                    className="bg-white rounded-xl p-6 border-2 border-[#E8DFD0] hover:shadow-lg transition-all relative"
                   >
+                    {/* Payment Failed Overlay */}
+                    {order.paymentStatus === 'Failed' && (
+                      <div className="absolute inset-0 bg-red-50/90 backdrop-blur-sm rounded-xl flex items-center justify-center z-10 border-2 border-red-200">
+                        <div className="text-center p-4">
+                          <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-3" />
+                          <p className="text-lg font-semibold text-red-900 mb-2">Payment Failed</p>
+                          <p className="text-sm text-red-700 mb-4">Your payment could not be processed</p>
+                          <button
+                            onClick={() => retryPayment(order._id, order.amountPaid)}
+                            disabled={retryingPayment === order._id}
+                            className="bg-[#C8945C] hover:bg-[#B8844C] text-white px-6 py-2.5 rounded-md font-medium text-sm transition-colors flex items-center justify-center gap-2 mx-auto disabled:opacity-50"
+                          >
+                            {retryingPayment === order._id ? (
+                              <>
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                Processing...
+                              </>
+                            ) : (
+                              <>
+                                <RotateCcw className="w-4 h-4" />
+                                Retry Payment
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
                       <div>
                         <div className="flex items-center gap-3 mb-2">
@@ -395,6 +452,11 @@ const Profile = () => {
                           }`}>
                             {order.orderStatus || 'Pending'}
                           </span>
+                          {order.paymentStatus === 'Failed' && (
+                            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 line-through">
+                              Payment Failed
+                            </span>
+                          )}
                         </div>
                         <p className="text-sm text-muted-foreground">
                           {order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US', {
@@ -408,7 +470,13 @@ const Profile = () => {
                         <p className="text-lg font-bold text-[#C8945C]">
                           AED {order.amountPaid || '0.00'}
                         </p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className={`text-xs ${
+                          order.paymentStatus === 'Failed'
+                            ? 'text-red-600 font-semibold'
+                            : order.paymentStatus === 'Completed'
+                            ? 'text-green-600'
+                            : 'text-muted-foreground'
+                        }`}>
                           Payment: {order.paymentStatus || 'Pending'}
                         </p>
                       </div>

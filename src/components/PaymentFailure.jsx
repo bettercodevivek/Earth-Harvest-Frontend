@@ -1,12 +1,33 @@
+import { useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { XCircle, Home, RotateCcw, AlertCircle } from 'lucide-react';
+import { apiFetch } from '../utils/api';
 import Navbar from './Navbar';
 
 const PaymentFailure = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get('orderId');
   const error = searchParams.get('error');
+
+  // Mark order as failed when component loads
+  useEffect(() => {
+    const markOrderAsFailed = async () => {
+      if (!orderId) return;
+      
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      try {
+        // Verify payment to update order status
+        await apiFetch(`/payment/verify/${orderId}`);
+      } catch (err) {
+        console.error('Failed to mark order as failed:', err);
+      }
+    };
+
+    markOrderAsFailed();
+  }, [orderId]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FAF7F2] to-[#F8F2EC]">

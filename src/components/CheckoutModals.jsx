@@ -513,7 +513,7 @@ export default function PremiumCheckout({
                           <Navigation className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#6B7C72]" />
                           <input
                             type="text"
-                            placeholder="Dubai"
+                            placeholder="Enter your city"
                             value={address.city || ""}
                             onChange={(e) => {
                               setAddress({ ...address, city: e.target.value });
@@ -538,7 +538,7 @@ export default function PremiumCheckout({
                           <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#6B7C72]" />
                           <input
                             type="text"
-                            placeholder="Dubai"
+                            placeholder="Enter your state/emirate"
                             value={address.state || ""}
                             onChange={(e) => {
                               setAddress({ ...address, state: e.target.value });

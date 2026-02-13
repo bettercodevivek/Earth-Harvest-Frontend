@@ -683,7 +683,7 @@ const Product = () => {
                   </span>
                   <span className="inline-flex items-center gap-1.5 border-2 border-[#C8945C] text-[#2D4A3E] px-4 py-2 rounded-full text-xs font-semibold bg-white">
                     <Shield className="w-3.5 h-3.5 text-[#C8945C]" />
-                    VET APPROVED
+                    CUSTOMER APPROVED
                   </span>
                 </div>
 
