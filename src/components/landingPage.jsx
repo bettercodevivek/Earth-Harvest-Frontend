@@ -11,6 +11,7 @@ import Navbar from './Navbar'
 import { useAuth } from '../contexts/AuthContext';
 import { apiFetch } from "../utils/api";
 import { optimizeCloudinaryImage, optimizeCloudinaryVideo } from '../utils/cloudinary';
+import StickyLoginHint from './StickyLoginHint';
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000/api";
 
 const Index = () => {
@@ -22,8 +23,9 @@ const Index = () => {
   const { showLoginModal, setShowLoginModal } = useAuth();
   const [imageDirection, setImageDirection] = useState(1);
   const [testimonials, setTestimonials] = useState([]);
-  const [productRating, setProductRating] = useState(4.9);
+  const [productRating, setProductRating] = useState(4.8);
   const [productReviews, setProductReviews] = useState(1000);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   
   const { scrollYProgress } = useScroll();
   const heroScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
@@ -31,19 +33,19 @@ const Index = () => {
 
   const heroImages = [
     {
-      src: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770408590/20260207_0136_Image_Generation_remix_01kgt8z4neftyredvv4898g1ms_kdhdvp.png", "w_800", false),
+      src: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770902947/20260207_0136_Image_Generation_remix_01kgt8z4neftyredvv4898g1ms_pp92hb.webp", "w_800", false),
       alt: "Energetic German Shepherd"
     },
     {
-      src: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770407267/1000095094_yp3ltw.jpg", "w_800", false),
+      src: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770902947/1000095094_bsuirk.webp", "w_800", false),
       alt: "Happy Golden Retriever"
     },
     {
-      src: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1765534823/20251207_2012_Dog_Enjoying_Chew_remix_01kbwm3zz8e8980xe6t7yk53wr_jtlbkc.png", "w_800", false),
+      src: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770902946/20251207_2012_Dog_Enjoying_Chew_remix_01kbwm3zz8e8980xe6t7yk53wr_hjsbiz.webp", "w_800", false),
       alt: "Healthy Labrador"
     },
     {
-      src: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770408590/20260207_0138_Image_Generation_remix_01kgt91ngdf6ks4zw3rtggg5wc_mclxzy.png", "w_800", false),
+      src: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770902947/20260207_0138_Image_Generation_remix_01kgt91ngdf6ks4zw3rtggg5wc_xdccul.webp", "w_800", false),
       alt: "Energetic German Shepherd"
     },
   ];
@@ -73,7 +75,7 @@ const Index = () => {
   ];
   
 
-  const ingredientVideoUrl = optimizeCloudinaryVideo("https://res.cloudinary.com/dpc7tj2ze/video/upload/v1765639780/IMG_2946_yrrhj7.mp4");
+  const ingredientVideoUrl = "https://res.cloudinary.com/dpc7tj2ze/video/upload/v1765639780/IMG_2946_yrrhj7.mp4";
 
   const product = {
     name: "Earth & Harvest Complete",
@@ -91,6 +93,19 @@ const Index = () => {
   };
 
   const currentPrice = product.sizes.find(s => s.weight === selectedSize);
+
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      setIsAuthenticated(!!token);
+    };
+    
+    checkAuth();
+    // Re-check when storage changes (e.g., after login/logout)
+    window.addEventListener('storage', checkAuth);
+    return () => window.removeEventListener('storage', checkAuth);
+  }, []);
 
   // Auto-advance images with smooth transitions
   useEffect(() => {
@@ -150,13 +165,6 @@ const Index = () => {
         
         if (response.success && response.data) {
           const product = response.data;
-          
-          if (product.rating) {
-            setProductRating(product.rating);
-          }
-          if (product.totalReviews) {
-            setProductReviews(product.totalReviews);
-          }
           
           if (product.reviews && product.reviews.length > 0) {
             const transformedTestimonials = product.reviews
@@ -274,6 +282,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
+      <StickyLoginHint />
       <Navbar cartCount={cartCount} />
 
       {/* Modern Hero Section with Refined Animations */}
@@ -475,6 +484,24 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Inline Login CTA - Only for non-authenticated users
+      {!isAuthenticated && (
+        <div className="py-3 bg-gradient-to-b from-[#FAF7F2] to-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p className="text-center text-sm text-gray-600" style={{ marginTop: '12px', marginBottom: '12px' }}>
+              Returning customer?{' '}
+              <button
+                onClick={() => setShowLoginModal(true)}
+                className="font-semibold text-[#C8945C] hover:text-[#B8844C] transition-colors focus:outline-none focus:underline"
+              >
+                Login
+              </button>
+              {' '}for faster checkout
+            </p>
+          </div>
+        </div>
+      )} */}
 
       {/* Trust Bar - Moved Up & Simplified */}
       <section className="py-10 bg-gradient-to-b from-gray-50/50 to-white border-b border-gray-100">

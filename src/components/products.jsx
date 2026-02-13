@@ -6,7 +6,7 @@ import {
   Shield, Leaf, Award, ChevronDown, ChevronUp, Zap, Clock, Users, 
   ThumbsUp, ThumbsDown, Camera, RotateCcw, BadgeCheck, Sparkles,
   ChevronLeft, ChevronRight, ZoomIn, ZoomOut,
-  Box, Heart
+  Box, Heart, X
 } from 'lucide-react';
 import Navbar from './Navbar'
 import PremiumCheckout from "./CheckoutModals";
@@ -36,6 +36,8 @@ const Product = () => {
   const [error, setError] = useState(null);
   const [showCheckout, setShowCheckout] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [modalImageIndex, setModalImageIndex] = useState(0);
   const [address, setAddress] = useState({
     name: "",
     phone: "",
@@ -95,6 +97,24 @@ const Product = () => {
 
     fetchProduct();
   }, [productId]);
+
+  // Handle keyboard navigation for image modal
+  useEffect(() => {
+    if (!showImageModal || !product?.images) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setShowImageModal(false);
+      } else if (e.key === 'ArrowLeft' && product.images.length > 1) {
+        setModalImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
+      } else if (e.key === 'ArrowRight' && product.images.length > 1) {
+        setModalImageIndex((prev) => (prev + 1) % product.images.length);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showImageModal, product]);
 
   useEffect(() => {
     const fetchCartCount = async () => {
@@ -294,10 +314,10 @@ const Product = () => {
   ];
 
   const nutritionFacts = [
-    { name: "Crude Protein", value: "69% min", bar: 85 },
-    { name: "Crude Fat", value: "4% max", bar: 60 },
-    { name: "Ash", value: "7% max", bar: 20 },
-    { name: "Moisture", value: "14% max", bar: 30 },
+    { name: "Crude Protein", value: "69% min", bar: 69 },
+    { name: "Crude Fat", value: "4% max", bar: 4 },
+    { name: "Ash", value: "7% max", bar: 7 },
+    { name: "Moisture", value: "14% max", bar: 14 },
   ];
 
   const ingredients = [
@@ -316,12 +336,12 @@ const Product = () => {
   ];
 
   const faqs = [
-    { q: "What size should I choose?", a: "15 lbs is perfect for small dogs (under 20 lbs), 30 lbs for medium dogs (20-50 lbs), and 45 lbs for large dogs (50+ lbs). Each bag lasts approximately 30 days based on recommended feeding guidelines." },
-    { q: "Is this suitable for puppies?", a: "Yes! Earth & Harvest Complete is formulated for all life stages, from puppies (8 weeks+) to senior dogs. The balanced nutrient profile supports healthy growth and development at every age." },
-    { q: "How do I transition my dog to this food?", a: "We recommend a 7-day transition: Start with 25% Earth & Harvest mixed with current food, increasing by 25% every 2 days until fully transitioned. Full instructions and a transition guide are included with your order." },
-    { q: "What if my dog doesn't like it?", a: "We offer a 90-day money-back guarantee. If your dog doesn't love Earth & Harvest Complete, we'll refund your purchase in full – no questions asked. We'll even pay for return shipping." },
-    { q: "Where is this product made?", a: "Earth & Harvest Complete is proudly made in our FDA-registered facility in Colorado, USA. All ingredients are sourced from trusted suppliers, with proteins from North America and seafood from sustainable fisheries." },
-    { q: "Is this grain-free?", a: "No, Earth & Harvest Complete contains healthy whole grains like brown rice, oatmeal, and barley. Recent research suggests whole grains provide important nutrients and fiber. We also offer a grain-free option if needed." },
+    { q: "What size should I choose?", a: "Coming soon" },
+    { q: "Is this suitable for puppies?", a: "Coming soon" },
+    { q: "How do I transition my dog to this food?", a: "Coming soon" },
+    { q: "What if my dog doesn't like it?", a: "Coming soon" },
+    { q: "Where is this product made?", a: "Coming soon" },
+    { q: "Is this grain-free?", a: "Coming soon" },
   ];
 
   const handleHelpful = (reviewId, type) => {
@@ -481,7 +501,11 @@ const Product = () => {
                         duration: 0.5,
                         ease: "easeInOut"
                       }}
-                      className="absolute inset-0"
+                      className="absolute inset-0 cursor-pointer"
+                      onClick={() => {
+                        setModalImageIndex(selectedImage);
+                        setShowImageModal(true);
+                      }}
                     >
                       <img
                         src={optimizeCloudinaryImage(productData.images[selectedImage] || productData.images[0], "w_800", false)}
@@ -603,6 +627,11 @@ const Product = () => {
                   ))}
                 </div>
               )}
+
+              {/* Click to view full size message */}
+              <p className="text-xs text-gray-500 text-center mt-2">
+                Click image to view full size
+              </p>
             </div>
 
             {/* Product Info & Buy Box */}
@@ -692,10 +721,10 @@ const Product = () => {
 
                 {/* AVAILABILITY & DELIVERY */}
                 <div className="space-y-2.5 text-sm">
-                  <div className="flex items-center gap-2 text-[#2D4A3E]">
+                  <div className="flex items-center gap-2 text-[#2cb079]">
                     <span>In Stock</span>
                     <span className="text-gray-400">•</span>
-                    <span className="text-gray-600">{productData.stock} available</span>
+                    {/* <span className="text-gray-600">{productData.stock} available</span> */}
                   </div>
                   <div className="text-gray-600">
                     Free delivery • 5-7 business days
@@ -1138,6 +1167,82 @@ const Product = () => {
           }}
         />
       )}
+
+      {/* Full Size Image Modal */}
+      <AnimatePresence>
+        {showImageModal && productData.images.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setShowImageModal(false)}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowImageModal(false)}
+              className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-colors"
+              aria-label="Close modal"
+            >
+              <X className="w-6 h-6 text-white" />
+            </button>
+
+            {/* Image Container */}
+            <div 
+              className="relative w-full h-full max-w-7xl max-h-[90vh] flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={modalImageIndex}
+                  src={optimizeCloudinaryImage(productData.images[modalImageIndex] || productData.images[0], "w_1200", false)}
+                  alt={productData.name}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                  className="max-w-full max-h-full object-contain"
+                  draggable={false}
+                />
+              </AnimatePresence>
+
+              {/* Navigation Arrows */}
+              {productData.images.length > 1 && (
+                <>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setModalImageIndex((modalImageIndex - 1 + productData.images.length) % productData.images.length);
+                    }}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-colors"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft className="w-6 h-6 text-white" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setModalImageIndex((modalImageIndex + 1) % productData.images.length);
+                    }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-colors"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight className="w-6 h-6 text-white" />
+                  </button>
+                </>
+              )}
+
+              {/* Image Counter */}
+              {productData.images.length > 1 && (
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md text-white px-4 py-2 rounded-lg text-sm font-medium">
+                  {modalImageIndex + 1} / {productData.images.length}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="pb-24 lg:pb-0" />
     </div>
