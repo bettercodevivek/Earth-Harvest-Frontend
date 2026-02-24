@@ -5,6 +5,8 @@ import { apiFetch } from '../utils/api';
 const EarthHarvestPreloader = ({ onComplete }) => {
   const [logoUrl, setLogoUrl] = useState('');
   const [ingredients, setIngredients] = useState([]);
+  const [stage, setStage] = useState(0);
+  const [exit, setExit] = useState(false);
 
   useEffect(() => {
     const fetchMedia = async () => {
@@ -20,10 +22,6 @@ const EarthHarvestPreloader = ({ onComplete }) => {
     };
     fetchMedia();
   }, []);
-
-const EarthHarvestPreloader = ({ onComplete }) => {
-  const [stage, setStage] = useState(0);
-  const [exit, setExit] = useState(false);
 
   useEffect(() => {
     // Check if page is already loaded - if so, skip preloader quickly
