@@ -13,7 +13,6 @@ import PremiumCheckout from "./CheckoutModals";
 import ReviewForm from "./ReviewForm";
 import { apiFetch } from "../utils/api";
 import { useAuth } from "../contexts/AuthContext";
-import { optimizeCloudinaryImage } from '../utils/cloudinary';
 
 
 const Product = () => {
@@ -508,7 +507,7 @@ const Product = () => {
                       }}
                     >
                       <img
-                        src={optimizeCloudinaryImage(productData.images[selectedImage] || productData.images[0], "w_800", false)}
+                        src={productData.images[selectedImage] || productData.images[0]}
                         alt={productData.name}
                         className="w-full h-full object-cover transition-transform duration-300"
                         style={{
@@ -616,7 +615,7 @@ const Product = () => {
                       className={`w-16 h-16 sm:w-24 sm:h-24 rounded-lg overflow-hidden shrink-0 transition-all`}
                     >
                       <img 
-                        src={optimizeCloudinaryImage(img, "w_400", true)} 
+                        src={img} 
                         alt="" 
                         className="w-full h-full object-cover" 
                         width="96"
@@ -1038,7 +1037,7 @@ const Product = () => {
                           {review.images.map((img, i) => (
                             <img 
                               key={i} 
-                              src={optimizeCloudinaryImage(img, "w_400", true)} 
+                              src={img} 
                               className="w-20 h-20 rounded-lg object-cover border border-gray-200" 
                               width="80"
                               height="80"
@@ -1196,7 +1195,7 @@ const Product = () => {
               <AnimatePresence mode="wait">
                 <motion.img
                   key={modalImageIndex}
-                  src={optimizeCloudinaryImage(productData.images[modalImageIndex] || productData.images[0], "w_1200", false)}
+                  src={productData.images[modalImageIndex] || productData.images[0]}
                   alt={productData.name}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}

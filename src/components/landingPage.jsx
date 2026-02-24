@@ -10,7 +10,6 @@ import CountUpStat from './CountUpStat';
 import Navbar from './Navbar'
 import { useAuth } from '../contexts/AuthContext';
 import { apiFetch } from "../utils/api";
-import { optimizeCloudinaryImage, optimizeCloudinaryVideo } from '../utils/cloudinary';
 import StickyLoginHint from './StickyLoginHint';
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000/api";
 
@@ -26,56 +25,35 @@ const Index = () => {
   const [productRating, setProductRating] = useState(4.8);
   const [productReviews, setProductReviews] = useState(1000);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [landingPageMedia, setLandingPageMedia] = useState(null);
   
   const { scrollYProgress } = useScroll();
   const heroScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
 
-  const heroImages = [
-    {
-      src: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770902947/20260207_0136_Image_Generation_remix_01kgt8z4neftyredvv4898g1ms_pp92hb.webp", "w_800", false),
-      alt: "Energetic German Shepherd"
-    },
-    {
-      src: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770902947/1000095094_bsuirk.webp", "w_800", false),
-      alt: "Happy Golden Retriever"
-    },
-    {
-      src: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770902946/20251207_2012_Dog_Enjoying_Chew_remix_01kbwm3zz8e8980xe6t7yk53wr_hjsbiz.webp", "w_800", false),
-      alt: "Healthy Labrador"
-    },
-    {
-      src: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770902947/20260207_0138_Image_Generation_remix_01kgt91ngdf6ks4zw3rtggg5wc_xdccul.webp", "w_800", false),
-      alt: "Energetic German Shepherd"
-    },
-  ];
+  // Fetch landing page media
+  useEffect(() => {
+    const fetchLandingPageMedia = async () => {
+      try {
+        const response = await apiFetch('/landing-page-media');
+        if (response.success) {
+          setLandingPageMedia(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch landing page media:', error);
+      }
+    };
+    fetchLandingPageMedia();
+  }, []);
 
-  const videoTestimonials = [
-    {
-      id: 1,
-      name: "Alby at The Greens",
-      description: "How the himalayan chews have brought happiness",
-      videoUrl: optimizeCloudinaryVideo("https://res.cloudinary.com/dpc7tj2ze/video/upload/v1767530853/VID-20260104-WA0002_uhnbbd.mp4"),
-      thumbnail: "https://res.cloudinary.com/your-cloud/image/upload/v1/max-thumb.jpg"
-    },
-    {
-      id: 2,
-      name: "Nilo at The Lakes",
-      description: "Another happy chewer",
-      videoUrl: optimizeCloudinaryVideo("https://res.cloudinary.com/dpc7tj2ze/video/upload/v1767530852/VID-20251228-WA0006_yg7xbs.mp4"),
-      thumbnail: "https://res.cloudinary.com/your-cloud/image/upload/v1/bella-thumb.jpg"
-    },
-    {
-      id: 3,
-      name: "Nilo at The Lakes",
-      description: "Happy outside the house too",
-      videoUrl: optimizeCloudinaryVideo("https://res.cloudinary.com/dpc7tj2ze/video/upload/v1767532309/VID-20260104-WA0008_2_imjmoo.mp4"),
-      thumbnail: "https://res.cloudinary.com/your-cloud/image/upload/v1/bella-thumb.jpg"
-    }
-  ];
-  
+  const heroImages = landingPageMedia?.heroImages?.map(img => ({
+    src: img.url || '',
+    alt: img.alt || ''
+  })) || [];
 
-  const ingredientVideoUrl = "https://res.cloudinary.com/dpc7tj2ze/video/upload/v1765639780/IMG_2946_yrrhj7.mp4";
+  const videoTestimonials = landingPageMedia?.videoTestimonials || [];
+
+  const ingredientVideoUrl = landingPageMedia?.ingredientVideoUrl || '';
 
   const product = {
     name: "Earth & Harvest Complete",
@@ -109,11 +87,13 @@ const Index = () => {
 
   // Auto-advance images with smooth transitions
   useEffect(() => {
-    const interval = setInterval(() => {
-      setImageDirection(1);
-      setCurrentHeroImage((prev) => (prev + 1) % heroImages.length);
-    }, 7000);
-    return () => clearInterval(interval);
+    if (heroImages.length > 0) {
+      const interval = setInterval(() => {
+        setImageDirection(1);
+        setCurrentHeroImage((prev) => (prev + 1) % heroImages.length);
+      }, 7000);
+      return () => clearInterval(interval);
+    }
   }, [heroImages.length]);
 
   const goToImage = (index, direction) => {
@@ -438,14 +418,16 @@ const Index = () => {
                       }}
                       className="absolute inset-0"
                     >
-                      <img
-                        src={heroImages[currentHeroImage].src}
-                        alt={heroImages[currentHeroImage].alt}
-                        className="w-full h-full object-cover"
-                        width="800"
-                        height="800"
-                        fetchPriority="high"
-                      />
+                      {heroImages[currentHeroImage]?.src && (
+                        <img
+                          src={heroImages[currentHeroImage].src}
+                          alt={heroImages[currentHeroImage].alt || 'Hero image'}
+                          className="w-full h-full object-cover"
+                          width="800"
+                          height="800"
+                          fetchPriority="high"
+                        />
+                      )}
                     </motion.div>
                   </AnimatePresence>
                   
@@ -647,18 +629,20 @@ const Index = () => {
               viewport={{ once: true }}
               className="relative order-1 lg:order-2"
             >
-              <div className="relative rounded-2xl shadow-2xl overflow-hidden aspect-[9/16] w-full max-w-sm mx-auto border-4 border-white">
-                <video
-                  src={ingredientVideoUrl}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-              </div>
+              {ingredientVideoUrl && (
+                <div className="relative rounded-2xl shadow-2xl overflow-hidden aspect-[9/16] w-full max-w-sm mx-auto border-4 border-white">
+                  <video
+                    src={ingredientVideoUrl}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                </div>
+              )}
             </motion.div>
           </div>
         </div>
@@ -684,23 +668,25 @@ const Index = () => {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 place-items-center">
             {videoTestimonials.map((video, idx) => (
               <motion.div
-                key={video.id}
+                key={video.id || idx}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.08 }}
                 className="relative w-full max-w-[280px] sm:max-w-[300px] aspect-[9/16] rounded-2xl overflow-hidden shadow-xl bg-black group"
               >
-                <video
-                  src={video.videoUrl}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  className="absolute inset-0 w-full h-full object-cover"
-                  loading="lazy"
-                />
+                {video.videoUrl && (
+                  <video
+                    src={video.videoUrl}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    className="absolute inset-0 w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                )}
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 

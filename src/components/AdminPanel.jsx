@@ -7,7 +7,7 @@ import {
   DollarSign, Eye, EyeOff, Ban, Unlock, Filter, Search
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { apiFetch } from '../utils/api';
+import { apiFetch, uploadFile } from '../utils/api';
 import Navbar from './Navbar';
 
 const AdminPanel = () => {
@@ -71,6 +71,8 @@ const AdminPanel = () => {
       fetchOrders();
     } else if (activeTab === 'users') {
       fetchUsers();
+    } else if (activeTab === 'landing-page') {
+      fetchLandingPageMedia();
     }
     fetchCartCount();
   }, [isAuthenticated, user, navigate, activeTab]);
@@ -168,6 +170,52 @@ const AdminPanel = () => {
       });
     } finally {
       setUsersLoading(false);
+    }
+  };
+
+  const fetchLandingPageMedia = async () => {
+    try {
+      setLoadingLandingPage(true);
+      const response = await apiFetch('/landing-page-media');
+      if (response.success) {
+        setLandingPageMedia(response.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch landing page media:', error);
+      showToast({
+        type: 'error',
+        title: 'Error',
+        message: 'Failed to load landing page media'
+      });
+    } finally {
+      setLoadingLandingPage(false);
+    }
+  };
+
+  const handleSaveLandingPageMedia = async () => {
+    try {
+      setLoadingLandingPage(true);
+      const response = await apiFetch('/admin/landing-page-media', {
+        method: 'PUT',
+        body: JSON.stringify(landingPageMedia)
+      });
+      
+      if (response.success) {
+        showToast({
+          type: 'success',
+          title: 'Success',
+          message: 'Landing page media updated successfully!'
+        });
+        setLandingPageMedia(response.data);
+      }
+    } catch (error) {
+      showToast({
+        type: 'error',
+        title: 'Error',
+        message: error.message || 'Failed to update landing page media'
+      });
+    } finally {
+      setLoadingLandingPage(false);
     }
   };
 
@@ -486,6 +534,17 @@ const AdminPanel = () => {
               <Users className="w-4 h-4" />
               Users
             </button>
+            <button
+              onClick={() => setActiveTab('landing-page')}
+              className={`flex items-center gap-2 px-4 sm:px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                activeTab === 'landing-page'
+                  ? 'text-[#C8945C] border-[#C8945C] bg-[#C8945C]/5'
+                  : 'text-gray-600 border-transparent hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Package className="w-4 h-4" />
+              Landing Page
+            </button>
           </nav>
         </div>
 
@@ -619,6 +678,7 @@ const AdminPanel = () => {
                 }}
                 loading={loading}
                 editing={!!editingProduct}
+                showToast={showToast}
               />
             ) : (
               <div>
@@ -1069,6 +1129,29 @@ const AdminPanel = () => {
           </div>
         )}
 
+        {/* LANDING PAGE TAB */}
+        {activeTab === 'landing-page' && (
+          <div>
+            {loadingLandingPage ? (
+              <div className="flex items-center justify-center py-16">
+                <div className="w-12 h-12 border-3 border-gray-300 border-t-[#C8945C] rounded-full animate-spin"></div>
+              </div>
+            ) : landingPageMedia ? (
+              <LandingPageMediaForm
+                media={landingPageMedia}
+                setMedia={setLandingPageMedia}
+                onSave={handleSaveLandingPageMedia}
+                loading={loadingLandingPage}
+                showToast={showToast}
+              />
+            ) : (
+              <div className="bg-white border border-gray-200 rounded-lg p-12 text-center">
+                <p className="text-sm text-gray-500">Failed to load landing page media</p>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* STATUS UPDATE CONFIRMATION MODAL */}
         {statusUpdateConfirm && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -1103,7 +1186,7 @@ const AdminPanel = () => {
 };
 
 // PRODUCT FORM COMPONENT
-const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading, editing }) => {
+const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading, editing, showToast }) => {
   const addSize = () => {
     setProductForm({
       ...productForm,
@@ -1225,20 +1308,54 @@ const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading,
 
       {/* IMAGES */}
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1.5">Images (URLs)</label>
+        <label className="block text-xs font-medium text-gray-700 mb-1.5">Images</label>
         {productForm.images.map((img, index) => (
-          <div key={index} className="flex gap-2 mb-2">
-            <input
-              type="text"
-              placeholder="Image URL"
-              value={img}
-              onChange={(e) => {
-                const newImages = [...productForm.images];
-                newImages[index] = e.target.value;
-                setProductForm({ ...productForm, images: newImages });
-              }}
-              className="flex-1 border border-gray-300 px-3 py-2 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
-            />
+          <div key={index} className="flex gap-2 mb-2 items-center">
+            {img ? (
+              <>
+                <img 
+                  src={img} 
+                  alt={`Preview ${index + 1}`}
+                  className="w-16 h-16 object-cover rounded border border-gray-300"
+                />
+                <input
+                  type="text"
+                  placeholder="Image URL"
+                  value={img}
+                  onChange={(e) => {
+                    const newImages = [...productForm.images];
+                    newImages[index] = e.target.value;
+                    setProductForm({ ...productForm, images: newImages });
+                  }}
+                  className="flex-1 border border-gray-300 px-3 py-2 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
+                />
+              </>
+            ) : (
+              <input
+                type="file"
+                accept="image/jpeg,image/jpg,image/png,image/webp"
+                onChange={async (e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    try {
+                      const response = await uploadFile(file);
+                      if (response.success) {
+                        const newImages = [...productForm.images];
+                        newImages[index] = response.data.url;
+                        setProductForm({ ...productForm, images: newImages });
+                      }
+                    } catch (error) {
+                      showToast({
+                        type: 'error',
+                        title: 'Upload Failed',
+                        message: error.message || 'Failed to upload image'
+                      });
+                    }
+                  }
+                }}
+                className="flex-1 border border-gray-300 px-3 py-2 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#C8945C] focus:border-[#C8945C]"
+              />
+            )}
             {productForm.images.length > 1 && (
               <button
                 type="button"
@@ -1385,6 +1502,308 @@ const ProductForm = ({ productForm, setProductForm, onSubmit, onCancel, loading,
             <>
               <Save className="w-4 h-4" />
               {editing ? 'Update Product' : 'Create Product'}
+            </>
+          )}
+        </button>
+      </div>
+    </form>
+  );
+};
+
+// LANDING PAGE MEDIA FORM COMPONENT
+const LandingPageMediaForm = ({ media, setMedia, onSave, loading, showToast }) => {
+  const handleFileUpload = async (file, field, index = null) => {
+    try {
+      const response = await uploadFile(file);
+      if (response.success) {
+        if (index !== null) {
+          // Update array item
+          const newArray = [...media[field]];
+          if (field === 'heroImages') {
+            newArray[index] = { ...newArray[index], url: response.data.url };
+          } else if (field === 'videoTestimonials') {
+            newArray[index] = { ...newArray[index], videoUrl: response.data.url };
+          } else if (field === 'preloaderIcons') {
+            newArray[index] = { ...newArray[index], iconUrl: response.data.url };
+          }
+          setMedia({ ...media, [field]: newArray });
+        } else {
+          // Update single field
+          setMedia({ ...media, [field]: response.data.url });
+        }
+      }
+    } catch (error) {
+      showToast({
+        type: 'error',
+        title: 'Upload Failed',
+        message: error.message || 'Failed to upload file'
+      });
+    }
+  };
+
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); onSave(); }} className="bg-white border border-gray-200 rounded-lg p-6 space-y-6">
+      <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+        <h2 className="text-lg font-semibold text-gray-900">Landing Page Media</h2>
+      </div>
+
+      {/* Logo */}
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1.5">Logo</label>
+        {media.logoUrl ? (
+          <div className="flex gap-2 items-center">
+            <img src={media.logoUrl} alt="Logo" className="w-20 h-20 object-contain border border-gray-300 rounded" />
+            <input
+              type="text"
+              value={media.logoUrl}
+              onChange={(e) => setMedia({ ...media, logoUrl: e.target.value })}
+              className="flex-1 border border-gray-300 px-3 py-2 rounded-md text-sm"
+            />
+            <input
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], 'logoUrl')}
+              className="text-sm"
+            />
+          </div>
+        ) : (
+          <input
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], 'logoUrl')}
+            className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm"
+          />
+        )}
+      </div>
+
+      {/* Hero Images */}
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1.5">Hero Images</label>
+        {media.heroImages?.map((img, index) => (
+          <div key={index} className="flex gap-2 mb-2 items-center">
+            {img.url && (
+              <img src={img.url} alt={img.alt || `Hero ${index + 1}`} className="w-20 h-20 object-cover border border-gray-300 rounded" />
+            )}
+            <input
+              type="text"
+              placeholder="Alt text"
+              value={img.alt || ''}
+              onChange={(e) => {
+                const newImages = [...media.heroImages];
+                newImages[index] = { ...newImages[index], alt: e.target.value };
+                setMedia({ ...media, heroImages: newImages });
+              }}
+              className="w-32 border border-gray-300 px-3 py-2 rounded-md text-sm"
+            />
+            <input
+              type="text"
+              placeholder="Image URL"
+              value={img.url || ''}
+              onChange={(e) => {
+                const newImages = [...media.heroImages];
+                newImages[index] = { ...newImages[index], url: e.target.value };
+                setMedia({ ...media, heroImages: newImages });
+              }}
+              className="flex-1 border border-gray-300 px-3 py-2 rounded-md text-sm"
+            />
+            <input
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], 'heroImages', index)}
+              className="text-sm"
+            />
+            {media.heroImages.length > 1 && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMedia({
+                    ...media,
+                    heroImages: media.heroImages.filter((_, i) => i !== index)
+                  });
+                }}
+                className="px-3 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-md hover:bg-red-100"
+              >
+                Remove
+              </button>
+            )}
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={() => setMedia({ ...media, heroImages: [...(media.heroImages || []), { url: '', alt: '' }] })}
+          className="mt-1 text-sm text-[#C8945C] hover:text-[#B8844C] font-medium"
+        >
+          + Add Hero Image
+        </button>
+      </div>
+
+      {/* Video Testimonials */}
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1.5">Video Testimonials</label>
+        {media.videoTestimonials?.map((video, index) => (
+          <div key={index} className="border border-gray-200 rounded-lg p-4 mb-4 space-y-2">
+            <input
+              type="text"
+              placeholder="Name"
+              value={video.name || ''}
+              onChange={(e) => {
+                const newVideos = [...media.videoTestimonials];
+                newVideos[index] = { ...newVideos[index], name: e.target.value };
+                setMedia({ ...media, videoTestimonials: newVideos });
+              }}
+              className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm"
+            />
+            <input
+              type="text"
+              placeholder="Description"
+              value={video.description || ''}
+              onChange={(e) => {
+                const newVideos = [...media.videoTestimonials];
+                newVideos[index] = { ...newVideos[index], description: e.target.value };
+                setMedia({ ...media, videoTestimonials: newVideos });
+              }}
+              className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm"
+            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Video URL"
+                value={video.videoUrl || ''}
+                onChange={(e) => {
+                  const newVideos = [...media.videoTestimonials];
+                  newVideos[index] = { ...newVideos[index], videoUrl: e.target.value };
+                  setMedia({ ...media, videoTestimonials: newVideos });
+                }}
+                className="flex-1 border border-gray-300 px-3 py-2 rounded-md text-sm"
+              />
+              <input
+                type="file"
+                accept="video/mp4,video/webm"
+                onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], 'videoTestimonials', index)}
+                className="text-sm"
+              />
+            </div>
+            {media.videoTestimonials.length > 1 && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMedia({
+                    ...media,
+                    videoTestimonials: media.videoTestimonials.filter((_, i) => i !== index)
+                  });
+                }}
+                className="px-3 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-md hover:bg-red-100"
+              >
+                Remove
+              </button>
+            )}
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={() => setMedia({ ...media, videoTestimonials: [...(media.videoTestimonials || []), { name: '', description: '', videoUrl: '', thumbnail: '' }] })}
+          className="mt-1 text-sm text-[#C8945C] hover:text-[#B8844C] font-medium"
+        >
+          + Add Video Testimonial
+        </button>
+      </div>
+
+      {/* Ingredient Video */}
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1.5">Ingredient Video URL</label>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={media.ingredientVideoUrl || ''}
+            onChange={(e) => setMedia({ ...media, ingredientVideoUrl: e.target.value })}
+            className="flex-1 border border-gray-300 px-3 py-2 rounded-md text-sm"
+          />
+          <input
+            type="file"
+            accept="video/mp4,video/webm"
+            onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], 'ingredientVideoUrl')}
+            className="text-sm"
+          />
+        </div>
+      </div>
+
+      {/* Preloader Icons */}
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1.5">Preloader Icons</label>
+        {media.preloaderIcons?.map((icon, index) => (
+          <div key={index} className="flex gap-2 mb-2 items-center">
+            {icon.iconUrl && (
+              <img src={icon.iconUrl} alt={icon.name} className="w-12 h-12 object-contain border border-gray-300 rounded" />
+            )}
+            <input
+              type="text"
+              placeholder="Name"
+              value={icon.name || ''}
+              onChange={(e) => {
+                const newIcons = [...media.preloaderIcons];
+                newIcons[index] = { ...newIcons[index], name: e.target.value };
+                setMedia({ ...media, preloaderIcons: newIcons });
+              }}
+              className="w-32 border border-gray-300 px-3 py-2 rounded-md text-sm"
+            />
+            <input
+              type="text"
+              placeholder="Icon URL"
+              value={icon.iconUrl || ''}
+              onChange={(e) => {
+                const newIcons = [...media.preloaderIcons];
+                newIcons[index] = { ...newIcons[index], iconUrl: e.target.value };
+                setMedia({ ...media, preloaderIcons: newIcons });
+              }}
+              className="flex-1 border border-gray-300 px-3 py-2 rounded-md text-sm"
+            />
+            <input
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp,image/svg+xml"
+              onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], 'preloaderIcons', index)}
+              className="text-sm"
+            />
+            {media.preloaderIcons.length > 1 && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMedia({
+                    ...media,
+                    preloaderIcons: media.preloaderIcons.filter((_, i) => i !== index)
+                  });
+                }}
+                className="px-3 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-md hover:bg-red-100"
+              >
+                Remove
+              </button>
+            )}
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={() => setMedia({ ...media, preloaderIcons: [...(media.preloaderIcons || []), { name: '', iconUrl: '' }] })}
+          className="mt-1 text-sm text-[#C8945C] hover:text-[#B8844C] font-medium"
+        >
+          + Add Preloader Icon
+        </button>
+      </div>
+
+      {/* Actions */}
+      <div className="flex gap-3 pt-4 border-t border-gray-200">
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex-1 px-4 py-2 bg-[#C8945C] text-white text-sm font-medium rounded-md hover:bg-[#B8844C] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+        >
+          {loading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              Saving...
+            </>
+          ) : (
+            <>
+              <Save className="w-4 h-4" />
+              Save Changes
             </>
           )}
         </button>

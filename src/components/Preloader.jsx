@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { optimizeCloudinaryImage } from '../utils/cloudinary';
+import { apiFetch } from '../utils/api';
 
-const ingredients = [
-  {
-    name: "Yak & Cow Milk",
-    icon: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770889027/glass-of-milk-svgrepo-com_eolgvp.svg", "w_auto", false),
-  },
-  {
-    name: "Lime Juice",
-    icon: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770889027/lime-svgrepo-com_ceqkrf.svg", "w_auto", false),
-  },
-  {
-    name: "Natural Salt",
-    icon: optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1770889026/salt-svgrepo-com_qkvy79.svg", "w_auto", false),
-  },
-];
+const EarthHarvestPreloader = ({ onComplete }) => {
+  const [logoUrl, setLogoUrl] = useState('');
+  const [ingredients, setIngredients] = useState([]);
+
+  useEffect(() => {
+    const fetchMedia = async () => {
+      try {
+        const response = await apiFetch('/landing-page-media');
+        if (response.success) {
+          setLogoUrl(response.data.logoUrl || '');
+          setIngredients(response.data.preloaderIcons || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch landing page media:', error);
+      }
+    };
+    fetchMedia();
+  }, []);
 
 const EarthHarvestPreloader = ({ onComplete }) => {
   const [stage, setStage] = useState(0);
@@ -67,16 +71,18 @@ const EarthHarvestPreloader = ({ onComplete }) => {
           transition={{ duration: 0.6 }}
         >
           {/* Logo */}
-          <motion.img
-            src={optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1767539648/New_Logo_Tinny_transparent_v6if1w.png", "w_auto", false)}
-            alt="Earth & Harvest"
-            className="w-32 mb-6"
-            width="128"
-            height="128"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: stage >= 1 ? 1 : 0 }}
-            transition={{ duration: 0.4 }}
-          />
+          {logoUrl && (
+            <motion.img
+              src={logoUrl}
+              alt="Earth & Harvest"
+              className="w-32 mb-6"
+              width="128"
+              height="128"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: stage >= 1 ? 1 : 0 }}
+              transition={{ duration: 0.4 }}
+            />
+          )}
 
           {/* Tagline */}
           <motion.p
@@ -107,13 +113,15 @@ const EarthHarvestPreloader = ({ onComplete }) => {
                   delay: index * 0.3,
                 }}
               >
-                <img
-                  src={item.icon}
-                  alt={item.name}
-                  className="w-12 h-12 mb-3"
-                  width="48"
-                  height="48"
-                />
+                {item.iconUrl && (
+                  <img
+                    src={item.iconUrl}
+                    alt={item.name}
+                    className="w-12 h-12 mb-3"
+                    width="48"
+                    height="48"
+                  />
+                )}
                 <p className="text-sm font-medium">{item.name}</p>
               </motion.div>
             ))}

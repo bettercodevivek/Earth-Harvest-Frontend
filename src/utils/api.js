@@ -41,3 +41,32 @@ export const apiFetch = async (url, options = {}) => {
   }
   return data;
 };
+
+/**
+ * Upload a file to the server
+ * @param {File} file - The file to upload
+ * @returns {Promise<{success: boolean, data: {url: string, filename: string}}>}
+ */
+export const uploadFile = async (file) => {
+  const token = localStorage.getItem('token');
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await fetch(`${API_BASE}/admin/upload`, {
+    method: 'POST',
+    headers: {
+      ...(token && { "Authorization": `Bearer ${token}` })
+    },
+    body: formData
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    if (res.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    }
+    throw data;
+  }
+  return data;
+};

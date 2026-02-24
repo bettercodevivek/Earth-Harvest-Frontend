@@ -1,7 +1,23 @@
 import { ArrowUp } from "lucide-react";
-import { optimizeCloudinaryImage } from '../utils/cloudinary';
+import { useState, useEffect } from "react";
+import { apiFetch } from '../utils/api';
 
 const Footer = () => {
+  const [logoUrl, setLogoUrl] = useState('');
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await apiFetch('/landing-page-media');
+        if (response.success) {
+          setLogoUrl(response.data.logoUrl || '');
+        }
+      } catch (error) {
+        console.error('Failed to fetch logo:', error);
+      }
+    };
+    fetchLogo();
+  }, []);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -15,14 +31,16 @@ const Footer = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-6">
 
           {/* Logo */}
-          <img 
-            src={optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1767539648/New_Logo_Tinny_transparent_v6if1w.png", "w_auto", true)} 
-            alt="Earth & Harvest Logo"
-            className="w-32 h-12 object-contain"
-            width="128"
-            height="48"
-            loading="lazy"
-          />
+          {logoUrl && (
+            <img 
+              src={logoUrl} 
+              alt="Earth & Harvest Logo"
+              className="w-32 h-12 object-contain"
+              width="128"
+              height="48"
+              loading="lazy"
+            />
+          )}
 
           {/* Quick Links */}
           <ul className="flex flex-wrap items-center gap-6 text-sm">

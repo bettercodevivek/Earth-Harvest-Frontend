@@ -3,13 +3,28 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, User, LogOut, Package } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { optimizeCloudinaryImage } from '../utils/cloudinary';
+import { apiFetch } from '../utils/api';
 
 const Navbar = ({ cartCount }) => {
   const [scrolled, setScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [logoUrl, setLogoUrl] = useState('');
   const { user, isAuthenticated, logout } = useAuth();
   const menuRef = useRef(null);
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await apiFetch('/landing-page-media');
+        if (response.success) {
+          setLogoUrl(response.data.logoUrl || '');
+        }
+      } catch (error) {
+        console.error('Failed to fetch logo:', error);
+      }
+    };
+    fetchLogo();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -47,14 +62,16 @@ const Navbar = ({ cartCount }) => {
           {/* LEFT - LOGO */}
           <div className="flex-shrink-0 flex items-center">
             <Link to="/" className="flex items-center">
-              <img
-                src={optimizeCloudinaryImage("https://res.cloudinary.com/dpc7tj2ze/image/upload/v1767539648/New_Logo_Tinny_transparent_v6if1w.png", "w_auto", false)}
-                alt="Earth & Harvest Logo"
-                className="h-10 sm:h-12 lg:h-16 w-auto object-contain"
-                width="200"
-                height="64"
-                fetchPriority="high"
-              />
+              {logoUrl && (
+                <img
+                  src={logoUrl}
+                  alt="Earth & Harvest Logo"
+                  className="h-10 sm:h-12 lg:h-16 w-auto object-contain"
+                  width="200"
+                  height="64"
+                  fetchPriority="high"
+                />
+              )}
             </Link>
           </div>
 

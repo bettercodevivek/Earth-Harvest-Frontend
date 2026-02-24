@@ -5,7 +5,6 @@ import {
   Sparkles, ChevronRight, AlertCircle, Loader2, Mail, Phone, Building2,
   Navigation, Globe, FileText, Clock, Star, Gift, ArrowLeft, ArrowRight
 } from "lucide-react";
-import { optimizeCloudinaryImage } from '../utils/cloudinary';
 
 export default function PremiumCheckout({
   product,
@@ -255,7 +254,7 @@ export default function PremiumCheckout({
                     <div className="flex gap-3 sm:gap-4">
                       <div className="relative flex-shrink-0">
                         <img
-                          src={optimizeCloudinaryImage(product.images?.[0] || product.image, "w_400", true)}
+                          src={product.images?.[0] || product.image}
                           className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg border border-[#E8DFD0] object-cover"
                           alt={product.name}
                           width="96"
