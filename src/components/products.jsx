@@ -13,6 +13,7 @@ import PremiumCheckout from "./CheckoutModals";
 import ReviewForm from "./ReviewForm";
 import { apiFetch } from "../utils/api";
 import { useAuth } from "../contexts/AuthContext";
+import { calculateBulkDiscount } from "../utils/discount";
 
 
 const Product = () => {
@@ -377,7 +378,9 @@ const Product = () => {
         return;
       }
 
-      const amount = currentPrice.price * quantity;
+      // Calculate amount with bulk discount (28.5% off for 5+ packets)
+      const priceCalc = calculateBulkDiscount(quantity, currentPrice.price);
+      const amount = priceCalc.finalAmount;
 
       const normalizedPhone = address.phone ? address.phone.replace(/\s+/g, '') : address.phone;
       const formattedAddress = {

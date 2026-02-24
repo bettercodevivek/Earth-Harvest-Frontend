@@ -5,6 +5,7 @@ import {
   Sparkles, ChevronRight, AlertCircle, Loader2, Mail, Phone, Building2,
   Navigation, Globe, FileText, Clock, Star, Gift, ArrowLeft, ArrowRight
 } from "lucide-react";
+import { calculateBulkDiscount } from "../utils/discount";
 
 export default function PremiumCheckout({
   product,
@@ -25,9 +26,12 @@ export default function PremiumCheckout({
   const [email, setEmail] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
-  const totalAmount = (currentPrice?.price || 0) * quantity;
+  // Calculate with bulk discount (28.5% off for 5+ packets)
+  const priceCalc = calculateBulkDiscount(quantity, currentPrice?.price || 0);
+  const totalAmount = priceCalc.originalAmount;
   const savings = ((currentPrice?.oldPrice || 0) - (currentPrice?.price || 0)) * quantity;
-  const subtotal = totalAmount;
+  const bulkDiscount = priceCalc.discountAmount;
+  const subtotal = priceCalc.finalAmount;
   const shipping = 0;
   const finalTotal = subtotal + shipping;
 
@@ -327,8 +331,18 @@ export default function PremiumCheckout({
                     <div className="space-y-3">
                       <div className="flex justify-between items-center pb-3 border-b border-[#E8DFD0]">
                         <span className="text-[#6B7C72] text-sm">Subtotal ({quantity} {quantity === 1 ? 'item' : 'items'})</span>
-                        <span className="font-semibold text-[#2D4A3E]">AED {subtotal.toFixed(2)}</span>
+                        <span className="font-semibold text-[#2D4A3E]">AED {totalAmount.toFixed(2)}</span>
                       </div>
+
+                      {priceCalc.hasDiscount && (
+                        <div className="flex justify-between items-center pb-3 border-b border-[#E8DFD0]">
+                          <div className="flex items-center gap-2">
+                            <Gift className="w-4 h-4 text-[#C8945C]" />
+                            <span className="text-[#6B7C72] text-sm">Bulk Discount ({priceCalc.discountPercentage}% off)</span>
+                          </div>
+                          <span className="font-semibold text-[#10B981]">-AED {bulkDiscount.toFixed(2)}</span>
+                        </div>
+                      )}
 
                       <div className="flex justify-between items-center pb-3 border-b border-[#E8DFD0]">
                         <div className="flex items-center gap-2">

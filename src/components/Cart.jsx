@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShoppingCart, Plus, Minus, Trash2, Package, ArrowLeft, ArrowRight } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Trash2, Package, ArrowLeft, ArrowRight, Gift } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { apiFetch } from '../utils/api';
+import { calculateBulkDiscount } from '../utils/discount';
 import Navbar from './Navbar';
 import PremiumCheckout from './CheckoutModals';
 
@@ -123,16 +124,31 @@ const Cart = () => {
   };
 
   const calculateTotal = () => {
-    if (!cart || !cart.items) return 0;
+    if (!cart || !cart.items) return { subtotal: 0, discount: 0, total: 0, hasDiscount: false };
     
-    return cart.items.reduce((total, item) => {
-      if (!item.product || !item.product.sizes) return total;
+    let subtotal = 0;
+    let totalDiscount = 0;
+    let hasAnyDiscount = false;
+
+    cart.items.forEach(item => {
+      if (!item.product || !item.product.sizes) return;
       const size = item.product.sizes.find(s => 
         s.weight.toString() === item.size || s.weight === item.size
       );
-      if (!size) return total;
-      return total + (size.price * item.quantity);
-    }, 0);
+      if (!size) return;
+      
+      const itemCalc = calculateBulkDiscount(item.quantity, size.price);
+      subtotal += itemCalc.originalAmount;
+      totalDiscount += itemCalc.discountAmount;
+      if (itemCalc.hasDiscount) hasAnyDiscount = true;
+    });
+
+    return {
+      subtotal,
+      discount: totalDiscount,
+      total: subtotal - totalDiscount,
+      hasDiscount: hasAnyDiscount
+    };
   };
 
   const handleProceedToCheckout = () => {
@@ -423,8 +439,17 @@ const Cart = () => {
                 <div className="space-y-3 mb-4 pb-4 border-b border-[#E8DFD0]">
                   <div className="flex justify-between text-sm text-gray-700">
                     <span>Subtotal</span>
-                    <span className="font-medium text-[#2D4A3E]">AED {calculateTotal().toFixed(2)}</span>
+                    <span className="font-medium text-[#2D4A3E]">AED {calculateTotal().subtotal.toFixed(2)}</span>
                   </div>
+                  {calculateTotal().hasDiscount && (
+                    <div className="flex justify-between text-sm text-gray-700">
+                      <div className="flex items-center gap-1">
+                        <Gift className="w-3 h-3 text-[#C8945C]" />
+                        <span>Bulk Discount (28.5% off)</span>
+                      </div>
+                      <span className="font-medium text-[#10B981]">-AED {calculateTotal().discount.toFixed(2)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-sm text-gray-700">
                     <span>Shipping</span>
                     <span className="font-medium text-[#2D4A3E]">Free</span>
@@ -432,7 +457,7 @@ const Cart = () => {
                   <div className="flex justify-between pt-3 border-t border-[#E8DFD0]">
                     <span className="font-semibold text-[#2D4A3E]">Total</span>
                     <span className="text-lg font-semibold text-[#C8945C]">
-                      AED {calculateTotal().toFixed(2)}
+                      AED {calculateTotal().total.toFixed(2)}
                     </span>
                   </div>
                 </div>
