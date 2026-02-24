@@ -10,7 +10,6 @@ import CountUpStat from './CountUpStat';
 import Navbar from './Navbar'
 import { useAuth } from '../contexts/AuthContext';
 import { apiFetch } from "../utils/api";
-import StickyLoginHint from './StickyLoginHint';
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000/api";
 
 const Index = () => {
@@ -262,7 +261,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
-      <StickyLoginHint />
       <Navbar cartCount={cartCount} />
 
       {/* Modern Hero Section with Refined Animations */}

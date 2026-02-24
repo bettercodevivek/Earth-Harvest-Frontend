@@ -9,7 +9,7 @@ const Navbar = ({ cartCount }) => {
   const [scrolled, setScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [logoUrl, setLogoUrl] = useState('');
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, setShowLoginModal } = useAuth();
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -91,8 +91,19 @@ const Navbar = ({ cartCount }) => {
             </a>
           </div>
 
-          {/* RIGHT SIDE - CART + USER + BUY BUTTON */}
+          {/* RIGHT SIDE - USER + CART + BUY BUTTON */}
           <div className="flex items-center space-x-3">
+
+            {/* User Icon - Show login modal when not authenticated */}
+            {!isAuthenticated ? (
+              <button
+                onClick={() => setShowLoginModal(true)}
+                className="p-2.5 text-gray-700 hover:text-[#C8945C] transition-colors rounded-lg hover:bg-gray-50"
+                aria-label="Login"
+              >
+                <User className="w-5 h-5 lg:w-6 lg:h-6" />
+              </button>
+            ) : null}
 
             {/* Cart */}
             <Link to="/cart" className="relative p-2.5 text-gray-700 hover:text-[#C8945C] transition-colors rounded-lg hover:bg-gray-50">
