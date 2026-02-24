@@ -30,6 +30,8 @@ const AdminPanel = () => {
   const [userOrders, setUserOrders] = useState([]);
   const [loadingUserOrders, setLoadingUserOrders] = useState(false);
   const [statusUpdateConfirm, setStatusUpdateConfirm] = useState(null);
+  const [landingPageMedia, setLandingPageMedia] = useState(null);
+  const [loadingLandingPage, setLoadingLandingPage] = useState(false);
   
   const [productForm, setProductForm] = useState({
     productName: '',
