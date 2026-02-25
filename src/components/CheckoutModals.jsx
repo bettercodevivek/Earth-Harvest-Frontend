@@ -26,7 +26,7 @@ export default function PremiumCheckout({
   const [email, setEmail] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
-  // Calculate with bulk discount (28.5% off for 5+ packets)
+  // Calculate with bulk discount (10 dirhams off per packet for 5+ packets)
   const priceCalc = calculateBulkDiscount(quantity, currentPrice?.price || 0);
   const totalAmount = priceCalc.originalAmount;
   const savings = ((currentPrice?.oldPrice || 0) - (currentPrice?.price || 0)) * quantity;
@@ -338,7 +338,7 @@ export default function PremiumCheckout({
                         <div className="flex justify-between items-center pb-3 border-b border-[#E8DFD0]">
                           <div className="flex items-center gap-2">
                             <Gift className="w-4 h-4 text-[#C8945C]" />
-                            <span className="text-[#6B7C72] text-sm">Bulk Discount ({priceCalc.discountPercentage}% off)</span>
+                            <span className="text-[#6B7C72] text-sm">Bulk Discount (AED {priceCalc.discountPerItem} off per packet)</span>
                           </div>
                           <span className="font-semibold text-[#10B981]">-AED {bulkDiscount.toFixed(2)}</span>
                         </div>

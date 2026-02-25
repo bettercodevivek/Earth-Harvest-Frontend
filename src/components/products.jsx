@@ -378,7 +378,7 @@ const Product = () => {
         return;
       }
 
-      // Calculate amount with bulk discount (28.5% off for 5+ packets)
+      // Calculate amount with bulk discount (10 dirhams off per packet for 5+ packets)
       const priceCalc = calculateBulkDiscount(quantity, currentPrice.price);
       const amount = priceCalc.finalAmount;
 

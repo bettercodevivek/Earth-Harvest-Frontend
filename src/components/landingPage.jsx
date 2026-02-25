@@ -208,7 +208,7 @@ const Index = () => {
   const guarantees = [
     { icon: Truck, title: "Free Shipping", desc: "On all orders" },
     { icon: Lock, title: "10-days guarantee", desc: "Full refund, no questions on unopened packets" },
-    { icon: Package, title: "Buy in bulk & Save", desc: "28.5% off when ordering 5 packets or more" },
+    { icon: Package, title: "Buy in bulk & Save", desc: "AED 10 off per packet when ordering 5 packets or more" },
   ];
 
   const transformationSteps = [

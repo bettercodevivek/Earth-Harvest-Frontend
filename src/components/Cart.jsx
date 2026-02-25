@@ -202,7 +202,9 @@ const Cart = () => {
         throw new Error("Invalid size selected");
       }
 
-      const amount = size.price * firstItem.quantity;
+      // Calculate amount with bulk discount (10 dirhams off per packet for 5+ packets)
+      const priceCalc = calculateBulkDiscount(firstItem.quantity, size.price);
+      const amount = priceCalc.finalAmount;
 
       const orderRes = await apiFetch('/order/create', {
         method: "POST",
@@ -445,7 +447,7 @@ const Cart = () => {
                     <div className="flex justify-between text-sm text-gray-700">
                       <div className="flex items-center gap-1">
                         <Gift className="w-3 h-3 text-[#C8945C]" />
-                        <span>Bulk Discount (28.5% off)</span>
+                        <span>Bulk Discount (AED 10 off per packet)</span>
                       </div>
                       <span className="font-medium text-[#10B981]">-AED {calculateTotal().discount.toFixed(2)}</span>
                     </div>
