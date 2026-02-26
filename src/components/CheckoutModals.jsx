@@ -6,6 +6,7 @@ import {
   Navigation, Globe, FileText, Clock, Star, Gift, ArrowLeft, ArrowRight
 } from "lucide-react";
 import { calculateBulkDiscount } from "../utils/discount";
+import { apiFetch } from "../utils/api";
 
 export default function PremiumCheckout({
   product,
@@ -52,6 +53,44 @@ export default function PremiumCheckout({
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Fetch user address when modal opens if address is not already populated
+  useEffect(() => {
+    const fetchUserAddress = async () => {
+      // Only fetch if address fields are empty
+      if (!address?.street && !address?.city) {
+        try {
+          const response = await apiFetch('/auth/profile');
+          if (response.success && response.data) {
+            const userData = response.data;
+            // Auto-populate address if user has saved address
+            if (userData.address && (userData.address.street || userData.address.city)) {
+              setAddress(prev => ({
+                ...prev,
+                name: userData.name || prev.name,
+                phone: userData.phoneNumber || prev.phone,
+                street: userData.address.street || prev.street,
+                city: userData.address.city || prev.city,
+                state: userData.address.state || prev.state,
+                country: userData.address.country || prev.country || "United Arab Emirates",
+                zipcode: userData.address.zipCode?.toString() || prev.zipcode
+              }));
+            }
+            // Also set email if available
+            if (userData.email && !email) {
+              setEmail(userData.email);
+            }
+          }
+        } catch (error) {
+          console.error('Failed to fetch user address:', error);
+          // Don't show error toast as this is optional
+        }
+      }
+    };
+
+    fetchUserAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once when modal opens
 
   const validateSummary = () => {
     return true;

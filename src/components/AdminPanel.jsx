@@ -1073,6 +1073,10 @@ const AdminPanel = () => {
                       <p className="text-sm text-gray-900">{selectedUser.email}</p>
                     </div>
                     <div>
+                      <p className="text-xs font-medium text-gray-500 mb-1">Phone Number</p>
+                      <p className="text-sm text-gray-900">{selectedUser.phoneNumber || 'Not provided'}</p>
+                    </div>
+                    <div>
                       <p className="text-xs font-medium text-gray-500 mb-1">Role</p>
                       <p className="text-sm text-gray-900">{selectedUser.role || 'user'}</p>
                     </div>
@@ -1084,6 +1088,35 @@ const AdminPanel = () => {
                     </div>
                   </div>
                 </div>
+                {selectedUser.address && (selectedUser.address.street || selectedUser.address.city) && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-4">Address</h3>
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div className="space-y-2 text-sm text-gray-700">
+                        {selectedUser.address.street && (
+                          <p className="font-medium">{selectedUser.address.street}</p>
+                        )}
+                        <div className="flex flex-wrap gap-2">
+                          {selectedUser.address.city && (
+                            <span>{selectedUser.address.city}</span>
+                          )}
+                          {selectedUser.address.state && (
+                            <span>{selectedUser.address.state}</span>
+                          )}
+                          {selectedUser.address.zipCode && (
+                            <span>{selectedUser.address.zipCode}</span>
+                          )}
+                        </div>
+                        {selectedUser.address.country && (
+                          <p>{selectedUser.address.country}</p>
+                        )}
+                        {!selectedUser.address.street && !selectedUser.address.city && (
+                          <p className="text-gray-500 italic">Address information incomplete</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div>
                   <h3 className="text-sm font-semibold text-gray-900 mb-4">Order History</h3>
                   {loadingUserOrders ? (

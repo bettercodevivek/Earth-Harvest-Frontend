@@ -136,7 +136,35 @@ const Product = () => {
     };
 
     fetchCartCount();
+    fetchUserAddress();
   }, [isAuthenticated]);
+
+  const fetchUserAddress = async () => {
+    if (!isAuthenticated) return;
+    
+    try {
+      const response = await apiFetch('/auth/profile');
+      if (response.success && response.data) {
+        const userData = response.data;
+        // Auto-populate address if user has saved address
+        if (userData.address && (userData.address.street || userData.address.city)) {
+          setAddress(prev => ({
+            ...prev,
+            name: userData.name || prev.name,
+            phone: userData.phoneNumber || prev.phone,
+            street: userData.address.street || prev.street,
+            city: userData.address.city || prev.city,
+            state: userData.address.state || prev.state,
+            country: userData.address.country || prev.country || "United Arab Emirates",
+            zipcode: userData.address.zipCode?.toString() || prev.zipcode
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch user address:', error);
+      // Don't show error toast as this is optional
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
