@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, User, LogOut, Package } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -11,6 +11,20 @@ const Navbar = ({ cartCount }) => {
   const [logoUrl, setLogoUrl] = useState('');
   const { user, isAuthenticated, logout, setShowLoginModal } = useAuth();
   const menuRef = useRef(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleShopNowClick = (e) => {
+    // If already on product page, scroll to buy section instead of navigating
+    if (location.pathname === '/product') {
+      e.preventDefault();
+      const buySection = document.getElementById('product-buy-section');
+      if (buySection) {
+        buySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+    // Otherwise, let the Link component handle navigation normally
+  };
 
   useEffect(() => {
     const fetchLogo = async () => {
@@ -182,6 +196,7 @@ const Navbar = ({ cartCount }) => {
             {/* CTA */}
             <Link
               to="/product"
+              onClick={handleShopNowClick}
               className="bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white hover:from-[#B8844C] hover:to-[#C8945C]
               px-5 sm:px-6 py-2.5 rounded-lg font-semibold transition-all 
               shadow-lg hover:shadow-xl text-sm"

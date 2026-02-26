@@ -314,15 +314,15 @@ const Product = () => {
         })
       });
 
-      if (response.success) {
-        const totalItems = response.data.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
-        setCartCount(totalItems);
-        showToast({
-          type: 'success',
-          title: 'Success',
-          message: 'Item added to cart!'
-        });
-      }
+      // if (response.success) {
+      //   const totalItems = response.data.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+      //   setCartCount(totalItems);
+      //   showToast({
+      //     type: 'success',
+      //     title: 'Success',
+      //     message: 'Item added to cart!'
+      //   });
+      // }
     } catch (err) {
       console.error("Add to cart failed:", err);
       showToast({
@@ -665,7 +665,7 @@ const Product = () => {
             </div>
 
             {/* Product Info & Buy Box */}
-            <div className="space-y-6 sm:space-y-8 order-2 w-full" ref={buyBoxRef}>
+            <div id="product-buy-section" className="space-y-6 sm:space-y-8 order-2 w-full" ref={buyBoxRef}>
               {/* Breadcrumb - Moved to Top */}
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <Link to="/" className="hover:text-[#C8945C] transition-colors">Home</Link>

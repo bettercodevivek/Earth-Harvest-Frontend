@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Mail, Phone, MapPin, Edit2, Save, X, Lock, Package, CreditCard, RotateCcw, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,6 +8,7 @@ import Navbar from './Navbar';
 
 const Profile = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isAuthenticated, showToast } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
@@ -16,6 +17,18 @@ const Profile = () => {
   const [orders, setOrders] = useState([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
   const [retryingPayment, setRetryingPayment] = useState(null);
+
+  const handleShopNowClick = (e) => {
+    // If already on product page, scroll to buy section instead of navigating
+    if (location.pathname === '/product') {
+      e.preventDefault();
+      const buySection = document.getElementById('product-buy-section');
+      if (buySection) {
+        buySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+    // Otherwise, let the Link component handle navigation normally
+  };
   
   const [profileData, setProfileData] = useState({
     name: '',
@@ -393,6 +406,7 @@ const Profile = () => {
                 <p className="text-muted-foreground text-sm mb-6">Start shopping to see your orders here!</p>
                 <Link
                   to="/product"
+                  onClick={handleShopNowClick}
                   className="inline-block bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
                 >
                   Shop Now

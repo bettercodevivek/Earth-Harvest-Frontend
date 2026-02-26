@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   ShoppingCart, ArrowRight, Check, Award, Leaf, Shield, Users, Globe, Star, 
   Heart, Zap, Truck, Lock, Package, Gift, Minus, Plus, ChevronDown, 
@@ -25,10 +25,23 @@ const Index = () => {
   const [productReviews, setProductReviews] = useState(1000);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [landingPageMedia, setLandingPageMedia] = useState(null);
+  const location = useLocation();
   
   const { scrollYProgress } = useScroll();
   const heroScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
+
+  const handleShopNowClick = (e) => {
+    // If already on product page, scroll to buy section instead of navigating
+    if (location.pathname === '/product') {
+      e.preventDefault();
+      const buySection = document.getElementById('product-buy-section');
+      if (buySection) {
+        buySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+    // Otherwise, let the Link component handle navigation normally
+  };
 
   // Fetch landing page media
   useEffect(() => {
@@ -346,6 +359,7 @@ const Index = () => {
               >
                 <Link
                   to="/product"
+                  onClick={handleShopNowClick}
                   className="w-full sm:w-auto group relative inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-[#C8945C] to-[#B8844C] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-lg"
                 >
                   <span className="relative z-10 flex items-center gap-2">
@@ -838,6 +852,7 @@ const Index = () => {
             
             <Link 
               to="/product"
+              onClick={handleShopNowClick}
               className="inline-flex items-center gap-3 bg-white text-[#C8945C] px-10 py-5 rounded-xl font-bold text-lg shadow-2xl hover:shadow-xl hover:scale-105 transition-all"
             >
               Shop Now - 14% OFF
