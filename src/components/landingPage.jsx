@@ -70,7 +70,7 @@ const Index = () => {
   const product = {
     name: "Earth & Harvest Complete",
     tagline: "The Only Dog Food Your Best Friend Needs",
-    description: "Natural, healthy, and delicious chews that dogs love. Handcrafted with care with only 3 simple ingredients – yak/cow milk, salt and lime, for your furry friend's happiness and dental health.",
+    description: "Natural, healthy, and delicious chews that dogs love. Handcrafted with care with only 3 simple ingredients – yak/cow milk, salt and lime, for your furry friend's happiness and dental health as a healthy alternative to raw hide.",
     price: 89.99,
     oldPrice: 119.99,
     rating: 4.9,
@@ -219,7 +219,7 @@ const Index = () => {
   
 
   const guarantees = [
-    { icon: Truck, title: "Free Shipping", desc: "On all orders" },
+    { icon: Truck, title: "Free Shipping", desc: "On all orders in Dubai" },
     { icon: Lock, title: "10-days guarantee", desc: "Full refund, no questions on unopened packets" },
     { icon: Package, title: "Buy in bulk & Save", desc: "AED 10 off per packet when ordering 5 packets or more" },
   ];
@@ -373,7 +373,7 @@ const Index = () => {
                 >
                   <Play className="w-5 h-5 mr-2" />
                   <span className="hidden sm:inline">Watch Video</span>
-                  <span className="sm:hidden">Video</span>
+                  <span className="sm:hidden">Real Pet Stories</span>
                 </Link>
               </motion.div>
 
@@ -384,9 +384,9 @@ const Index = () => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7 }}
               >
-                <div className="flex items-center gap-2">
+                {/* <div className="flex flex-row items-center gap-2">
                   <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-                  <span>Free Shipping</span>
+                  <span>Free shipping in Dubai</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
@@ -394,8 +394,8 @@ const Index = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-                  <span>Customer Approved</span>
-                </div>
+                  <span>Customer approved</span>
+                </div> */}
               </motion.div>
             </motion.div>
 
@@ -523,75 +523,9 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Stats Section with Verification */}
-      <section className="py-16 sm:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-            {stats.map((stat, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.08 }}
-                className="text-center"
-              >
-                <div className="text-4xl sm:text-5xl font-bold text-gray-900 mb-2">
-                  {stat.value}{stat.suffix || ''}
-                </div>
-                <div className="text-sm sm:text-base text-gray-600 font-medium">
-                  {stat.label}
-                </div>
-                <div className="text-xs text-gray-400 mt-1">
-                  Verified purchases
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Benefits Section - Cleaner Cards */}
-      <section id="benefits" className="py-16 sm:py-24 bg-gradient-to-b from-white to-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12 sm:mb-16"
-          >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-900 mb-4">
-              Why Choose Earth & Harvest
-            </h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              Science-backed nutrition with ingredients you can trust
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {benefits.map((benefit, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.08 }}
-                whileHover={{ boxShadow: "0 12px 24px -4px rgba(0, 0, 0, 0.08)" }}
-                className="bg-white rounded-xl p-6 sm:p-8 shadow-sm transition-shadow border-0"
-              >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 border-2 border-[#C8945C]/20 rounded-xl flex items-center justify-center mb-5 sm:mb-6 mx-auto">
-                  <benefit.icon className="w-6 h-6 sm:w-7 sm:h-7 text-[#C8945C]" />
-                </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 text-center">{benefit.title}</h3>
-                <p className="text-sm sm:text-base text-gray-600 leading-relaxed text-center">{benefit.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Ingredients Section - Cleaner Design */}
-      <section id="ingredients" className="py-16 sm:py-24 bg-white">
+       {/* Ingredients Section - Cleaner Design */}
+       <section id="ingredients" className="py-16 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <motion.div 
@@ -605,7 +539,7 @@ const Index = () => {
                 <span className="text-[#C8945C]">Real Results.</span>
               </h2>
               <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed">
-                Every ingredient is hand-selected for quality and purpose. No fillers, no by-products, no artificial anything.
+                 No fillers, no by-products, no artificial anything.
               </p>
 
               <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
@@ -626,7 +560,7 @@ const Index = () => {
               </div>
 
               <div className="flex flex-wrap gap-2 sm:gap-3">
-                {['No hormones', 'No antibiotics', 'No preservatives'].map((badge) => (
+                {['No hormones', 'No antibiotics', 'No artifical colours', 'No artifical flavours', 'No artifical preservatives','No BHA and BHT','No binding agents','Grain Free','Gluten Free','Virtually lactose free','Ethically Sourced','Healthy alternative to raw hide'].map((badge) => (
                   <span key={badge} className="px-4 py-2 border-2 border-[#C8945C] text-[#C8945C] rounded-full text-sm font-medium">
                     {badge}
                   </span>
@@ -656,6 +590,34 @@ const Index = () => {
                 </div>
               )}
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+        {/* Stats Section with Verification */}
+        <section className="py-16 sm:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+            {stats.map((stat, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.08 }}
+                className="text-center"
+              >
+                <div className="text-4xl sm:text-5xl font-bold text-gray-900 mb-2">
+                  {stat.value}{stat.suffix || ''}
+                </div>
+                <div className="text-sm sm:text-base text-gray-600 font-medium">
+                  {stat.label}
+                </div>
+                <div className="text-xs text-gray-400 mt-1">
+                  Verified purchases
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -723,6 +685,47 @@ const Index = () => {
         </div>
       </section>
 
+
+      {/* Benefits Section - Cleaner Cards */}
+      <section id="benefits" className="py-16 sm:py-24 bg-gradient-to-b from-white to-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12 sm:mb-16"
+          >
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-900 mb-4">
+              Why Choose Earth & Harvest
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+              Simple treats with simple ingredients
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {benefits.map((benefit, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.08 }}
+                whileHover={{ boxShadow: "0 12px 24px -4px rgba(0, 0, 0, 0.08)" }}
+                className="bg-white rounded-xl p-6 sm:p-8 shadow-sm transition-shadow border-0"
+              >
+                <div className="w-12 h-12 sm:w-14 sm:h-14 border-2 border-[#C8945C]/20 rounded-xl flex items-center justify-center mb-5 sm:mb-6 mx-auto">
+                  <benefit.icon className="w-6 h-6 sm:w-7 sm:h-7 text-[#C8945C]" />
+                </div>
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 text-center">{benefit.title}</h3>
+                <p className="text-sm sm:text-base text-gray-600 leading-relaxed text-center">{benefit.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+     
       {/* Written Testimonials - Improved Design */}
       <section id="reviews" className="py-16 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
